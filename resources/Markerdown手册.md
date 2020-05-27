@@ -1,7 +1,8 @@
 [TOC]
 
-#常用
-###折叠
+# 常用
+### 折叠
+
 <details>
 <summary>折叠</summary>
 content!!!
@@ -247,7 +248,6 @@ product=ddaotian
 productcheck=>condition: ddaotian类型产品库存
 (ecs,bss,vpc,eip,hids)
   
-  
 op1=>operation: 发起预订请求
 拆单并库存检测
   
@@ -258,11 +258,9 @@ op4=>operation: 库存检测失败
   
 io1=>inputoutput: 返回产品相关信息
 ECS,NATIP,EIP,HIDS
-  
+
 io2=>inputoutput: info:无此类型产品
-  
-  
-  
+   
 st->cond1
 cond1(yes)->op1->productcheck(yes)->op2->io1->e
 cond1(no)->op3->e
