@@ -1,23 +1,43 @@
-目录
 [TOC]
 
-# 常用
+#常用
+###折叠
+<details>
+<summary>折叠</summary>
+content!!!
+</details>
+
+<details>
+  <summary>折叠代码块</summary>
+  <pre><code> 
+     System.out.println("虽然可以折叠代码块");
+     System.out.println("但是代码无法高亮");
+  </code></pre>
+</details>
+
+<details>
+  <summary>折叠代码块</summary>
+  <pre><blockcode> 
+     System.out.println("虽然可以折叠代码块");
+     System.out.println("但是代码无法高亮");
+  </blockcode></pre>
+</details>
 
 <!--空行、空格 --> 
 |项目|价格|
 |:-|-|
 |computer|$1600|
 |phone|$120|
-###空格、空行
+### 空格、空行
 &emsp; 
-###有序列表
+### 有序列表
 
 1. 列表一
 	1. 子列表一
 2. 列表二
 3. 列表三
 
-###无序列表
+### 无序列表
  - 列表一
  - 列表二
 
@@ -25,35 +45,35 @@
     - 子列表二
   + 子列表三
 
-###任务表
+### 任务表
 
 * [ ] 计划任务
 * [x] 已经完成的任务
 
-###引用、注释
+### 引用、注释
 
 > 引用：https://www.baidu.com
 >> This is a sub question.
 
-###连接
+### 连接
 [我的博客地址](http://blog.csdn.net/qq_37656398)
-###角标
+### 角标
 H~2~O； 2^10^=1024
-###横线
+### 横线
 <!-- 我们可以利用七八个减号或*来定义一根横线 -->
 -------
 ********
-###脚注
+### 脚注
  Markdown[^1]
  <!-- 在文章最后面显示脚注 -->
 [^1]: Markdown是一种纯文本标记语言 
 
-####github表情
+### github表情
 octocat:+1: 这个PR看起来很棒-可以合并了!:smile:
 
-#文字样式
+# 文字样式
 
-###字形
+### 字形
 *斜体*、_斜体_
 **加粗**
 ***加粗+斜体***、**_加粗+斜体_**
@@ -65,13 +85,13 @@ Superscript - superscript
 Subscript - subscript
 ~subscript~
 
-###颜色
+### 颜色
 <font color=red>This is a question.</font>
 <font color=blue>This is a question.</font>
 <font color=black>This is a question.</font>
 <font color=orange>This is a question.</font>
 
-###字号
+### 字号
 <font size=1>This is a question.</font>
 <font size=2>This is a question.</font>
 <font size=3>This is a question.</font>
@@ -80,20 +100,19 @@ Subscript - subscript
 <font size=6>This is a question.</font>
 <font size=7>This is a question.</font>
 
-###字体
+### 字体
 <font face="仿宋">我是一句话。</font>
 <font face="楷体">我是一句话。</font>
 <font face="宋体">我是一句话。</font>
 <font face='consolas'>To be or not to be.</font>
 
-###混合使用
+### 混合使用
 <font color=red><font size=4><font face="仿宋">我是一句话。</font></font></font>
 
-#代码
+# 代码
 `一小块` 
 ```bash {cmd}
 ls .
-
 ``` 
 ```javascript {cmd="node"}
 const date = Date.now()
@@ -136,7 +155,7 @@ plt.show() # show figure
 
 ``` 
 
-@import "echarts.min.js"
+@import "style/echarts.min.js"
 ```javascript {cmd=true element="<div id='showechart' style='width:400px;height:300px;'></div>"}
 var myChart = echarts.init(document.getElementById('showechart'));
 // 指定图表的配置项和数据
@@ -161,7 +180,7 @@ series: [{
 myChart.setOption(option);
 ```
 
-###代码块标记
+### 代码块标记
 使用Code Chunk功能的代码块必须要使用额外形式做记认. 最基本的是{cmd=true}开启功能.
 基本形式是 ` `  ` lang {cmd=your_cmd opt1=value1 opt2=value2 ...} `  ` ` 
 
@@ -194,7 +213,7 @@ png将会添加输出结果到base64图片 (实际不显示?)
 * modify_source : 设置为true时, 插入 code chunk 的运行结果直接到 markdown 文件。默认 false。
 * matplotlib : 设置为true时, python code chunk 将会在你的预览中绘制图像。
 
-#数学公式
+# 数学公式
 定义一个行内公式
 $f(x)=1*2=\{2\}\\
 1+1=2
@@ -204,9 +223,9 @@ $
 $$1*2=2\\
 1+1=2$$
 
-#各种图
+# 各种图
 
-####流程图
+### 流程图
 
 ``` flow
 //定义类型和描述
@@ -278,7 +297,7 @@ subgraph 图表名;
     end
 ```
 
-###时序图
+### 时序图
 
 ``` puml
 bgbiao-> bianbian: good morning
@@ -309,7 +328,7 @@ sequenceDiagram
     Bob-->>John: Jolly good!
 ```
 
-###甘特图
+### 甘特图
 
 ``` mermaid
 gantt
@@ -340,7 +359,7 @@ gantt
     将功能加入到mermaid: 1d
 ```
 
-###PlantUML
+### PlantUML
 ``` puml align="center"
 A->B:hello
 b->c
@@ -374,7 +393,7 @@ b->c
    PXE_Client -> PXE_Client: 启动Linux内核（带参数）
    deactivate PXE_Client
 ``` 
-###Ditaa
+### Ditaa
 ```ditaa {cmd=true args=["-E"]}
   +--------+   +-------+    +-------+
   |        | --+ ditaa +--> |       |
