@@ -24,6 +24,7 @@ content!!!
   </blockcode></pre>
 </details>
 
+<center>居中</center>
 <!--空行、空格 --> 
 |项目|价格|
 |:-|-|
@@ -54,7 +55,8 @@ content!!!
 ### 引用、注释
 
 > 引用：https://www.baidu.com
->> This is a sub question.
+>
+> > This is a sub question.
 
 ### 连接
 [我的博客地址](http://blog.csdn.net/qq_37656398)
@@ -114,7 +116,7 @@ Subscript - subscript
 `一小块` 
 ```bash {cmd}
 ls .
-``` 
+```
 ```javascript {cmd="node"}
 const date = Date.now()
 console.log(date.toString())
@@ -123,7 +125,7 @@ console.log(date.toString())
 ```python {cmd=true id="izdlk700"}
 x = 1
 
-``` 
+```
 ```python {cmd=true id="izdlkdim"}
 x = 2
 ```
@@ -131,7 +133,7 @@ x = 2
 ```python {cmd=true continue="izdlk700" id="izdlkhso"}
 print(x) # will print 1
 
-``` 
+```
 ```python {cmd=true matplotlib=true}
 import matplotlib.pyplot as plt
 plt.plot([1,2,3,4])
@@ -154,7 +156,7 @@ plt.show() # show figure
 
 </html>
 
-``` 
+```
 
 @import "style/echarts.min.js"
 ```javascript {cmd=true element="<div id='showechart' style='width:400px;height:300px;'></div>"}
@@ -390,7 +392,7 @@ b->c
    deactivate TFTP_Server
    PXE_Client -> PXE_Client: 启动Linux内核（带参数）
    deactivate PXE_Client
-``` 
+```
 ### Ditaa
 ```ditaa {cmd=true args=["-E"]}
   +--------+   +-------+    +-------+
