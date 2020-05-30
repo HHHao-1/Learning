@@ -1,0 +1,91 @@
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="http://yandex.st/highlightjs/6.2/highlight.min.js"></script>
+<!--侧栏目录生成代码-->
+<script>
+  //标题序号计数器
+  var hCount = [0, 0, 0, 0, 0, 0];
+  //设置计数器
+  function setHCount(number) {
+    //当前计数器加一
+    hCount[number - 1]++;
+    for (var i = number, length = hCount.length; i < length; i++) {
+      //子目录计数器全部置零
+      hCount[i] = 0;
+    }
+  }
+  //重命名目录名称
+  function setHTagValue(item, number) {
+    //获取标题名
+    var text = $(item).get(0).innerHTML;
+    //初始化空字符串
+    var before = "";
+    //生成序号
+    for (var i = 0, length = hCount.length; i < number; i++) {
+      if (i < number - 1)
+        before += hCount[i] + ".";
+      else
+        before += hCount[i] + " ";
+    }
+    //在标题前面加上序号
+    $(item).get(0).innerHTML = before + text;
+  }
+  $(document).ready(function () {
+    $("h1,h2,h3,h4,h5,h6").each(function (i, item) {
+      //获取标签的名字,h1,还是h2
+      var tag = $(item).get(0).localName;
+      //为该标签设置id属性
+      $(item).attr("id", "wow" + i);
+      //添加一个页内超链接,并设置class选择器
+      //      $("#category").append('<a class="new'+tag+'" href="#wow'+i+'">'+$(this).text()+'</a></br>');
+      $("#category").append('<a class="new' + tag + '" href="#wow' + i + '">' + $(item).text() + '</a></br>');
+      //为每一个标题超链接的class属性设置左边距
+      $(".newh1").css("margin-left", 0);
+      $(".newh1").css("color", "gray");
+      $(".newh2").css("margin-left", 10);
+      $(".newh2").css("color", "gray");
+      $(".newh3").css("margin-left", 20);
+      $(".newh3").css("color", "gray");
+      $(".newh4").css("margin-left", 30);
+      $(".newh4").css("color", "gray");
+      $(".newh5").css("margin-left", 40);
+      $(".newh5").css("color", "gray");
+      $(".newh6").css("margin-left", 50);
+      $(".newh6").css("color", "gray");
+    });
+  });
+</script>
+<style type="text/css">
+  body {
+    width: 1100px;
+    margin-left: 15%;
+    /* margin-right: auto; */
+  }
+
+  @media (min-width: 600px) {
+    #category {
+      /* 绝对定位 */
+      position: fixed;
+      /* left: 20px; */
+      /* 目录显示的位置 */
+      left: 10px;
+      top: 10px;
+      bottom: 10px;
+      /* 目录栏的高度,这里设置为60%主要是为了不挡住返回顶部和折叠按钮 */
+      /* height: 90%; */
+      /* 开启垂直滚动条 */
+      overflow-y: scroll;
+      /* 开启水平滚动条 */
+      /* overflow-x: scroll; */
+    }
+  }
+</style>
+<!--文章主体部分-->
+<!-- <div class="book-body" id="book_body"> </div> -->
+<!--目录栏，设置占用宽度为20%可以根据实际情况设置-->
+<div class="book-summary" id="category" style="width:15%;display:block"></div>
+<div>
+  <p style="color:gray;text-align:center;">互联网ICP备案:&emsp;<a
+      href="http://beian.miit.gov.cn/"
+      target="_blank">陕ICP备20007879号-1</a>&emsp;&emsp;违法不良信息举报邮箱：454947233@qq.com
+  </p>
+</div>
