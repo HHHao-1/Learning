@@ -62,20 +62,30 @@
   });
 </script>
 <style type="text/css">
-  @media (min-width: 900px) {
+  @media (min-width: 1024px) {
     body {
       width: 100%;
       margin-left: 8%;
       /* margin-right: auto; */
+      /* 开启垂直滚动条 */
+      overflow-y: scroll;
+      /* 开启水平滚动条 */
+      overflow-x: hidden;
     }
+  }
+
+  @media (max-width: 700px) {
+
+    body {
+      margin-left: 13%;
+    }
+
   }
 
   @media all and (orientation : portrait) {
     #category {
       display: none;
     }
-
-    ;
 
     body {
       /* margin-right: auto; */
@@ -96,7 +106,7 @@
     /* 开启垂直滚动条 */
     overflow-y: scroll;
     /* 开启水平滚动条 */
-    /* overflow-x: scroll; */
+    overflow-x: hidden;
   }
 </style>
 </script>
@@ -107,10 +117,12 @@
 
 </html>
 
+
+<!doctype html>
 <html>
-<meta charset='UTF-8'>
-<meta name='viewport' content='width=device-width initial-scale=1'>
-<title>HHHAo</title>
-<link rel="icon"
-  href="https://tva1.sinaimg.cn/large/007S8ZIlly1gfanttwrcyj3020020jr6.jpg"
-  type="image/x-icon" />
+
+<head>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width initial-scale=1'>
+  <title>HHHAo</title>
+  <link rel="icon" href="hao.ico" type="image/x-icon" />
