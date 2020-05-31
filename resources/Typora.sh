@@ -7,6 +7,6 @@ git add .
 git commit -m  "Typora"
 
 #git push origin master
-git push
+git push git push https://hao:19940610@github.com/HHHao-1/Notes.git master
 
 echo -e `date '+%Y-%m-%d %H:%M:%S'` "完成笔记github备份" >> /Users/hao/programming/log/notes.log
