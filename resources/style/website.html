@@ -4,40 +4,16 @@
       target="_blank">陕ICP备20007879号-1</a>&emsp;&emsp;违法不良信息举报邮箱：454947233@qq.com
   </p>
 </div>
+<!--目录栏，设置占用宽度为20%可以根据实际情况设置-->
+<div class="book-summary" id="category" style="width:15%"></div>
+<div class="book-summary" id="category2" style="width:15%"></div>
 </body>
 <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
 <script src="http://yandex.st/highlightjs/6.2/highlight.min.js"></script>
 <!--侧栏目录生成代码-->
 <script>
-  //标题序号计数器
-  var hCount = [0, 0, 0, 0, 0, 0];
-  //设置计数器
-  function setHCount(number) {
-    //当前计数器加一
-    hCount[number - 1]++;
-    for (var i = number, length = hCount.length; i < length; i++) {
-      //子目录计数器全部置零
-      hCount[i] = 0;
-    }
-  }
-  //重命名目录名称
-  function setHTagValue(item, number) {
-    //获取标题名
-    var text = $(item).get(0).innerHTML;
-    //初始化空字符串
-    var before = "";
-    //生成序号
-    for (var i = 0, length = hCount.length; i < number; i++) {
-      if (i < number - 1)
-        before += hCount[i] + ".";
-      else
-        before += hCount[i] + " ";
-    }
-    //在标题前面加上序号
-    $(item).get(0).innerHTML = before + text;
-  }
   $(document).ready(function () {
-    $("h1,h2,h3,h4,h5,h6").each(function (i, item) {
+    $("h1,h2").each(function (i, item) {
       //获取标签的名字,h1,还是h2
       var tag = $(item).get(0).localName;
       //为该标签设置id属性
@@ -48,18 +24,25 @@
       //为每一个标题超链接的class属性设置左边距
       $(".newh1").css("margin-left", 0);
       $(".newh1").css("color", "gray");
-      $(".newh2").css("margin-left", 10);
+      $(".newh2").css("margin-left", 30);
       $(".newh2").css("color", "gray");
-      $(".newh3").css("margin-left", 20);
-      $(".newh3").css("color", "gray");
-      $(".newh4").css("margin-left", 30);
-      $(".newh4").css("color", "gray");
-      $(".newh5").css("margin-left", 40);
-      $(".newh5").css("color", "gray");
-      $(".newh6").css("margin-left", 50);
-      $(".newh6").css("color", "gray");
     });
   });
+  $(document).ready(function () {
+    $("h1").each(function (i, item) {
+      //获取标签的名字,h1,还是h2
+      var tag = $(item).get(0).localName;
+      //为该标签设置id属性
+      $(item).attr("id", "w" + i);
+      //添加一个页内超链接,并设置class选择器
+      //      $("#category").append('<a class="new'+tag+'" href="#wow'+i+'">'+$(this).text()+'</a></br>');
+      $("#category2").append('<a class="new' + tag + '" href="#w' + i + '">' + $(item).text() + '</a></br>');
+      //为每一个标题超链接的class属性设置左边距
+      $(".newh1").css("margin-left", 0);
+      $(".newh1").css("color", "gray");
+    });
+  });
+  $('html').addClass('ovfHiden'); //使网页不可滚动
 </script>
 <style type="text/css">
   @media (min-width: 1024px) {
@@ -70,20 +53,38 @@
       /* 开启垂直滚动条 */
       overflow-y: scroll;
       /* 开启水平滚动条 */
-      overflow-x: hidden;
+      overflow-x: hidden
+    }
+    #category {
+      display: none;
     }
   }
 
-  @media (max-width: 700px) {
-
+  @media (max-width: 880px) {
     body {
       margin-left: 13%;
     }
 
+    #category {
+      display: none;
+    }
+
+    #category2 {
+      position: fixed;
+      left: 1%;
+      top: 1%;
+      bottom: 1%;
+      overflow-y: scroll;
+      overflow-x: hidden;
+    }
   }
 
   @media all and (orientation : portrait) {
     #category {
+      display: none;
+    }
+
+    #category2 {
       display: none;
     }
 
@@ -108,21 +109,20 @@
     /* 开启水平滚动条 */
     overflow-x: hidden;
   }
+
+  /* 使网页横向不可滚动 */
+  .ovfHiden {
+    overflow-x: hidden;
+    height: 100%;
+  }
 </style>
-</script>
-<!--文章主体部分-->
-<!-- <div class="book-body" id="book_body"> </div> -->
-<!--目录栏，设置占用宽度为20%可以根据实际情况设置-->
-<div class="book-summary" id="category" style="width:15%"></div>
 
 </html>
 
-
 <!doctype html>
 <html>
-
 <head>
   <meta charset='UTF-8'>
   <meta name='viewport' content='width=device-width initial-scale=1'>
-  <title>HHHAo</title>
+  <title>hao</title>
   <link rel="icon" href="hao.ico" type="image/x-icon" />
