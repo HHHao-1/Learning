@@ -1,4 +1,4 @@
-# 简介
+简介
 
 **概述**
 
@@ -45,11 +45,9 @@ JavaScript，通常缩写为 JS，是一种高级的，解释执行的编程语�
 值类型:数值类型,布尔类型,undefined,null,字符串
 值类型存储在栈（stack）中，它们的值直接存储在变量访问的位置。
 
-引用类型:对象,数组,函数
+引用类型:对象（内置对象、自定义对象）,数组,函数
 引用类型存储在堆中，也就是说存储在变量处的值是一个指针，指向存储对象的内存处。
 ```
-
-
 
 - 运算符优先级
 
@@ -180,8 +178,13 @@ string.replace("study", "sleep"); // returns "I like sleep"
 
 ```js
 --转换成字符串
+0.所有对象继承了两个转换方法：
+//直接转换为字符串形式
+第一个是toString(),它的作用是返回一个反映这个对象的字符串
+//每个JavaScript固有对象的 valueOf 方法定义不同
+第二个是valueOf(),它的作用是返回它相应的原始值
 
-1. 几乎每个值都有 toString() 方法
+1. toString() 方法
 var myNum = 123;
 var myString = myNum.toString();
 typeof myString;//获取变量或表达式类型
@@ -275,6 +278,12 @@ if (message) {
 ```
 
 ### js对象
+
+- Object
+
+```js
+是所有JavaScript对象的基类
+```
 
 - json
 - Array
@@ -383,7 +392,7 @@ stringObject.charCodeAt(index);
 // 字符串中第一个字符的下标是 0。如果 index 是负数，或大于等于字符串的长度，则 charCodeAt() 返回 NaN
 var str = "Hello world!";
 document.write(str.charCodeAt(2));
-// 以上代码输出为 l08
+// 以上代码在html页面输出为 l08
 
 3. concat() 方法，连接字符串，等效于 “+”，“+” 更常用。与数组中的concat() 方法相似。
 
@@ -950,9 +959,104 @@ JavaScript 是一门脚本语言。它支持多种编程方式，面向对象编
     </script>
   </body>
 </html>
+<!--如getEle的写法：对象字面量-->
 ```
 
+- **原型：prototype**
 
+```js
+在 js 中，每一个函数都有一个 prototype 属性，指向另一个对象。
+这个对象的所有属性和方法，都会被构造函数的实例继承。
+//构造函数创建实例，会多次创建sayHi()方法，浪费内存。
+function Student(name, age, gender) {
+  this.name = name;
+  this.age = age;
+  this.gender = gender;
+}
+Student.prototype.sayHi = function () {
+  console.log("hi");
+};
+var s1 = new Student("zhangsan", 18, "male");
+s1.sayHi(); // 打印 hi
+var s2 = new Student("lisi", 18, "male");
+s2.sayHi(); // 打印 hi
+console.log(s1.sayHi == s2.sayHi); // 结果为 true,若构造函数结果为false
+```
+
+- 构造函数、实例、原型三者之间的关系
+
+```js
+每一个函数都有一个 prototype 属性，指向另一个对象。
+<script type="text/javascript">
+  function F() {}
+  console.log(F.prototype);
+</script>
+打印结果为 Object，验证了我们所说的 prototype 属性，指向另一个对象。
+
+构造函数的 prototype 对象默认都有一个 constructor 属性，指向 prototype 对象所在函数。
+function F() {}
+console.log(F.prototype.constructor === F); // 结果为 ture
+
+通过构造函数得到的实例对象内部会包含一个指向构造函数的 prototype 对象的指针 __proto__
+function F() {}
+var a = new F();
+console.log(a.__proto__ === F.prototype); // 结果为 true
+
+实例对象可以直接访问原型对象成员，所有实例都直接或间接继承了原型对象的成员。
+
+总结：每个构造函数都有一个原型对象，原型对象包含一个指向构造函数的指针 constructor，而实例都包含一个指向原型对象的内部指针__proto__。
+```
+
+- 原型链
+
+```js
+--所有的对象都有原型，而原型也是对象，也就是说原型也有原型，那么如此下去，也就组成了我们的原型链。
+
+--属性搜索原则：
+
+属性搜索原则，也就是属性的查找顺序，在访问对象的成员的时候，会遵循以下原则：
+1.首先从对象实例本身开始找，如果找到了这个属性或者方法，则返回。
+2.如果对象实例本身没有找到，就从它的原型中去找，如果找到了，则返回。
+3.如果对象实例的原型中也没找到，则从它的原型的原型中去找，如果找到了，则返回。
+4.一直按着原型链查找下去，找到就返回，如果在原型链的末端还没有找到的话，那么如果查找的是属性则返回 undefined，如果查找的是方法则返回 xxx is not a function。
+
+--更简单的原型语法:
+
+在前面的例子中，我们是使用 xxx.prototype. 然后加上属性名或者方法名来写原型，但是每添加一个属性或者方法就写一次显得有点麻烦，因此我们可以用一个包含所有属性和方法的对象字面量来重写整个原型对象：
+function Student(name, age, gender) {
+  this.name = name;
+  this.age = age;
+  this.gender = gender;
+}
+Student.prototype = {
+  // 手动将 constructor 指向正确的构造函数
+  //若不写原型对象会丢失constructor 成员没最后一行结果为false
+  constructor: Student, 
+  hobby: "study",
+  sayHi: function () {
+    console.log("hi");
+  },
+};
+var s1 = new Student("wangwu", 18, "male");
+console.log(Student.prototype.constructor === Student); // 结果为 true
+
+--原型链继承
+在 JavaScript 中也有继承，接下来我们会学习原型链继承。原型链继承的主要思想是利用原型让一个引用类型继承另外一个引用类型的属性和方法。
+s1.sayHi();// 打印 hi
+//s1继承了 sayHi() 方法。
+```
+
+- **常用的几个 Object.prototype 成员**
+
+  在浏览器控制台输入：Object.prototype可以查看原型
+
+| 成员                              | 描述                                                         |
+| --------------------------------- | ------------------------------------------------------------ |
+| Object.prototype._proto           | 指向当对象被实例化的时候,用作原型的对象。                    |
+| Object.prototype.hasOwnProperty() | 返回一个布尔值,用来判断一个属性是定义在对象本身而不是继承自原型链。 |
+| Object.prototype.isPrototypeof()  | 返回一个布尔值,表示指定的对象是否在本对象的原型链中。        |
+| Object.prototype.tostring()       | 返回一个表示该对象的字符串。                                 |
+| Object.prototype.valueof ()       | 返回指定对象的原始值。                                       |
 
 ### 其他
 
@@ -1014,5 +1118,220 @@ function message() {
     }
 }
 </script>
+```
+
+**call()、apply()、bind()**
+
+```js
+示例：
+var name ='小王',age=17;
+var obj={
+    name:'小张'
+    myFun: function(){
+    console. log( this.name +"年龄"+this. age );}
+}
+obj.myFun()  // 小张年龄 undefined
+
+var fav='盲僧';
+function shows(){ console. log(this. fav);
+shows () //盲僧               
+```
+
+```js
+call()、apply()、bind() 都是用来重定义 this 这个对象的！
+
+var name = '小王', age = 17;
+var obj = {
+    name: '小张',
+    objAge: this.age,
+    myFun: function (fm,t) {
+    console.log(this.name + "年龄" + this.age, "来自" + fm + "去往" + t);}
+}
+var db ={
+    name: "德玛",
+    age: 99
+}
+
+obj.myFun.call(db,'成都','上海')；　　　　 // 德玛 年龄 99  来自 成都去往上海
+obj.myFun.call( '成都', '上海') ;　　　　 // undefined年龄undefined 来自上海去往undefined
+obj.myFun.call() ;　　　　 // 小王年龄17 来自undefined去往undefined
+obj.myFun.apply(db,['成都','上海']);      // 德玛 年龄 99  来自 成都去往上海  
+obj.myFun.bind(db,'成都','上海')();       // 德玛 年龄 99  来自 成都去往上海
+obj.myFun.bind(db,['成都','上海'])();　　 // 德玛 年龄 99  来自 成都, 上海去往 undefined
+```
+
+```js
+call 、bind 、 apply 这三个函数的第一个参数都是 this 的指向对象。
+
+第二个参数差别就来了：
+call 的参数是直接放进去的，第二第三第 n 个参数全都用逗号分隔;
+apply 的所有参数都必须放在一个数组里面传进去;
+bind 除了返回是函数以外，它的参数和 call 一样。
+
+三者的参数都可选，也不限定是 string 类型，允许是各种类型，包括函数、object 等等！
+```
+
+**递归**
+
+```js
+例子：计算 1 到 10 之间的整数相加的和：
+
+function foo(n) {
+  if (n == 0) {
+    return 0;
+  } // 临界条件
+  else {
+    return n + foo(n - 1);
+  }
+}
+var a = foo(10);
+a; // 55
+
+注：一定要写临界条件，不然程序无法结束并且会报错。
+```
+
+**作用域**
+
+```css
+块级作用域
+
+在 JavaScript 中是没有块级作用域的。比如：
+{
+  var num = 123;
+  {
+    console.log(num);
+  }
+}
+console.log(num);
+
+上面的例子不会报错，而是打印两次 123，但是在其他编程语言中（C#、C、JAVA）会报错，这是因为在 JavaScript 中是没有块级作用域。也就是说，使用 {} 标记出来的代码块中声明的变量 num，是可以被 {} 外面访问到的。
+```
+
+```js
+函数作用域
+JavaScript 的函数作用域是指在函数内声明的所有变量在函数体内始终是可见的，函数外不可见。来看个例子：
+
+function test() {
+  var num = 123;
+  console.log(num);
+  if (2 == 3) {
+    var k = 5;
+    for (var i = 0; i < 10; i++) {}
+    console.log(i);
+  }
+  // 不会报错，而是显示 undefined
+  // 若干2==2，返回5 ；如果在函数外会报错：k is not defined  
+  console.log(k); 
+}
+test();
+```
+
+```
+全局作用域
+
+全局作用域也就是说什么地方都能够访问到。不用 var 关键字，直接声明变量的话，那这个变量就是全局变量，它的作用域就是全局作用域。使用 window 全局对象来声明，全局对象的属性也是全局变量。另外在所有的函数外部用 var 声明的变量也是全局变量，这是因为内层作用域可以访问外层作用域。
+```
+
+**变量名提升**
+
+JavaScript 是解释型的语言，但是它并不是真的在运行的时候完完全全的逐句的往下解析执行。
+
+```js
+实际运行顺序相当于：
+
+var a;
+var b;
+.....
+function a(){};
+function b(){};
+......
+a()；
+b();
+......
+a=1;
+b=2;
+......
+
+//声明（变量、函数），会被按顺序提升到最前面
+```
+
+**闭包**
+
+闭包是指函数可以使用函数之外定义的变量。
+
+```js
+简单的闭包
+var num = 3;
+function foo() {
+  console.log(num);
+}
+foo(); //打印 3
+
+复杂的闭包
+function f1() {
+  var num1 = 6;
+  function f2() {
+    var num2 = 7;
+  }
+  console.log(num1 + num2);
+}
+f1();
+//f2 能够访问到它外层的变量 num1，但是 f1 是不能访问 f2 中的变量num2，所以报错。应修改：
+function f1() {
+  var num1 = 6;
+  function f2() {
+    var num2 = 7;
+    return num2;
+  }
+  return f2();
+  console.log(num1 + num2);
+}
+f1();
+```
+
+- arguments 对象
+
+```js
+function foo() {
+  console.log(arguments[0]);
+  console.log(arguments[1]);
+}
+foo(2, 3); // 打印 2 3
+```
+
+```js
+function add() {
+  var sum = 0;
+  for (var i = 0; i < arguments.length; i++) {
+    sum += arguments[i];
+  }
+  return sum;
+}
+add(); // 0
+add(1, 2, 3); // 6
+```
+
+- Function 对象
+
+```js
+var function_name = new Function(arg1, arg2, ..., argN, function_body)
+//注：每个参数都必须是字符串，function_body 是函数主体，也就是要执行的代码。
+
+var add = new Function("a", "b", "console.log(a+b);");
+add(2, 5); // 打印 7
+```
+
+```js
+Function 对象的 length 属性
+
+var add = new Function("a", "b", "console.log(a+b);");
+console.log(add.length); // 打印 2，参数个数
+
+Function 对象的方法
+
+Function() 对象也有与所有对象共享的 valueOf() 方法和 toString() 方法。这两个方法返回的都是函数的源代码。
+var add = new Function("a", "b", "console.log(a+b);");
+console.log(add.valueOf());
+console.log(add.toString());
 ```
 
