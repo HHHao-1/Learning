@@ -267,4 +267,30 @@ h2{color:green;}
 } 
 ```
 
-## 
+
+
+# HTML
+
+## 问题记录
+
+### 1. html嵌套
+
+```html
+< iframe name="XXX" width=X height=X frameborder=0 src="XXX.htm" >< /iframe >
+
+--不出现滚动条：在外部文件< body >标签中加入“scroll=no”或者在宿主页面< iframe >标签中加入“scrolling=no”即可。
+
+--背景颜色不同：标签< iframe >内设置属性allowTransparency="true"(即框架背景透明)。
+```
+
+```html
+<object style="border: 0px" type="text/x-scriptlet" data="XXX.htm" width=X Height=X >
+</object>
+
+--类似于ifram，它有自己的不透明方形区域，并覆盖在宿主页面上。
+```
+
+```
+
+```
+

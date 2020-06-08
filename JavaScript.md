@@ -1,4 +1,4 @@
-简介
+# 简介
 
 **概述**
 
@@ -13,14 +13,16 @@ JavaScript，通常缩写为 JS，是一种高级的，解释执行的编程语�
 **JavaScript 的特点**
 
 - 可以使用任何文本编辑工具编写，然后使用浏览器就可以执行程序。
+
 - 是一种解释型脚本语言：代码不进行预编译，从上往下逐行执行，不需要进行严格的变量声明。
+
 - 主要用来向 HTML 页面添加交互行为。
 
-# 语法
+  
 
-## 语法标准
+# 语法标准
 
-### 快速使用
+## 快速使用
 
 - 数据类型
 
@@ -114,7 +116,7 @@ myButton.onclick = function () {
 使用匿名函数来运行负载的代码以响应事件触发（如点击按钮），使用事件处理程序。
 ```
 
-### 详细使用
+## 详细使用
 
 - 变量
 
@@ -277,7 +279,7 @@ if (message) {
 }
 ```
 
-### js对象
+## js对象
 
 - Object
 
@@ -607,9 +609,9 @@ student.name; // undefined
 
 ```
 
-## Web API
+# Web API
 
-### 简介
+## 简介
 
 ```css
 浏览器是一个封装的较为完善的软件，它给我们提供了操作浏览器功能和页面元素的接口。
@@ -621,7 +623,7 @@ API 本身是抽象的，它仅定义了一个接口，而不涉及应用程序�
 Web API 是浏览器提供的一套操作浏览器功能和页面元素的 API（BOM 和 DOM）。
 ```
 
-### BOM
+## BOM
 
 **概述：操作浏览器的部分功能的 API**
 
@@ -689,7 +691,7 @@ var timerId = setInterval(function () {
 clearInterval(timerId);
 ```
 
-### DOM
+## DOM
 
 **概述：操作网页上的元素的 API**
 
@@ -904,11 +906,11 @@ node.replaceChild(newnode, oldnode);
 </script>
 ```
 
-### 面向对象
+# 面向对象
 
 JavaScript 是一门脚本语言。它支持多种编程方式，面向对象编程就是其中一种。
 
-**快速使用**
+## 快速使用
 
 ```html
 <!DOCTYPE html>
@@ -959,10 +961,11 @@ JavaScript 是一门脚本语言。它支持多种编程方式，面向对象编
     </script>
   </body>
 </html>
+
 <!--如getEle的写法：对象字面量-->
 ```
 
-- **原型：prototype**
+## 原型：prototype
 
 ```js
 在 js 中，每一个函数都有一个 prototype 属性，指向另一个对象。
@@ -983,7 +986,7 @@ s2.sayHi(); // 打印 hi
 console.log(s1.sayHi == s2.sayHi); // 结果为 true,若构造函数结果为false
 ```
 
-- 构造函数、实例、原型三者之间的关系
+## 构造函数、实例、原型三者之间的关系
 
 ```js
 每一个函数都有一个 prototype 属性，指向另一个对象。
@@ -1007,7 +1010,7 @@ console.log(a.__proto__ === F.prototype); // 结果为 true
 总结：每个构造函数都有一个原型对象，原型对象包含一个指向构造函数的指针 constructor，而实例都包含一个指向原型对象的内部指针__proto__。
 ```
 
-- 原型链
+## 原型链
 
 ```js
 --所有的对象都有原型，而原型也是对象，也就是说原型也有原型，那么如此下去，也就组成了我们的原型链。
@@ -1029,7 +1032,7 @@ function Student(name, age, gender) {
   this.gender = gender;
 }
 Student.prototype = {
-  // 手动将 constructor 指向正确的构造函数
+  //手动将 constructor 指向正确的构造函数
   //若不写原型对象会丢失constructor 成员没最后一行结果为false
   constructor: Student, 
   hobby: "study",
@@ -1040,15 +1043,15 @@ Student.prototype = {
 var s1 = new Student("wangwu", 18, "male");
 console.log(Student.prototype.constructor === Student); // 结果为 true
 
---原型链继承
+--原型链继承(原型对象可以继承)
 在 JavaScript 中也有继承，接下来我们会学习原型链继承。原型链继承的主要思想是利用原型让一个引用类型继承另外一个引用类型的属性和方法。
 s1.sayHi();// 打印 hi
 //s1继承了 sayHi() 方法。
 ```
 
-- **常用的几个 Object.prototype 成员**
+## Object.prototype
 
-  在浏览器控制台输入：Object.prototype可以查看原型
+在浏览器控制台输入：Object.prototype可以查看原型
 
 | 成员                              | 描述                                                         |
 | --------------------------------- | ------------------------------------------------------------ |
@@ -1058,9 +1061,11 @@ s1.sayHi();// 打印 hi
 | Object.prototype.tostring()       | 返回一个表示该对象的字符串。                                 |
 | Object.prototype.valueof ()       | 返回指定对象的原始值。                                       |
 
-### 其他
 
-**调试**
+
+# 其他
+
+## 调试
 
 ```js
 设置断点：在调试界面在 Sources 中行号处设置
@@ -1070,7 +1075,7 @@ s1.sayHi();// 打印 hi
 刷新、单步调试
 ```
 
-**异常处理**
+## 异常处理
 
 ```js
 --异常捕获
@@ -1120,7 +1125,7 @@ function message() {
 </script>
 ```
 
-**call()、apply()、bind()**
+## call()、apply()、bind()
 
 ```js
 示例：
@@ -1171,7 +1176,7 @@ bind 除了返回是函数以外，它的参数和 call 一样。
 三者的参数都可选，也不限定是 string 类型，允许是各种类型，包括函数、object 等等！
 ```
 
-**递归**
+## 递归
 
 ```js
 例子：计算 1 到 10 之间的整数相加的和：
@@ -1190,7 +1195,7 @@ a; // 55
 注：一定要写临界条件，不然程序无法结束并且会报错。
 ```
 
-**作用域**
+## 作用域
 
 ```css
 块级作用域
@@ -1232,7 +1237,7 @@ test();
 全局作用域也就是说什么地方都能够访问到。不用 var 关键字，直接声明变量的话，那这个变量就是全局变量，它的作用域就是全局作用域。使用 window 全局对象来声明，全局对象的属性也是全局变量。另外在所有的函数外部用 var 声明的变量也是全局变量，这是因为内层作用域可以访问外层作用域。
 ```
 
-**变量名提升**
+## 程序运行顺序
 
 JavaScript 是解释型的语言，但是它并不是真的在运行的时候完完全全的逐句的往下解析执行。
 
@@ -1255,7 +1260,7 @@ b=2;
 //声明（变量、函数），会被按顺序提升到最前面
 ```
 
-**闭包**
+## 闭包
 
 闭包是指函数可以使用函数之外定义的变量。
 
@@ -1289,7 +1294,7 @@ function f1() {
 f1();
 ```
 
-- arguments 对象
+## arguments 对象
 
 ```js
 function foo() {
@@ -1311,7 +1316,7 @@ add(); // 0
 add(1, 2, 3); // 6
 ```
 
-- Function 对象
+## Function 对象
 
 ```js
 var function_name = new Function(arg1, arg2, ..., argN, function_body)
