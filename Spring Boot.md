@@ -576,8 +576,15 @@ spring.devtools.remote.secret-header-name= X-AUTH-TOKEN
 
 ## 1. 打包与运行
 
+### jar包
+
 1. Maven的package命令,生成可独立运行的Jar包
-2. 利用java -jar xxx.jar命令启动Spring Boot应用
+2. 利用java  -jar  xxx.jar命令启动Spring Boot应用
+
+```css
+$ nohup java -jar test.jar >temp.txt &
+//这种方法会把日志文件输入到你指定的文件中，没有则会自动创建。进程会在后台运行。
+```
 
 ```css
 运行jar包的方式有三种
@@ -604,6 +611,39 @@ jobs 查看当前终端运行的任务
 spring:
  profiles:
   active: prd
+```
+
+### war包
+
+1. 修改启动Application文件继承SpringBootServletInitializer,实现configure方法
+
+```java
+public class Demo1Application extends SpringBootServletInitializer {
+    public static void main(String[] args) {
+        SpringApplication.run(Demo1Application.class, args);
+    }
+    // 继承SpringBootServletInitializer 实现configure 方便打war 外部服务器部署。
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(Demo1Application.class);
+    }
+}
+```
+
+2. 修改pom.xml
+
+```xml
+<packaging>war</packaging>
+```
+
+3. 打包部署
+
+```java
+运行 maven package命令
+将war放入外部tomcat的webapps目录下
+
+注意：
+将项目打成war包，部署到外部的tomcat中，不能直接访问spring boot 项目中配置文件配置的端口。application.yml中配置的server.port是spring boot内置的tomcat的端口号, 打成war包部署在独立的tomcat上之后, 配置的server.port不起作用。
 ```
 
 ## 2. 自定义属性配置

@@ -20,6 +20,16 @@ AJAX 的核心是 XMLHttpRequest 对象
 
 对搜索引擎的支持的不足
 
+###  Ajax请求和Http请求
+
+Ajax就是使用JavaScript来发送一个HTTP请求，并且可以接收从服务器返回HTTP响应。
+
+**两者本质区别：**
+
+AJAX通过xmlHttpRequest象请求服务器服务器接受请求返数据实现刷新交互
+
+http请求通过httpRequest象请求服务器接受请求返数据需要页面刷新
+
 # JS Ajax
 
 ### 创建 XMLHttpRequest 对象
@@ -145,6 +155,7 @@ jQuery load()方法作用是从服务器加载数据，是一个简单但强大�
 $("body").load("test.html #a");
 
 示例：用ajax方法
+
 $.ajax({
     url: "hotelQuery!queryHotelByCity.action",
     type: "post",
@@ -180,6 +191,7 @@ $("#myID").load("test.jsp",{'arr[]': ["aa", "bb"]});
 //导入的jsp文件含有一个数组传递参数。
 $("#myID").load("test.jsp",{'arr1[]': ["aa", "bb"],'arr2[]':["cc","dd"]});
 //传递多个数组
+
 注意：使用load，这些参数是以POST的方式传递的，因此在test.php里，不能用GET来获取参数。
 ```
 

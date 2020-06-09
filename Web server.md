@@ -1,5 +1,13 @@
 # Apache
 
+## 简介
+
+Apache只是一个web服务器，负责响应客户端请求。对于静态页面请求，会立即返回相应页面给客户端；
+
+如果是动态页面，Apache会根据 httpd.conf中的AddType配置，提交给合适的动态脚本解析程序预处理，然后将脚本解析程序处理后生成的静态页面返回给客户端。  
+
+单纯只安装apache是无法处理动态页面的，必须安装相应的动态脚本解析程序或动态库，并在httpd.conf中增加必要的AddType配置项 （如：要支持php脚本，需要安装php，并在httpd.conf中增加配置 AddType application/x-httpd-php .php；要支持jsp需要结合tomcat）。
+
 ## 快速使用
 
 ### 1. 启动 Apache 服务
@@ -47,6 +55,4 @@ Apache 服务部署路径在 资源库/WebServer/Documents/ ，我们的项目�
 
 Apache 服务端口号默认为 80，如果想要修改端口号，可以在/private/etc/apache2/ 目录下找到并打开 httpd.conf 文件，搜索  Listen 80 修改端口号。
 
-### 4. PHP启动
 
-PHP 启动只需在 Apache 服务中进行一下配置即可直接使用。首先，在 /private/etc/apache2/ 目录下找到并打开 httpd.conf 文件；其次，搜索 #LoadModule php5_module libexec/apache2/libphp5.so ，将前方的 "#" 删除；再次，重启 Apache 服务即可；最后，在部署路径下新建一个 test.php 测试（如：在浏览器中输入 http://localhost/test.php 查看PHP输出信息）。

@@ -273,7 +273,9 @@ h2{color:green;}
 
 ## 问题记录
 
-### 1. html嵌套
+### 1. html内嵌
+
+前端内嵌
 
 ```html
 < iframe name="XXX" width=X height=X frameborder=0 src="XXX.htm" >< /iframe >
@@ -290,7 +292,113 @@ h2{color:green;}
 --类似于ifram，它有自己的不透明方形区域，并覆盖在宿主页面上。
 ```
 
+```html
+<script>
+  $("#test").load("qian.html #qian",function(data){
+    console.log($("#qian").text());//返回选择器选取元素文本
+    console.log(data);//返回整个html源码
+  });
+  console.log($("#test").html());//返回选择器选取元素内部html
+</script>
+
+等价于
+<script>
+$.ajax({
+    url: "qian.html",
+    dataType: "html",
+    success: function (data) {
+      $("#test").html($(data).filter("#qian").html());
+    }
+  });
+</script>
+
+--使用脚本，这种方法的特点是外部页面不具有自己的方形区域，和宿主页面浑然一体，但由于外部页面内容全部写在脚本中，无法做到所见即所得，必须等到脚本运行时才能看到实际效果，这样就为修改调试增加了困难。
 ```
 
+后端内嵌
+
+SSI （server side include）服务器端包含，如：<#include>类似jsp的 include 标签
+
+服务器将内容发送到浏览器之前，可以使用“服务器端包含 (SSI)”指令将文本、图形或应用程序信息包含到网页中。Web 服务器在处理网页的同时处理 SSI 指令。当 Web 服务器遇到 SSI 指令时，直接将包含文件的内容插入 HTML 网页。ssi的可定义扩展名为：*.stm、* *.shtm、* *.shtml*
+
+```css
+SSI指令使用
+
+显示服务器端环境变量<#echo>
+
+1、获取本文档名称：
+<!–#echo var="DOCUMENT_NAME"–>
+2、获取当前时间：
+<!–#echo var="DATE_LOCAL"–>
+3、获取当前IP：
+<! #echo var="REMOTE_ADDR"–>
+　　
+
+将文本内容直接插入到文档中<#include>
+
+注：file包含文件可以在同一级目录或其子目录中，但不能在上一级目录中，virtual包含文件可以是Web站点上的虚拟目录的完整路径
+
+<! #include file="文件名称"–>
+如：<!--#include virtual="index.html" -->
+ 
+<! #include virtual="文件名称"–>
+如：<!--#include virtual="/www/footer.html" -->
+　　
+显示WEB文档相关信息<#flastmod><#fsize>(如文件制作日期/大小等)
+
+1、获取文件最近更新日期：
+<! #flastmod file="文件名称"–>
+2、获取文件的长度：
+<!–#fsize file="文件名称"–>
+　　
+
+直接执行服务器上的各种程序<#exec>(如CGI或其他可执行程序)
+
+1、<!–#exec cmd="文件名称"–>
+<!--#exec cmd="cat /etc/passwd"-->
+2、<!–#exec cgi="文件名称"–>
+<!--#exec cgi="/cgi-bin/access_log.cgi"–>
+```
+
+```css
+配置服务器：
+
+1. nginx配置：nginx.conf
+server {
+    listen       80;
+    server_name  localhost;
+    # 开启 ssi
+    ssi on;
+    # ssi 出错是不会打印日志
+    ssi_silent_errors on;
+    # 默认的静态页面后缀为 html，如果想自定义，比如使用shtml则开启下方注释
+    # ssi_types text/shtml;
+    location / {
+        # 指定静态文件所在位置
+        root        ssi;
+        # 默认首页，如果你的后缀在上方修改为 *.shtml，则下方也需要跟着修改
+        index       index.html index.htm;
+    }
+}
+
+2. apache配置：httpd.conf
+
+加载ssi模块
+取消注释：
+LoadModule ssl_module modules/mod_ssl.so
+
+添加需要的文件类型,ssi技术的默认文件名为.shtml
+取消注释：可添加.html文件类型
+AddType text/html .shtml .html .htm
+AddOutputFilter INCLUDES .shtml .html .htm
+
+取消注释：Options Indexes FollowSymLinks在后面加上INCLUDES
+ssi可以利用shell来执行命令,因此这个功能是有危险的,它会执行任何包含在exec标记中的命令
+关闭exec功能，改为: Options Indexes FollowSymLinks INCLUDES IncludesNOEXEC
+
+重启apache,即可使用ssi指令。对于个别apache环境还不能使用.html的情况,可在配置中添加以下代码:
+AddType text/html .ssi
+Options Includes
+AddOutputFilterByType INCLUDES;DEFLATE text/html
 ```
 

@@ -336,6 +336,24 @@ $(document).ready(function() {
 clone() 中传递了参数 true 时，代表复制元素的同时复制其所绑定的元素。
 ```
 
+```html
+示例：点击 li 元素即可复制其本身到 ul 中
+
+<ul>
+    <li>blue</li>
+    <li title="syl">white</li>
+    <li>red</li>
+</ul>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("ul li").on('click', function() {
+            $(this).clone().appendTo('ul');
+        });
+
+    });
+</script>
+```
+
  ### 替换节点
 
 ```js
@@ -353,6 +371,16 @@ $("<p>SHIYANLOU</p>").replaceAll("p")
 （2）wrapAll() 方法：用1内容包裹n匹配元素
 （3）wrapInner() 方法：用n个内容包裹n个匹配元素节点的子内容（包括文本节点）
 ```
+
+```html
+<script type="text/javascript">
+    $(document).ready(function() {
+    $("p").wrapInner("<div style='border:1px red solid;'></div>");
+});
+</script>
+```
+
+![61B06B8A-64C9-4BE7-B6A9-C1EBEB6468F6](https://tva1.sinaimg.cn/large/007S8ZIlly1gfl0hp158sj30tb049wgd.jpg)
 
 ### 属性操作
 
@@ -917,8 +945,8 @@ fadeTo() 方法：把被选元素逐渐改变至给定的不透明度。
 
 ```js
 页面就绪函数是指在页面加载完成后执行的函数
-语法1: $(document).ready(function{})
-语法2: $(function{})
+语法1: $(document).ready(function(){})
+语法2: $(function(){})
 
 所有js  / jQuery 函数位于一个页面就绪函数中：防止文档在完全加载（就绪）之前运行 代码；如果在文档没有完全加载之前就运行函数，操作可能失败。
 ```

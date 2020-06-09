@@ -225,7 +225,7 @@ hr节点下最多出现1个emplovee子节点。
 <!--XML引用DTD文件-->
 在XML中使用<!DOCTYPE>标签来引用DTD文件
 <!DOCTYPE 根节点 SYSTEM "dtd文件路径">
-<!DOCTYPE hr SYSTEM "hr.dtd">
+如：<!DOCTYPE hr SYSTEM "hr.dtd">
 ```
 
 ② XML Schema比DTD更为复杂,提供了更多功能
@@ -276,6 +276,10 @@ hr节点下最多出现1个emplovee子节点。
 
 <!--xml引用xsd文件-->
 <hr xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="hr.xsd">
+    
+xmlns:xsi ---是指xml文件遵守xml规范，xsi全名：xml schema instance
+xsi:schemaLocation——是指具du体用到的schema资源。
+xmlns:xsi 定义了一个命名空间前缀"http://www.w3.org/2001/XMLSchema-instance"。这个 xmlns:xsi 已经成为了一个业界默认的用于 XSD(（XML Schema Definition) 文件的命名空间。 
 ```
 
 6. DOM文档对象模型
