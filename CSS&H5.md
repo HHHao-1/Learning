@@ -402,3 +402,10 @@ Options Includes
 AddOutputFilterByType INCLUDES;DEFLATE text/html
 ```
 
+## 小技巧
+
+```html
+1. <a href="#">单击回到顶部</a>
+2. <a HREF="javascript:void(0)">单击此处什么也不会发生</a>
+```
+

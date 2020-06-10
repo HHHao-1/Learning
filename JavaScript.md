@@ -856,7 +856,20 @@ clearInterval(timerId);
 文档对象模型（Document Object Model，简称 DOM），是 W3C 组织推荐的处理可扩展标志语言的标准编程接口。DOM 定义了访问 HTML 和 XML 文档的标准。DOM 可以把 HTML 看做是文档树，通过 DOM 提供的 API 可以对树上的节点进行操作。
 ```
 
-**应用**
+**HTML内容操作**
+
+```js
+js获取text、html、属性值、value的方法：
+document.getElementById("test").innerText；
+document.getElementById("test").innerHTML；
+document.getElementById("test").id；
+document.getElementById("test1").value;
+
+innerText-获取或设置元素的纯文本
+innerHTML-获取或设置元素内部的HTML
+id-获取或设置元素的属性
+value-获取或设置输入项的值
+```
 
 ```html
 1.DOM 能够操作 HTML 的内容。
@@ -869,7 +882,8 @@ document.write("新设置的内容<p>标签也可以生成</p>");
 使用 innerHTML 属性改变 HTML 内容。比如修改 p 标签中的内容：
 <p id="p1">Hello World!</p>
 <script>
-   document.getElementById("p1").innerHTML = "Hello 实验楼";
+   var a = document.getElementById("p1").innerHTML;//获取
+   document.getElementById("p1").innerHTML = "Hello 实验楼";//改写
 </script>
 
 --改变 HTML 属性
@@ -926,7 +940,7 @@ children：非标准属性，它返回指定元素的子元素集合。但它只
 nextSibling 和 previousSibling 获取的是节点，获取元素对应的属性是 nextElementSibling 和 previousElementSibling。
 nextElementSibling 和 previousElementSibling 有兼容性问题，IE9 以后才支持。
 ```
-- 获取节点
+- 获取节点（选择器）
 
 ```js
 getElementById() 通过元素的 ID 而选取元素；//id：指定标签的唯一标识
@@ -939,6 +953,11 @@ getElementsByClassName() 通过类名来找到 HTML 元素；//所有同类名�
 document.getElementsByClassName("name"); // 返回包含 class = "name" 的所有元素的一个列表。
 
 getElementsByName()通过name属性来找到 HTML 元素;//所有同名元素
+
+element = document.querySelector(CSS selectors)//回文档中匹配指定 CSS 选择器的一个元素
+elementList = document.querySelectorAll(selectors);//返回文档中匹配指定 CSS 选择器的所有元素
+elementList 是一个静态的 NodeList 类型的对象。
+selectors 是一个由逗号连接的包含一个或多个 CSS 选择器的字符串。
 ```
 
 - 节点操作
