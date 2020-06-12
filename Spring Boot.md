@@ -308,6 +308,7 @@ server.tomcat.uri-encoding ---------用来解码 URI 的字符编码
 **日志配置**
 
 ```properties
+#spring boot默认使用LogBack日志系统
 # 日志配置文件的位置。 例如对于Logback的`classpath：logback.xml`
 logging.config= 
 # ％wEx#记录异常时使用的转换字。
