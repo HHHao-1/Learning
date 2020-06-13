@@ -81,37 +81,6 @@ var json2 = {};
 json2.name = "小周"
 ```
 
-**json与java交互**
-
-json解析工具：FastJson, Jackson, Gson等。
-
-json使用FastJson序列化与反序列化：
-
-```java
-//@JSONField(format="yyyy-MM-dd HH:mm:ss SSS")
-@JSONField(name = "hiredate" , format="yyyy-MM-dd")
-private Date hdate;
-@JSONField(serialize = false)
-private String dname;
-
-//java对象序列化为json字符串
-//序列化自动忽略为null的对象属性
-String json = JSON.toJSONString(employee);
-//json字符串序列化为java对象
-//反序列化不忽略json字符串中的null值
-Employee emp = JSON.parseObject(json, Employee.class);
-
-//java数组对象的序列化与反序列化
-List emplist = new ArrayList();
-for (int i = 1 ; i <= 100 ; i++) {
-	Employee employee = new Employee();
-	employee.setEmpno(4488 + i);
-	emplist.add(employee);
-}
-String json = JSON.toJSONString(emplist);
-List<Employee> emps = JSON.parseArray(json , Employee.class);
-```
-
 # XML
 
 ##  简介
@@ -418,3 +387,256 @@ public class XPathTestor {
    }
 }
 ```
+
+# 工具
+
+## Jackson
+
+### 依赖
+
+```xml
+<dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId> -->数据绑定依赖于下面两个包
+        <version>2.8.7</version>
+</dependency>
+<dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId> -->注解包
+        <version>2.8.0</version>
+</dependency>
+<dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId> -->核心包
+        <version>2.8.7</version>
+</dependency>
+<!--返回xml数据还需导入此依赖-->
+<dependency>
+     <groupId>com.fasterxml.jackson.dataformat</groupId>
+     <artifactId>jackson-dataformat-xml</artifactId>
+     <!--spring boot中不需要version-->
+     <version>2.9.8</version> 
+</dependency>
+```
+
+### 应用
+
+**返回客户端**
+
+> @*GetMapping*(value *=* "/xml", produces *=* "application/json")
+>
+> *@GetMapping(value = "/xml", produces = "application/xml")*
+
+**JAVA对象转JSON/XML**
+
+> ```
+> objectMapping.writeValueAsString(obj)
+> ```
+
+**XML/JSON转JAVA对象**
+
+> ```
+> objectMapping.readValue(str, ojb.class)
+> ```
+
+**说明**
+
+> 1. json字符串中的key应该与java对象的属性名相同
+>
+> 2. java对象中属性如果为private，则需要显示生成getter/setter方法；如果属性为public，则可以不必写getter/setter方法
+>
+> 3.  java对象如果有自定义的构造方法，json字符串转换为java对象时会出错
+>
+> 4. 如果json字符串中的属性个数小于java对象中的属性个数，可以顺利转换，java中多的那个属性为null
+>
+> 5. 如果json字符串中出现java对象中没有的属性，则在将json转换为java对象时会报错：Unrecognized field, not marked as ignorable，解决方法：
+>
+>    > 在目标对象的类级别上添加注解：`@JsonIgnoreProperties(ignoreUnknown = true)`；
+>
+> 6. java对象名和json中名不一致时解决方法：
+>
+>    > 在目标对象的字段级别上添加注解：`@JsonProperty(value = "name")`
+
+**json示例**
+
+```java
+User user = new User(); 
+user.setName("小民");  
+....
+ObjectMapper mapper = new ObjectMapper(); 
+//User对象转JSON字符串 
+//输出结果：{"name":"小民","age":20,"birusery":844099200000,"email":"xiaomin@sina.com"} 
+String json = mapper.writeValueAsString(user); 
+System.out.println(json); 
+
+//User对象集合转JSON字符串 
+//输出结果：[{"name":"小民","age":20,"birthday":844099200000,"email":"xiaomin@sina.com"}] 
+List<User> users = new ArrayList<User>(); 
+users.add(user); 
+String jsonlist = mapper.writeValueAsString(users); 
+System.out.println(jsonlist); 
+
+//JSON字符串转User对象 
+User user1 = mapper.readValue(json，User.class); 
+System.out.println(user.toString); 
+```
+
+**xml示例**
+
+```java
+//在对实体类定义节点时JSON注解也可以用，xml注解用来控制生成的xml效果
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonRootName("Person")
+public class Person {
+    @JsonProperty("Name")
+    private String name;
+    @JsonProperty("NickName")
+    //@JacksonXmlText
+    private String nickname;
+    @JsonProperty("Age")
+    private int age;
+    @JsonProperty("IdentityCode")
+    @JacksonXmlCData
+    private String identityCode;
+    @JsonProperty("Birthday")
+    //@JacksonXmlProperty(isAttribute = true)
+    @JsonFormat(pattern = "yyyy/MM/DD")
+    private LocalDate birthday;
+
+}
+```
+
+```java
+Person p1 = new Person("yitian", "易天", 25, "10000", LocalDate.of(1994, 1, 1));
+XmlMapper mapper = new XmlMapper();
+mapper.findAndRegisterModules();
+mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+mapper.enable(SerializationFeature.INDENT_OUTPUT);
+String text = mapper.writeValueAsString(p1);
+System.out.println(text);
+
+Person p2 = mapper.readValue(text, Person.class);
+System.out.println(p2);
+```
+
+```xml
+运行结果：
+
+<Person>
+  <Name>yitian</Name>
+  <NickName>易天</NickName>
+  <Age>25</Age>
+  <IdentityCode><![CDATA[10000]]></IdentityCode>
+  <Birthday>1994/01/01</Birthday>
+</Person>
+Person(name=yitian, nickname=易天, age=25, identityCode=10000, birthday=1994-01-01)
+
+取消那两行注释，运行结果：
+
+<Person birthday="1994/01/01">
+  <Name>yitian</Name>易天
+  <Age>25</Age>
+  <IdentityCode><![CDATA[10000]]></IdentityCode>
+</Person>
+Person(name=yitian, nickname=null, age=25, identityCode=10000, birthday=1994-01-01)
+```
+
+### 注解
+
+#### JSON
+
+> - 属性命名
+>
+> @JsonProperty注解指定一个属性用于JSON映射，默认情况下映射的JSON属性与注解的属性名称相同，不过可以使用该注解的value值修改JSON属性名，该注解还有一个index属性指定生成JSON属性的顺序，如果有必要的话。
+>
+> - 属性包含
+>
+> @JsonIgnore注解用于排除某个属性，这样该属性就不会被Jackson序列化和反序列化。
+>
+> @JsonIgnoreProperties注解是类注解。在序列化为JSON的时候，
+>
+> @JsonIgnoreProperties({"prop1", "prop2"})会忽略pro1和pro2两个属性。在从JSON反序列化为Java类的时候，@JsonIgnoreProperties(ignoreUnknown=true)会忽略所有没有Getter和Setter的属性。该注解在Java类和JSON不完全匹配的时候很有用。
+>
+> @JsonIgnoreType也是类注解，会排除所有指定类型的属性。
+>
+> - 序列化相关
+>
+> @JsonPropertyOrder和@JsonProperty的index属性类似，指定属性序列化时的顺序。
+>
+> @JsonRootName注解用于指定JSON根属性的名称。
+>
+> - 日期格式化
+>
+>  @JsonFormat(pattern = "yyyy-MM-DD") 后台Date传到前台展示时转换为String
+>
+> @DateTimeFormat(pattern = "yyyy-MM-dd") 前台传来字符串格式日期转换为Date格式
+
+#### XML
+
+> @JacksonXmlProperty注解有三个属性，namespace和localname属性用于指定XML命名空间的名称，isAttribute指定该属性作为XML的属性（）还是作为子标签（）.
+>
+> @JacksonXmlRootElement注解有两个属性，namespace和localname属性用于指定XML根元素命名空间的名称。
+>
+> @JacksonXmlText注解将属性直接作为未被标签包裹的普通文本表现。
+>
+> @JacksonXmlCData将属性包裹在CDATA标签中。
+
+### 配置
+
+```java
+// 美化输出
+mapper.enable(SerializationFeature.INDENT_OUTPUT);
+// 允许序列化空的POJO类
+// （否则会抛出异常）
+mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+// 把java.util.Date, Calendar输出为数字（时间戳）
+mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+// 在遇到未知属性的时候不抛出异常
+mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+// 强制JSON 空字符串("")转换为null对象值:
+mapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
+
+// 在JSON中允许C/C++ 样式的注释(非标准，默认禁用)
+mapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
+// 允许没有引号的字段名（非标准）
+mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+// 允许单引号（非标准）
+mapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+// 强制转义非ASCII字符
+mapper.configure(JsonGenerator.Feature.ESCAPE_NON_ASCII, true);
+// 将内容包裹为一个JSON属性，属性名由@JsonRootName注解指定
+mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, true);
+```
+
+## FastJson
+
+**json与java交互**：序列化与反序列化
+
+```java
+//@JSONField(format="yyyy-MM-dd HH:mm:ss SSS")
+@JSONField(name = "hiredate" , format="yyyy-MM-dd")
+private Date hdate;
+@JSONField(serialize = false)
+private String dname;
+
+//java对象序列化为json字符串
+//序列化自动忽略为null的对象属性
+String json = JSON.toJSONString(employee);
+//json字符串序列化为java对象
+//反序列化不忽略json字符串中的null值
+Employee emp = JSON.parseObject(json, Employee.class);
+
+//java数组对象的序列化与反序列化
+List emplist = new ArrayList();
+for (int i = 1 ; i <= 100 ; i++) {
+	Employee employee = new Employee();
+	employee.setEmpno(4488 + i);
+	emplist.add(employee);
+}
+String json = JSON.toJSONString(emplist);
+List<Employee> emps = JSON.parseArray(json , Employee.class);
+```
+

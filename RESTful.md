@@ -162,13 +162,37 @@ public String doDeleteRequest(){
 
 springMVC引入依赖，spring boot默认集成Jackson
 
-> json序列化：由jackson自动完成，也可对对象进行设置；
+> json序列化：由jackson自动完成，也可以对对象进行设置；
 >
-> xml序列化：由jackson自动完成，也可对对象进行设置；
+> xml序列化：由jackson自动完成，也可以对对象进行设置；
+
+```xml
+<dependency>
+     <groupId>com.fasterxml.jackson.dataformat</groupId>
+     <artifactId>jackson-dataformat-xml</artifactId>
+     <!--spring boot中不需要version-->
+     <version>2.9.8</version> 
+</dependency>
+```
+
+```java 
+@JacksonXmlRootElement(localName = "abc")
+public class Person {
+    @JacksonXmlProperty
+    private String name;
+    @JacksonXmlProperty
+    private Integer age;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JacksonXmlProperty
+    private Date birthday;
+    getter...setter
+}
+```
 
 ```java
-@GetMapping(value="/persons", produces={ "application/xml" })//返回xml,既响应头content-type
-//@GetMapping("/persons") //返回json
+@GetMapping(value="/persons", produces="application/xml")//返回xml,既响应头content-type
+//@GetMapping("/persons") 
+//@GetMapping(value = "/persons", produces = "application/json")
 public List<Person> findPersons(){
     List<Person> list= new ArrayList<Person>();
     Person p1 = new Person();

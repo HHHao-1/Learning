@@ -26,7 +26,11 @@
 >
 > 为了解决这个问题的方式就是引入一个适配层，由适配层决定使用哪一种日志系统，而调用端只需要做的事情就是打印日志而不需要关心如何打印日志，slf4j或者commons-logging就是这种适配层。
 >
-> logback、log4j
+> ```java
+> //SLF4J标准的使用
+> Logger logger = LoggerFactory.getLogger(Object.class);
+> ogger.error("123");
+> ```
 
 # 应用
 

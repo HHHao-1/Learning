@@ -308,7 +308,7 @@ server.tomcat.uri-encoding ---------用来解码 URI 的字符编码
 **日志配置**
 
 ```properties
-#spring boot默认使用LogBack日志系统
+#spring boot默认使用logback依赖
 # 日志配置文件的位置。 例如对于Logback的`classpath：logback.xml`
 logging.config= 
 # ％wEx#记录异常时使用的转换字。
@@ -327,6 +327,50 @@ logging.pattern.file=
 logging.pattern.level= 
 #注册日志记录系统的初始化挂钩。
 logging.register-shutdown-hook= false
+```
+
+**Jackson配置**
+
+```properties
+#spring boot默认使用jackson依赖
+
+spring.jackson.date-format=yyyy-MM-dd HH:mm:ss
+#指定日期格式，比如yyyy-MM-dd HH:mm:ss，或者具体的格式化类的全限定名
+
+spring.jackson.deserialization
+#是否开启Jackson的反序列化
+
+spring.jackson.generator
+#是否开启json的generators.
+
+spring.jackson.joda-date-time-format
+#指定Joda date/time的格式，比如yyyy-MM-ddHH:mm:ss). 如果没有配置的话，dateformat会作为backup
+
+spring.jackson.locale
+#指定json使用的Locale.
+
+spring.jackson.mapper
+#是否开启Jackson通用的特性.
+
+spring.jackson.parser
+#是否开启jackson的parser特性.
+
+spring.jackson.property-naming-strategy
+#指定PropertyNamingStrategy(CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES)或者指定PropertyNamingStrategy子类的全限定类名.
+
+spring.jackson.serialization
+#是否开启jackson的序列化.
+
+spring.jackson.serialization-inclusion
+#指定序列化时属性的inclusion方式，具体查看JsonInclude.Include枚举.
+
+spring.jackson.time-zone=GMT+8
+#指定日期格式化时区，比如America/Los_Angeles或者GMT+10.
+
+# 全局设置pojo或被@JsonInclude注解的属性的序列化方式,不为空的属性才会序列化,具体属性可看JsonInclude.Include
+# 返回值null不显示
+spring.jackson.default-property-inclusion= NON_NULL
+ 
 ```
 
 **AOP 切面**
