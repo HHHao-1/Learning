@@ -78,6 +78,13 @@ Springmvc的使用
 
 ### Controller方法接收
 
+> @RequestParam(required = true)：表示参数必填
+>
+> ```java
+> @RequestParam(value="username") String username1,
+> @RequestParam(value="age"，required=false) Integer age1)
+> ```
+
 ```java
 @Controller
 @RequestMapping("/um")

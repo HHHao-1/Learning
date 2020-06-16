@@ -185,8 +185,9 @@ mvnw是一个maven wrapper script,可以让你在没有安装maven或者maven版
 
 ## 4. Spring Configuration Processor
 
-让配置文件有提示
-		使用其他配置文件xml或properties
+> ①让配置文件有提示
+> 		②使用其他配置文件xml或properties
+>
 
 **示例**
 		使用 @EnableConfigurationProperties开启 @ConfigurationProperties注解
