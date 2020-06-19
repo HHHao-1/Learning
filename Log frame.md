@@ -16,7 +16,9 @@
 >
 > F：debug 一般用于细粒度级别上，对调试应用程序非常有帮助。
 >
-> G：all 最低等级，用于打开所有日志记录。
+> G：trace: 程序运行的跟踪信息，很低的日志级别，一般不会使用。
+>
+> H：all 最低等级，用于打开所有日志记录。
 
 ## SLF4J
 
@@ -72,6 +74,7 @@ public class AccessHistoryInterceptor implements HandlerInterceptor {
         </rollingPolicy>
         <encoder>
             <pattern>[%thread] %d %level %logger{10} - %msg%n</pattern>
+<!--<pattern>[%thread] %d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>-->
         </encoder>
     </appender>
     <!--引用上面"console"的appender配置-->
