@@ -1,5 +1,11 @@
 # 简介
 
+## 概念
+
+> 日志文件是用于记录系统操作事件的记录文件或文件集合
+>
+> 日志保存历史数据，是诊断问题以及理解系统活动的重要依据
+
 ## 日志级别
 
 > 可输出指定级别及以上级别信息； 常用：**ERROR、WARN、INFO、DEBUG**
@@ -20,19 +26,28 @@
 >
 > H：all 最低等级，用于打开所有日志记录。
 
-## SLF4J
+## 日志门面
 
-> **SLF4J是一个接口，一个日志标准，logback、log4j等是它的具体实现**
+**日志门面，是门面模式的一个典型的应用。**
+>
+> 门面模式（Facade Pattern），也称之为外观模式，其核心为：
+>
+> 外部与一个子系统的通信必须通过一个统一的外观对象进行，使得子系统更易于使用
+
+ **SLF4J、commons-logging是一个日志的门面接口，一个日志标准**
+
+**logback、log4j、java.utillogging(jul) 等都是它的具体实现**
+
 >
 > 系统使用了多种日志框架，我们的系统就不得不同时支持并维护如：logback、log4j、slf4j-simple等多种日志框架，非常不便。
 >
 > 为了解决这个问题的方式就是引入一个适配层，由适配层决定使用哪一种日志系统，而调用端只需要做的事情就是打印日志而不需要关心如何打印日志，slf4j或者commons-logging就是这种适配层。
 >
-> ```java
-> //SLF4J标准的使用
-> Logger logger = LoggerFactory.getLogger(Object.class);
-> ogger.error("123");
-> ```
+ ```java
+ //SLF4J标准的使用
+ Logger logger = LoggerFactory.getLogger(Object.class);
+ ogger.error("123");
+ ```
 
 # 应用
 
