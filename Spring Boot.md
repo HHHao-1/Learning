@@ -137,6 +137,7 @@ mvnw是一个maven wrapper script,可以让你在没有安装maven或者maven版
 ## 2. DevTools
 
 代码修改热更新，无需重启
+
 监控程序的变化，然后进行自动重新启动
 
 ## 3. Lombok

@@ -526,72 +526,6 @@ public void testOneToMany() throws Exception {
 </mapper>
 ```
 
-# PageHelper
-
-## 使用流程
-
-> 引入PageHelper与jsqlparser依赖
->
-> mybatis-config.xml增加Plugin配置
->
-> 代码中使用PageHelper.startPage()自动分页
->
-
-```xml
-<select id="selectPage" resultType="com.imooc.mybatis.entity.Goods">
-    select * from t_goods where current_price &lt; 1000
-</select>
-```
-
-```java
-/*startPage方法会自动将下一次查询进行分页*/
-//查询第2页，每页10条记录
-PageHelper.startPage(2,10);
-Page<Goods> page = (Page) session.selectList("goods.selectPage");
-System.out.println("总页数:" + page.getPages());
-System.out.println("总记录数:" + page.getTotal());
-System.out.println("开始行号:" + page.getStartRow());
-System.out.println("结束行号:" + page.getEndRow());
-System.out.println("当前页码:" + page.getPageNum());
-List<Goods> data = page.getResult();//当前页数据
-```
-
-## 不同数据库分页原理
-
-### MySQL
-```sql
-select * from table limit 10,20;
-```
-
-### Oracle 
-```sql
---记录：[12~20]
-select t3.* from (
-select t2.*, rownum as row num from ( select * from table order by id aso
-) t2 where rownum<-20
-)t3
-where t2.row num>11
-```
-
-### sql server
-
-1. **SQL Server 2000（旧版）**
-
-```sql
---记录：[4~15]
-select top 3 * from table where
-id not in
-(select top 15 id from table)
-```
-
-2. SQL Server 2012+
-
-```sql
---记录：[5~9]
-select * from table order by ic
-offset 4 rows fetch next 5 rows only
-```
-
 # 批处理
 
 > 原理：用集合保存批处理的数据，再利用批处理sql一次性完成
@@ -757,3 +691,614 @@ public class GoodsDTO {
 >  select * from t_goods where current_price \&lt; 1000
 >
 >  如：< 小于号要进行实体引用
+
+# 插件
+
+##PageHelper
+
+### 使用流程
+
+> 引入PageHelper与jsqlparser依赖
+>
+> mybatis-config.xml增加Plugin配置
+>
+> 代码中使用PageHelper.startPage()自动分页
+
+```xml
+<select id="selectPage" resultType="com.imooc.mybatis.entity.Goods">
+    select * from t_goods where current_price &lt; 1000
+</select>
+```
+
+```java
+/*startPage方法会自动将下一次查询进行分页*/
+//查询第2页，每页10条记录
+PageHelper.startPage(2,10);
+Page<Goods> page = (Page) session.selectList("goods.selectPage");
+System.out.println("总页数:" + page.getPages());
+System.out.println("总记录数:" + page.getTotal());
+System.out.println("开始行号:" + page.getStartRow());
+System.out.println("结束行号:" + page.getEndRow());
+System.out.println("当前页码:" + page.getPageNum());
+List<Goods> data = page.getResult();//当前页数据
+```
+
+### 不同数据库分页原理
+
+#### MySQL
+
+```sql
+select * from table limit 10,20;
+```
+
+#### Oracle 
+
+```sql
+--记录：[12~20]
+select t3.* from (
+select t2.*, rownum as row num from ( select * from table order by id aso
+) t2 where rownum<-20
+)t3
+where t2.row num>11
+```
+
+#### sql server
+
+1. **SQL Server 2000（旧版）**
+
+```sql
+--记录：[4~15]
+select top 3 * from table where
+id not in
+(select top 15 id from table)
+```
+
+2. SQL Server 2012+
+
+```sql
+--记录：[5~9]
+select * from table order by ic
+offset 4 rows fetch next 5 rows only
+```
+
+## Mybatis-generator
+
+### pom.xml
+
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.mybatis.generator</groupId>
+            <artifactId>mybatis-generator-maven-plugin</artifactId>
+            <version>1.4.0</version>
+            <configuration>
+                <!--mybatis的代码生成器的配置文件-->
+                <configurationFile>src/main/resources/generatorConfig.xml</configurationFile>
+                <!--允许覆盖生成的文件-->
+                <overwrite>true</overwrite>
+                <!--将当前pom的依赖项添加到生成器的类路径中-->
+                <!--<includeCompileDependencies>true</includeCompileDependencies>-->
+            </configuration>
+            <dependencies>
+                <!--mybatis-generator插件的依赖包-->
+                <dependency>
+                    <groupId>org.mybatis.generator</groupId>
+                    <artifactId>mybatis-generator-core</artifactId>
+                    <version>1.4.0</version>
+                    <!--放在plugin外可使用provide-->
+                    <!--<scope>provided</scope>-->
+                </dependency>
+                <!--mysql的JDBC驱动-->
+                <dependency>
+                    <groupId>mysql</groupId>
+                    <artifactId>mysql-connector-java</artifactId>
+                    <version>8.0.20</version>
+                </dependency>
+            </dependencies>
+        </plugin>
+    </plugins>
+    <build>    
+```
+
+### generatorConfig.xml
+
+```XML
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--mybatis的代码生成器相关配置-->
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+    <!-- 引入配置文件 -->
+    <properties resource="application-dev.properties"/>
+
+    <!-- 一个数据库一个context,context的子元素必须按照它给出的顺序
+        property*,plugin*,commentGenerator?,jdbcConnection,javaTypeResolver?,
+        javaModelGenerator,sqlMapGenerator?,javaClientGenerator?,table+
+    -->
+    <!--id : 随便填，保证多个 context id 不重复就行
+    defaultModelType ： 可以不填，默认值 conditional，flat表示一张表对应一个po
+    targetRuntime ：可以不填，默认值 MyBatis3，常用的还有 MyBatis3Simple 
+	MyBatis3生成的dao 和 mapper.xml多；MyBatis3Simple生成的少，只包含最常用的-->
+    <context id="myContext" targetRuntime="MyBatis3" defaultModelType="flat">
+
+        <!-- 这个插件给生成的Java模型对象增加了equals和hashCode方法 -->
+        <!--<plugin type="org.mybatis.generator.plugins.EqualsHashCodePlugin"/>-->
+
+        <!-- 注释 -->
+        <commentGenerator>
+            <!-- 是否不生成注释 -->
+            <property name="suppressAllComments" value="true"/>
+            <!-- 不希望生成的注释中包含时间戳 -->
+            <!--<property name="suppressDate" value="true"/>-->
+            <!-- 添加 db 表中字段的注释，只有suppressAllComments为false时才生效-->
+            <!--<property name="addRemarkComments" value="true"/>-->
+        </commentGenerator>
+
+
+        <!-- jdbc连接 -->
+        <jdbcConnection driverClass="${spring.datasource.driverClassName}"
+                        connectionURL="${spring.datasource.url}"
+                        userId="${spring.datasource.username}"
+                        password="${spring.datasource.password}">
+            <!--高版本的 mysql-connector-java 需要设置 nullCatalogMeansCurrent=true-->
+            <property name="nullCatalogMeansCurrent" value="true"/>
+        </jdbcConnection>
+
+        <!-- 类型转换 -->
+        <javaTypeResolver>
+            <!--是否使用bigDecimal，默认false。
+                false，把JDBC DECIMAL 和 NUMERIC 类型解析为 Integer
+                true，把JDBC DECIMAL 和 NUMERIC 类型解析为java.math.BigDecimal-->
+            <property name="forceBigDecimals" value="true"/>
+            <!--默认false
+                false，将所有 JDBC 的时间类型解析为 java.util.Date
+                true，将 JDBC 的时间类型按如下规则解析
+                    DATE	                -> java.time.LocalDate
+                    TIME	                -> java.time.LocalTime
+                    TIMESTAMP               -> java.time.LocalDateTime
+                    TIME_WITH_TIMEZONE  	-> java.time.OffsetTime
+                    TIMESTAMP_WITH_TIMEZONE	-> java.time.OffsetDateTime
+                -->
+            <!--<property name="useJSR310Types" value="false"/>-->
+        </javaTypeResolver>
+
+        <!-- 生成实体类地址 -->
+        <javaModelGenerator targetPackage="com.wqlm.boot.user.po" targetProject="src/main/java">
+            <!-- 是否让 schema 作为包的后缀，默认为false -->
+            <!--<property name="enableSubPackages" value="false"/>-->
+            <!-- 是否针对string类型的字段在set方法中进行修剪，默认false -->
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+
+
+        <!-- 生成Mapper.xml文件 -->
+        <sqlMapGenerator targetPackage="mapper" targetProject="src/main/resources">
+            <!--<property name="enableSubPackages" value="false"/>-->
+        </sqlMapGenerator>
+
+        <!-- 生成 XxxMapper.java 接口-->
+        <javaClientGenerator targetPackage="com.wqlm.boot.user.dao" targetProject="src/main/java" type="XMLMAPPER">
+            <!--<property name="enableSubPackages" value="false"/>-->
+        </javaClientGenerator>
+
+
+        <!-- schema为数据库名，oracle需要配置，mysql不需要配置。
+             tableName为对应的数据库表名
+             domainObjectName 是要生成的实体类名(可以不指定，默认按帕斯卡命名法将表名转换成类名)
+             enableXXXByExample 默认为 true， 为 true 会生成一个对应Example帮助类，帮助你进行条件查询，不想要可以设为false
+             -->
+        <table schema="" tableName="user" domainObjectName="User"
+               enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
+               enableUpdateByExample="false" selectByExampleQueryId="false">
+            <!--是否使用实际列名,默认为false-->
+            <!--<property name="useActualColumnNames" value="false" />-->
+        </table>
+    </context>
+</generatorConfiguration>
+
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+  "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+
+<generatorConfiguration>
+    <!--mysql 连接数据库jar 这里选择自己本地位置;
+  如果不知道maven本地仓库地址，可以使用EveryThing工具全局搜索mysql-connector-java，找到jar包位置；
+  也可以手动下载一个jar放在指定位置，进行引用。
+  -->
+    <classPathEntry location="/usr/local/apache-maven-3.6.3/repository/mysql/mysql-connector-java/8.0.20/mysql-connector-java-8.0.20.jar"/>
+    <!-- <context>元素用于指定生成一组对象的环境。例如指定要连接的数据库，要生成对象的类型和要处理的数据库中的表。-->
+    <!--  其中的defaultModelType属性很重要，这个属性定义了MBG如何生成实体类，推荐使用flat模式，为每一张表只生成一个包含表所有字段的实体类。-->
+    <context id="testTables" targetRuntime="MyBatis3Simple">
+        <commentGenerator>
+            <!-- 是否去除自动生成的注释,true：是,false:否 -->
+            <property name="suppressAllComments" value="true"/>
+        </commentGenerator>
+
+        <!--数据库连接的信息：驱动类、连接地址、用户名、密码 -->
+        <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
+                        connectionURL="jdbc:mysql://localhost:3306/babytun"
+                        userId="root"
+                        password="root">
+        </jdbcConnection>
+
+        <!-- 默认false，把JDBC DECIMAL 和 NUMERIC 类型解析为 Integer，为 true时把JDBC DECIMAL 和
+       NUMERIC 类型解析为java.math.BigDecimal -->
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+
+        <!-- 指定javaBean生成的位置
+        targetPackage：生成的类要放的包，真实的包受enableSubPackages属性控制；
+        targetProject：目标项目，指定一个存在的目录下，生成的内容会放到指定目录中，如果目录不存在，MBG不会自动建目录
+     -->
+        <javaModelGenerator targetPackage="com.hao.mybatis.entity" targetProject="src/main/java">
+            <!-- 在targetPackage的基础上，根据数据库的schema再生成一层package，最终生成的类放在这个package下，默认为false；如果多个数据库改为true分目录 -->
+            <property name="enableSubPackages" value="false"/>
+            <!-- 设置是否在getter方法中，对String类型字段调用trim()方法 -->
+            <property name="trimtrings" value="true"/>
+        </javaModelGenerator>
+
+        <!--  指定mapper映射文件生成的位置
+       targetPackage、targetProject同javaModelGenerator中作用一样-->
+        <sqlMapGenerator targetPackage="mybatis" targetProject="src/main/resources">
+            <property name="enableSubPackages" value="false"/>
+        </sqlMapGenerator>
+
+        <!-- 指定mapper接口生成的位置
+     targetPackage、targetProject同javaModelGenerator中作用一样
+     -->
+        <!-- 客户端代码，生成易于使用的针对Model对象和XML配置文件 的代码
+                type="ANNOTATEDMAPPER",生成Java Model 和基于注解的Mapper对象
+                type="MIXEDMAPPER",生成基于注解的Java Model 和相应的Mapper对象
+                type="XMLMAPPER",生成SQLMap XML文件和独立的Mapper接口-->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.hao.mybatis.dao" targetProject="src/main/java">
+            <property name="enableSubPackages" value="false"/>
+        </javaClientGenerator>
+
+        <!-- 指定数据库表
+    domainObjectName：生成的domain类的名字,当表名和domain类的名字有差异时一定要设置，如果不设置，直接使用表名作为domain类的名字；
+    可以设置为somepck.domainName，那么会自动把domainName类再放到somepck包里面；
+    -->
+        <!-- <table>可以配置多个，用于指定生成数据库中的那个表的底层类，可以指定生成的实体类的name，
+    enableCountXXX属性可以去除不需要的sql方法，其中columnOverride可以指定表中使用的枚举类，ignoreColumn可以忽略表中的字段，
+    columnOverride和ignoreColumn可以指定0个或多个-->
+        <table tableName="t_goods" domainObjectName="Goods"></table>
+        <!--    <table schema="ins_personal_claim" tableName="claim_apply_record" enableCountByExample="true" domainObjectName="ClaimApplyRecord">-->
+        <!--      <columnOverride column="apply_for" javaType="com.jd.ins.personal.claim.domain.enums.ApplyForType" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>-->
+        <!--      <ignoreColumn column="create_time"/>-->
+        <!--      <ignoreColumn column="update_time"/>-->
+        <!--    </table>-->
+
+        <!--    <table schema="ins_personal_claim" tableName="claim_image_info" enableCountByExample="false" domainObjectName="ClaimImageInfo">-->
+        <!--      <columnOverride column="image_type" javaType="com.jd.ins.personal.claim.domain.enums.ImageType" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>-->
+        <!--      <ignoreColumn column="create_time"/>-->
+        <!--      <ignoreColumn column="update_time"/>-->
+        <!--    </table>-->
+        <!--    generatorConfig.xml默认配置中是生成Example类的相关内容，如果不需要Example类，-->
+        <!--    只需要将enableCountByExample、enableCountByExample、enableDeleteByExample、enableSelectByExample设置为true或者去掉这些配置。-->
+    </context>
+</generatorConfiguration>
+```
+
+### application-dev.properties
+
+```PROPERTIES
+# mysql
+spring.datasource.driverClassName=com.mysql.cj.jdbc.Driver
+spring.datasource.url=jdbc:mysql://localhost:3306/boot?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+spring.datasource.username=root
+spring.datasource.password=123456
+
+```
+
+### MyBatis配置文件
+
+> 修改 MyBatis全局配置文件 mybatis-config.xml
+
+```xml
+<manper resource="com/antisan/mvbatis/simple/manner/CountryMapper.xml" />
+<mapper resource="example/xml/CountryMapper.xml"/>
+```
+
+### 修改log4j
+
+> 便于查看mybatis的内部执行过程
+
+```PROPERTIES
+1og4j.logger.com. artisan. mybatis=TRACE
+1og4j.logger. example. dao=TRACEl
+```
+
+### 结合lombok
+
+> pojo类不生成getter、setter
+
+1. generatorConfig.xml中加入
+
+``` 
+<plugin type="com.mybatis.plugin.IngoreSetterAndGetterPlugin" />
+```
+
+2. 新建一个com.mybatis.plugin的包，在包中新建一个类IngoreSetterAndGetterPlugin
+
+```java
+package com.mybatis.plugin;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import org.mybatis.generator.api.IntrospectedColumn;
+import org.mybatis.generator.api.IntrospectedTable;
+import org.mybatis.generator.api.PluginAdapter;
+import org.mybatis.generator.api.dom.java.Interface;
+import org.mybatis.generator.api.dom.java.Method;
+import org.mybatis.generator.api.dom.java.TopLevelClass;
+
+public class IngoreSetterAndGetterPlugin extends PluginAdapter {
+    @Override
+    public boolean validate(List<String> list) {
+        return true;
+    }
+
+    @Override
+    public boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+        //添加domain的import
+        topLevelClass.addImportedType("lombok.Data");
+        topLevelClass.addImportedType("lombok.NoArgsConstructor");
+        topLevelClass.addImportedType("lombok.AllArgsConstructor");
+
+        //添加domain的注解
+        topLevelClass.addAnnotation("@Data");
+        topLevelClass.addAnnotation("@NoArgsConstructor");
+        topLevelClass.addAnnotation("@AllArgsConstructor");
+
+        //添加domain的注释
+        topLevelClass.addJavaDocLine("/**");
+        topLevelClass.addJavaDocLine("* Created by Mybatis Generator on " + date2Str(new Date()));
+        topLevelClass.addJavaDocLine("*/");
+
+        return true;
+    }
+
+    @Override
+    public boolean clientGenerated(Interface interfaze, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+        //Mapper文件的注释
+        interfaze.addJavaDocLine("/**");
+        interfaze.addJavaDocLine("* Created by Mybatis Generator on " + date2Str(new Date()));
+        interfaze.addJavaDocLine("*/");
+        return true;
+    }
+
+    @Override
+    public boolean modelSetterMethodGenerated(Method method, TopLevelClass topLevelClass, IntrospectedColumn introspectedColumn, IntrospectedTable introspectedTable, ModelClassType modelClassType) {
+        //不生成getter
+        return false;
+    }
+
+    @Override
+    public boolean modelGetterMethodGenerated(Method method, TopLevelClass topLevelClass, IntrospectedColumn introspectedColumn, IntrospectedTable introspectedTable, ModelClassType modelClassType) {
+        //不生成setter
+        return false;
+    }
+
+    private String date2Str(Date date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+        return sdf.format(date);
+    }
+}
+```
+
+ 　如果出现上方的包不存在的情况，请在pom文件中加入以下依赖
+
+```xml
+<dependency>
+    <groupId>org.mybatis.generator</groupId>
+    <artifactId>mybatis-generator-core</artifactId>
+    <version>1.3.7</version>
+</dependency>
+```
+
+3. 以jar包的形式导出
+
+将jar包导入本地Maven仓库
+
+```
+mvn install:install-file -DgroupId=org.N1ckeyQu -DartifactId=IngoreSetterAndGetterPlugin -Dversion=1.0.0 -Dpackaging=jar -Dfile=IngoreSetterAndGetterPlugin-1.0.0.jar
+```
+
+4. 在pom文件中加入我们刚才导入到本地Maven仓库的内容
+
+```
+        <dependency>
+            <groupId>org.N1ckeyQu</groupId>
+            <artifactId>IngoreSetterAndGetterPlugin</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+```
+
+### Example用法
+
+>  使用Example查询能够解决大部分复杂的单表操作，一定程度上减少工作量。 **但是建议在条件很多并且判断很多的情况下，避免使用Example查询， 这种情况下，使用XML方式会更有效。**
+
+#### selectByExample
+
+```java
+package example.dao;
+import java.util.List;
+import org.apache.ibatis.session.SqlSession;
+import org.junit.Test;
+import com.artisan.mybatis.xml.mapper.BaseMapperTest;
+import example.model.Country;
+import example.model.CountryExample;
+
+public class CountryMapperTest extends BaseMapperTest {
+	@Test
+	public void countryExampleTest() {
+		// 获取sqlSession
+		SqlSession sqlSession = getSqlSession();
+		try {
+			// 获取 CountryMapper 接口
+			CountryMapper countryMapper = sqlSession.getMapper(CountryMapper.class);
+			// 创建 Example 对象
+			CountryExample example = new CountryExample();
+			// 设置排序规则
+			example.setOrderByClause("id desc, countryname asc");
+			// 设置是否 distinct 去重
+			example.setDistinct(true);
+			// 创建条件，只能有一个 createCriteria
+			CountryExample.Criteria criteria = example.createCriteria();
+			// id >= 1
+			criteria.andIdGreaterThanOrEqualTo(1);
+			// id < 4
+			criteria.andIdLessThan(4);
+			// countrycode like '%U%'
+			// 最容易出错的地方，注意 like 必须自己写上通配符的位置，不可能默认两边加 %，like 可以是任何情况
+			criteria.andCountrycodeLike("%U%");
+			// or 的情况，可以有多个 or
+			CountryExample.Criteria or = example.or();
+			// countryname = 中国
+			or.andCountrynameEqualTo("中国");
+			// 执行查询
+			List<Country> countryList = countryMapper.selectByExample(example);
+			printCountryList(countryList);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			// 不要忘记关闭 sqlSession
+			sqlSession.close();
+		}
+	}
+
+	private void printCountryList(List<Country> countryList) {
+		for (Country country : countryList) {
+			System.out.printf("%-4d%4s%4s\n", country.getId(), country.getCountryname(), country.getCountrycode());
+		}
+	}
+
+}
+
+//除了代码中注释内容外，特别需要注意的地方是or的方法。 当有多个or的时候，SQL语句就是类似 or(…) or(…)这样的SQL，如果一个or都没有，那就只有example.createCriteria()中的查询条件。
+```
+
+#### updateByExampleSelective
+
+```java
+@Test
+public void updateByExampleSelectiveTest() {
+    // 获取 sqlSession
+    SqlSession sqlSession = getSqlSession();
+    try {
+        // 获取 CountryMapper 接口
+        CountryMapper countryMapper = sqlSession.getMapper(CountryMapper.class);
+        // 创建 Example 对象
+        CountryExample example = new CountryExample();
+        // 创建条件，只能有一个 createCriteria
+        CountryExample.Criteria criteria = example.createCriteria();
+        // 更新所有 id > 2 的国家
+        criteria.andIdGreaterThan(2);
+        // 创建一个要设置的对象
+        Country country = new Country();
+        // 将国家名字设置为 China
+        country.setCountryname("China");
+        // 执行查询
+        countryMapper.updateByExampleSelective(country, example);
+        // 在把符合条件的结果输出查看
+        printCountryList(countryMapper.selectByExample(example));
+    } finally {
+        // 为了不影响数据，这里选择回滚
+        sqlSession.rollback();
+        // 不要忘记关闭 sqlSession
+        sqlSession.close();
+    }
+}
+
+//我们看CountryMapper接口，可以看到有 updateByExample和updateByExampleSelective。 这两个方法的区别是，当对象的属性为空的时候，第一个方法会将值更新为null , 第二个方法不会更新null属性的字段。 通过Example一般都是批量操作，由于country表存在主键id,不能被批量更新， 因此要使用updateByExampleSelective方法进行测试。
+```
+
+#### deleteByExample+countByExample
+
+```java
+@Test
+public void deleteByExampleTest() {
+    // 获取 sqlSession
+    SqlSession sqlSession = getSqlSession();
+    try {
+        // 获取 CountryMapper 接口
+        CountryMapper countryMapper = sqlSession.getMapper(CountryMapper.class);
+        // 创建 Example 对象
+        CountryExample example = new CountryExample();
+        // 创建条件，只能有一个 createCriteria
+        CountryExample.Criteria criteria = example.createCriteria();
+        // 删除所有 id > 2 的国家
+        criteria.andIdGreaterThan(2);
+        // 执行查询
+        countryMapper.deleteByExample(example);
+        // 使用 countByExample 查询符合条件的数量，因为删除了，所以这里应该是 0
+        Assert.assertEquals(0, countryMapper.countByExample(example));
+    } finally {
+        // 为了不影响数据，这里选择回滚
+        sqlSession.rollback();
+        // 不要忘记关闭 sqlSession
+        sqlSession.close();
+    }
+}
+
+```
+
+## Mybatis-plugin
+
+1. 页面跳转
+
+> 接口与对应实现类页面跳转
+>
+> mapper与对应的sql语句页面跳转
+>
+> 注入的依赖跳转
+
+2. Generator
+
+   自动生成pojo、mapper、dao
+
+   ![442C0E8E-E71A-4EB0-9EAC-13E93C0C777B](https://tva1.sinaimg.cn/large/007S8ZIlly1gg1j9sp2olj30du075wfx.jpg)
+
+   ![6AB69592-821B-4331-BBBE-FDC5B4AE2366](https://tva1.sinaimg.cn/large/007S8ZIlly1gg1iurf7tvj30ya0jpajf.jpg)
+
+## MybatisX
+
+> Java 与 XML 调回跳转
+>
+> Mapper 方法自动生成 XML
+
+![2D6F75E6-8AAE-404B-AFD5-9E2951B0C77F](https://tva1.sinaimg.cn/large/007S8ZIlly1gg1j8n8zlej30g1032q47.jpg)
+
+## MyBatis Log Plugin
+
+> 还原`MyBatis`输出的日志为完整的`SQL`语句。
+>
+> 把`SQL`日志里面的`?`替换为真正的参数值。
+>
+> 选中要还原的`MyBatis`日志，右键点击菜单`Restore Sql`，还原`SQL`语句.
+>
+> `Java`接口方法与`Mapper xml`文件互相跳转。
+
+[![img](https://camo.githubusercontent.com/b5a4eccaf8a663994b909aeca082614f1f2f723f/68747470733a2f2f706c7567696e732e6a6574627261696e732e636f6d2f66696c65732f31333930352f32352d706167652f696d616765312e706e67)](https://camo.githubusercontent.com/b5a4eccaf8a663994b909aeca082614f1f2f723f/68747470733a2f2f706c7567696e732e6a6574627261696e732e636f6d2f66696c65732f31333930352f32352d706167652f696d616765312e706e67)
+
+> **按钮作用**
+>
+> **Text**: 从文本内容还原`SQL`语句
+>
+> **Settings**: 导航跳转开关，配置不想要输出的`SQL`语句
+>
+> **Format**: 输出格式化过的`SQL`语句
+>
+> **Rerun**: 重启插件
+>
+> **Stop**: 停止插件
