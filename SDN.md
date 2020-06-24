@@ -90,3 +90,11 @@ vSwitch：虚拟交换机，虚机和物理网络的一个接入功能
 > 科研方向：通用可编程数据平面、NPL（网络编程语言）、SDN和5G等交叉学科的融合
 
 ![9006186E-1D0B-40EA-A9BF-A50650BE8E00](https://tva1.sinaimg.cn/large/007S8ZIlly1gg22mxtfrpj30zg0i7doz.jpg)
+
+# OpenDayLight
+
+SDN控制器开发运行平台
+
+SDN三层架构
+
+![3283ED4F-3D10-4C57-8E3F-BF0B90B516A2](https://tva1.sinaimg.cn/large/007S8ZIlly1gg38ki2tyhj30wj0g0n33.jpg)
