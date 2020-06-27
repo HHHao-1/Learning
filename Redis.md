@@ -110,17 +110,15 @@ $ ./src/redis- cli shutdow
 
 # Redis数据类型
 
-## String字符串类型
-
 **注：键唯一**
+
+## String字符串类型
 
 <img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gg4svda4x9j30gs0fhwj3.jpg" alt="3F1B87D1-5020-4113-84C6-CD51274C3DBD" style="zoom: 80%;" />
 
 ![2B4BD1B6-59C0-49E6-AB3A-77641A6ACAF2](https://tva1.sinaimg.cn/large/007S8ZIlly1gg4svuk7lsj30yx0evtiq.jpg)
 
 ## Hash键值类型
-
-**注：键唯一**
 
 ![B7DEB5B5-ADAF-400D-94A9-97BF55E18C09](https://tva1.sinaimg.cn/large/007S8ZIlly1gg4t28fproj30pw0cddj4.jpg)
 
@@ -129,8 +127,6 @@ $ ./src/redis- cli shutdow
 > 注：hlen获取指定键的属性数量
 
 ## List列表类型
-
-**注：键不唯一**
 
 > - List列表就是一系列字符串的“数组" ,按插入顺序排序
 >
@@ -156,8 +152,6 @@ $ ./src/redis- cli shutdow
 > - 如：lrange list 0  -1  （-1表示末尾）
 
 ## Set与Zset集合类型
-
-**注：键唯一**
 
 > 集合成员唯一，List成员不唯一
 >
@@ -273,12 +267,64 @@ public class Goods {
 ```
 
 ```java
-public class CacheSample { public Cachesample () {
-    List<Goods> goodsList =new ArrayList<Goods>();
-    goodsList. add (new Goods (8818,"红富士苹果",3.5f);
-    goodsList. add (new Goods (8819,"进口脐橙",5f);
-    goodsList. add (new Goods (8820,"进口香蕉",10.5f); 
-    //对象序列化
+//缓存数据
+public class CacheSample {
+    public CacheSample () {
+        Jedis jedis = new Jedis("127.0.0.1",6379);
+
+        try {
+            List<Goods> goodsList =new ArrayList<Goods>();
+            goodsList. add (new Goods (8818,"红富士苹果","",3.5f));
+            goodsList. add (new Goods (8819,"进口脐橙","",5f));
+            goodsList. add (new Goods (8820,"进口香蕉","",10.5f));
+            jedis.auth("12345");
+            jedis.select(1);
+            //对象序列化到内存
+            for (Goods goods : goodsList){
+                String json = JSON.toJSONString(goods);
+                System.out.println(json);
+                String key = "goods:"+goods.getGoodsId();
+                jedis.set(key,json);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            jedis.close();
+        }
+    }
+    public static void main(String[] args) {
+        new CacheSample();
+    }
+}
+```
+
+```java
+//测试、提取数据
+public static void main(String[] args) {
+    new CacheSample();
+    System. out.printf ("请输入要查询的商品编号: ");
+    String goodsId = new Scanner(System.in) .next ();
+    Jedis jedis = new Jedis("127.0.0.1",6379);
+    try {
+        jedis.auth("12345");
+        jedis.select(1);
+        String key = "goods:"+goodsId;
+        if(jedis.exists(key)){
+            String json = jedis.get(key);
+            System.out.println(json);
+            //json字符串对象转换回java对象
+            Goods g = JSON.parseObject(json,Goods.class);
+            System.out.println(g.getGoodsId());
+        }else
+        {
+            System.out.println("编号不存在");
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        jedis.close();
+    }
+}
 ```
 
 

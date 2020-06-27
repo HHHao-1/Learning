@@ -247,3 +247,68 @@ Mininet结合了许多仿真器、硬件测试床和模拟器的优点。
 >
 > 快速重新配置及重新启动
 
+## 安装
+
+Mininet安装主要有三种方法:
+
+1. 使用装有Mininet的虚拟机
+
+(http://mininet.org/download/)
+
+2. github获取安装Mininet源代码
+
+> 在Ubuntu14.04或更高版本的环境下,获取源代码:
+>
+> ```shell
+> $ git clone https://github.com/mininet/mininet.git
+> ```
+>
+> 安装Mininet,需要涉及安装Mininet, user交换机及OVS软件,可根据#mininet/uti l/install. sh-h命令选择参数进行安装:
+>
+> 注：在docker容器中需要修改此.sh脚本，docker容器没有sudo命令
+>
+> ```shell
+> #n指:mininet的核心文件与依赖
+> #3指：OpenFlow的1.3版本协议
+> #V 2.5.0指：OpenvSwitch版本
+> $ mininet/util/install.sh -n3V 2.5.0
+> ```
+>
+> 安装完成后,使用命令测试Mininet是否安装成功:
+>
+> ```shell
+> $ sudo mn --test pingall
+> ```
+
+3. Mininet文件包安装
+
+如有Mininet, OvS以前版本的痕迹,先进行删除:
+
+> sudo rm -rf /usr/local/bin/mn
+>
+> /usr/local/bin/mnexec 
+>
+> /usr/local/lib/python\*/\*mininet* 
+>
+> /usr/local/bin/ovs*
+>
+> /usr/local/sbin/ovs*
+>
+> 删除后进行安装
+
+在Ubuntu14.04安装Mininet文件包
+
+> sudo apt -get install mininet/precise-backports
+
+安装完成后,验证控制器是否在运行,如果控制器正在运行,停用控制器：
+
+> sudo service openvswitch-control ler stop
+>
+> sudo update-rc.d openvswitch-controller disable
+
+安装完成后,使用#sudo mn --test pingall命令测试Mininet是否安装成功。
+
+## Mininet文件结构
+
+![BA328AEA-AEFF-4568-9BD3-E26655950962](https://tva1.sinaimg.cn/large/007S8ZIlly1gg5yqqrs50j310p0is7cm.jpg)
+
