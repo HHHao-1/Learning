@@ -249,21 +249,19 @@ Mininet结合了许多仿真器、硬件测试床和模拟器的优点。
 
 ## 安装
 
-Mininet安装主要有三种方法:
+### Ubuntu
 
-1. 使用装有Mininet的虚拟机
-
-(http://mininet.org/download/)
-
-2. github获取安装Mininet源代码
-
-> 在Ubuntu14.04或更高版本的环境下,获取源代码:
+> https://www.cnblogs.com/jianhaoscnu/p/12779084.html
+>
+> https://blog.csdn.net/Kangyucheng/article/details/89070966
+>
+> 1. 获取源代码:
 >
 > ```shell
 > $ git clone https://github.com/mininet/mininet.git
 > ```
 >
-> 安装Mininet,需要涉及安装Mininet, user交换机及OVS软件,可根据#mininet/uti l/install. sh-h命令选择参数进行安装:
+> 2. 安装Mininet,需要涉及安装Mininet, user交换机及OVS软件,可根据#mininet/uti l/install. sh-h命令选择参数进行安装:
 >
 > 注：在docker容器中需要修改此.sh脚本，docker容器没有sudo命令
 >
@@ -272,43 +270,148 @@ Mininet安装主要有三种方法:
 > #3指：OpenFlow的1.3版本协议
 > #V 2.5.0指：OpenvSwitch版本
 > $ mininet/util/install.sh -n3V 2.5.0
+> #-a是默认安装在home目录下,不清楚各依赖版本时用它
+> $ mininet/util/install.sh -a
 > ```
 >
-> 安装完成后,使用命令测试Mininet是否安装成功:
+> 注：解决错误apt --fix-broken install
+>
+> https://blog.csdn.net/zhouzhiyao960211/article/details/89716036
+>
+> ```shell
+> $ sudo apt --fix-broken install
+> ```
+>
+> 注：apt-get
+>
+> ```shell
+> $ sudo apt-get update #更新apt-get
+> $ sudo apt-get upgrade #升级
+> ```
+>
+> 3. 安装OpenVSwitch交换机
+>
+> ```shell
+> 切入root用户
+> $ sudo su 
+> 
+> 安装系统组件及库文件以作为OVS正确运行的环境依赖
+> $ apt-get install -y build-essential
+> $ apt-get install libssl-dev
+> $ apt-get install libcap-ng-dev
+> $ apt-get install autoconf 
+> $ apt-get install automake
+> $ apt-get install libtool
+> ```
+>
+> ```shell
+> $ sudo apt-get update #更新apt-get
+> 
+> $ rmmod bridge   #可没有
+>  
+> $ sudo apt-get install openvswitch-switch
+> 
+> #查不到就重启
+> $ sudo ovs-vsctl show
+> $ ovs-vsctl --version
+> 
+> #重启服务
+> $ killall ovsdb-server
+> $ service openvswitch-switch force-reload-kmod
+> ```
+>
+> 4. 安装完成后,使用命令测试Mininet是否安装成功:
 >
 > ```shell
 > $ sudo mn --test pingall
 > ```
-
-3. Mininet文件包安装
-
-如有Mininet, OvS以前版本的痕迹,先进行删除:
-
-> sudo rm -rf /usr/local/bin/mn
 >
-> /usr/local/bin/mnexec 
+> **备注：**
 >
-> /usr/local/lib/python\*/\*mininet* 
+> **ubuntu系统中遇到的问题**
 >
-> /usr/local/bin/ovs*
+> gcc安装
 >
-> /usr/local/sbin/ovs*
+> ```shell
+> 方法一：
+> sudo apt-get  build-dep  gcc  
+> sudo apt-get  build-dep  gcc
+> 
+> 方法二：
+> sudo apt-get  install  build-essential  
+> sudo apt-get  install  build-essential
+> 
+> 安装完了可以执行如下的命令来查看版本，
+> gcc --version  
+> ```
 >
-> 删除后进行安装
-
-在Ubuntu14.04安装Mininet文件包
-
-> sudo apt -get install mininet/precise-backports
-
-安装完成后,验证控制器是否在运行,如果控制器正在运行,停用控制器：
-
-> sudo service openvswitch-control ler stop
+> 更换源
 >
-> sudo update-rc.d openvswitch-controller disable
+> ```shell
+> mv /etc/apt/sources.list /etc/apt/sourses.list.backup
+> sudovi /etc/apt/sources.list
+> ```
+>
+> vim
+>
+> ```shell
+> $ sudo apt-get update 
+> $ sudo apt-get install vim
+> ```
+>
+> ssh
+>
+> ```shell
+> 安装SSH的客户端和服务端：
+> $ sudo apt-get install openssh-client
+> $ sudo apt-get install openssh-server
+> 
+> 启动SSH服务
+> $ sudo /etc/init.d/ssh start
+> 
+> 启动后通过以下指令判断SSH服务是否正确启动：
+> $ ps -e | grep ssh
+> 
+> 修改SSH端口号
+> SSH默认端口号为22,若有修改SSH端口号的需求，则运行以下指令打开SSH配置文件：
+> $ sudo gedit /etc/ssh/sshd_config
+> 
+> 修改端口号（Port）后，重启SSH服务即可生效
+> $ sudo /etc/init.d/ssh restart
+> 
+> 数据传输
+> 是常用scp指令：
+> $ scp -r usr@43.224.34.73:/home/lk   /root  //将远程IP地址为43.224.34.73的usr用户下路径为 /home/lk 的所有文件拷贝到本地 /root 文件夹中
+> 
+> $ scp usr@43.224.34.73:/home/lk/test.jar   /root  //将远程IP地址为43.224.34.73的usr用户下路径为 /home/lk 的test.jar文件拷贝到本地 /root 文件夹中
+> 
+> $ scp -r /root  usr@43.224.34.73:/home/lk    //将本地 /root 中的所有文件拷贝到远程IP地址为43.224.34.73的usr用户下路径为 /home/lk 的文件夹中
+> 
+> $ scp /root/test.jar   usr@43.224.34.73:/home/lk   //将本地 /root 中的test.jar文件拷贝到远程IP地址为43.224.34.73的usr用户下路径为 /home/lk 的文件夹中
+> 
+> scp的通用指令格式为：scp [参数] [原路径] [目标路径]
+> 其中-r参数意为：递归复制整个目录
+> ```
+>
+> ifconfig
+>
+> ```shell
+> sudo apt install net-tools
+> ```
+>
+> 设置密码
+>
+> ```shell
+> sudo passwd root
+> ```
 
-安装完成后,使用#sudo mn --test pingall命令测试Mininet是否安装成功。
+### 快速使用
 
-## Mininet文件结构
+```shell
+sudo mn  #创建拓扑
+
+sudo mn --controller=remote,ip=127.0.0.1,port=6653   #连接远程控制器
+```
 
 ![BA328AEA-AEFF-4568-9BD3-E26655950962](https://tva1.sinaimg.cn/large/007S8ZIlly1gg5yqqrs50j310p0is7cm.jpg)
 
