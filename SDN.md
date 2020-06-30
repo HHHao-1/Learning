@@ -415,3 +415,39 @@ sudo mn --controller=remote,ip=127.0.0.1,port=6653   #连接远程控制器
 
 ![BA328AEA-AEFF-4568-9BD3-E26655950962](https://tva1.sinaimg.cn/large/007S8ZIlly1gg5yqqrs50j310p0is7cm.jpg)
 
+###Mininet命令图谱
+
+![BD618E1F-29A6-41AF-9FE0-777135E9D208](https://tva1.sinaimg.cn/large/007S8ZIlly1gga5vkif1ej30ga0bgq4e.jpg)
+
+### 网络构建参数：--topo
+
+![19714255-8BF1-464D-8C12-F3DF22680F8A](https://tva1.sinaimg.cn/large/007S8ZIlly1gga5xy8bz3j30mm0aatby.jpg)
+
+![89D27C30-C894-45A7-A871-727D6F610246](https://tva1.sinaimg.cn/large/007S8ZIlly1gga5z10iluj30lq0avadm.jpg)
+
+### 网络构建参数：--switch
+
+![E941741D-B796-47B9-BF8E-15DCEF5A2118](https://tva1.sinaimg.cn/large/007S8ZIlly1gga64eyd42j30mh0altay.jpg)
+
+### 网络构建参数：--controller
+
+--controller：定义要使用的控制器,如果没有指定则使用mininet中默认的控制器
+
+连接远程控制器,可以指定存在于本机或者与之相连通设备上的控制器
+
+指定远程控制器方法：
+
+```shell
+sudo mn --controller=remote,--ip=[controller IP],--port=[port]
+```
+
+### 网络构建参数：--mac
+
+--mac ：自动设置设备的MAC地址；复杂网络容易读取
+
+让MAC地址易读,即设置交换机的MAC、主机MAC及IP地址从小到大排序,且设置简单唯一,不仅让机器容易获取,也容易让肉眼很容易识别其ID，使用法:
+
+```shell
+sudo mn --topo=tree,depth=2,fanout=2,--mac
+```
+
