@@ -50,18 +50,7 @@
 > ![63556683-F207-4871-A64D-726C9952C14B](https://tva1.sinaimg.cn/large/007S8ZIlly1gg84eyu4wdj30lt048q4e.jpg)
 >
 
-
-
-## 变量与常量
-
-### 内存存储
-
-> 内存划分为栈、堆、常量池区三个区域
->
-> 变量、常量在内存中的存储
->
-> ![B592A6BB-527B-48C5-B5D7-F52F21F6BD29](https://tva1.sinaimg.cn/large/007S8ZIlly1gg82jk2i7tj30p90ertb9.jpg)
->
+## 编码
 
 ### ASCII码
 
@@ -89,6 +78,19 @@ ASCI码表示
 >
 > - （十六进制）005d =（二进制）1011101
 > - 一位十六进制用4bit存储
+
+## 变量与常量
+
+### 内存存储
+
+> 内存划分为栈、堆、常量池区三个区域
+>
+> 方法区：在java的虚拟机中有一块专门用来存放已经加载的类信息（常量、静态变量以及方法代码）的内存区域，叫做方法区。
+>
+> 本地方法栈、程序计数器：JVM中的运行时内存区域还包括本地方法栈和程序计数器
+>
+> ![B592A6BB-527B-48C5-B5D7-F52F21F6BD29](https://tva1.sinaimg.cn/large/007S8ZIlly1gg82jk2i7tj30p90ertb9.jpg)
+>
 
 ### 标识符
 
@@ -231,25 +233,6 @@ short shortNumber=123; //定义变量存放短整型数据-byte b=10; //定义�
 ### 常量
 
 > 如：final int n = 5;
->
-
-### final关键字
-
-1.修饰变量  
-
-> final变量经常和static关键字一起使用，作为常量。
->
-> final修饰基本数据类型的变量时，必须赋予初始值且不能被改变，修饰引用变量时，该引用变量不能再指向其他对象
->
-
-2.修饰方法
-
-> final也可以声明方法。方法前面加上final关键字，代表这个方法不可以被子类的方法重写。如果你认为一个方法的功能已经足够完整了，子类中不需要改变的话，你可以声明此方法为final。final方法比非final方法要，因为在编译的时候已经静态绑定了，不需要在运行时再动态绑定。
->
-
-3.修饰类
-
-> 使用final来修饰的类叫作final类。final类通常功能是完整的，它们不能被继承。Java中有许多类是final的，譬如String, Interger以及其他包装类。
 >
 
 ## 运算符
@@ -863,27 +846,6 @@ Sub extends Base;
 >
 > 一个类中可以有多个构造方法
 
-## this关键字
-
-this:在类中就是代表当前对象,可以通过this关键字完成当前对象的成员属性、成员方法和构造方法的调用
-
-当在定义类中的方法时,如果需要调用该类对象,就可以用this来表示这个对象。也就是说,但凡在本类功能内部使用到了本类对象,都用this表示。至于代表哪个对象,就看其所在功能被哪个对象调用,这样就知道谁在参与运算。
-
-this的使用:
-
-![D081D0C2-C8B8-40A8-869F-0521D17A3352](https://tva1.sinaimg.cn/large/007S8ZIlly1gga558gjphj30jb08fdjo.jpg)
-
-```java
-public thisTest() {
-  System.out.println("我是无参构造");
-}
-public thisTest(String name) {
-  this();//必须是构造方法第一条语句，调用被重载的（既无参）构造方法
-  this.name=name;
-  System.out.println("我是单参构造");
-}
-```
-
 ## 封装
 
 > 将类的某些信息隐藏在类内部,不允许外部程序直接访问
@@ -956,6 +918,110 @@ public thisTest(String name) {
 >
 > java.awt：包含用于创建图形用户界面（GUI）和绘制图形图像的所有分类
 
+## 继承
+
+### 简介
+
+一种类与类之间的关系
+
+使用已存在的类的定义作为基础建立新类
+
+新类的定义可以增加新的数据或新的功能,也可以用父类的功能,但不能选择性地继承父类
+
+父类：基类
+
+子类：派生类
+
+使用extends实现继承
+
+### 方法重写&重载
+
+![4719E49E-F23E-40A2-8F6A-B9946A0A6D8E](https://tva1.sinaimg.cn/large/007S8ZIlly1ggahf83y4dj30in06gtbd.jpg)
+
+### 访问修饰符
+
+> 默认：default
+
+![5F2A632C-E952-4B50-A2C7-B961950F0968](https://tva1.sinaimg.cn/large/007S8ZIlly1ggadoikmnvj30ab03jmy4.jpg)
+
+### 实例化顺序
+
+![BDAC0C83-4D84-44BE-9B41-26B8B906B013](https://tva1.sinaimg.cn/large/007S8ZIlly1ggahd9qeftj30dt0663zy.jpg)
+
+> 对象构造：属性(赋值)、构造代码块、构造方法
+
+## Object类
+
+### 简介
+
+Object类是所有类的父类
+
+一个类没有使用extends关键字明确标识继承关系,则默认继承Object类(包括数组)
+
+Java中的每个类都可以使用Object中定义的方法
+
+### Object类的常用方法
+
+![E3D79569-E93C-4427-83E1-22F67BF87A04](https://tva1.sinaimg.cn/large/007S8ZIlly1ggagt39jpoj30fb05qtbq.jpg)
+
+## 注解
+
+> 注解的本质就是一个继承了 Annotation 接口的接口
+
+**注解的分类**
+
+![44706FF7-E716-44C6-8C61-59A884D9C956](https://tva1.sinaimg.cn/large/007S8ZIlly1ggagymnqcyj30hj06wdig.jpg)
+
+**元注解**
+
+元注解是用于修饰注解的注解，通常用在注解的定义上
+
+元注解一般用于指定某个注解生命周期以及作用目标等信息。如：
+
+```java
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.SOURCE)
+public @interface Override {
+}
+```
+
+**JAVA 中有以下几个--元注解：**
+
+- @Target：注解的作用目标
+
+> 指明注解是用来修饰方法的？修饰类的？还是用来修饰属性的。
+
+- @Retention：注解的生命周期
+- @Documented：注解是否应当被包含在 JavaDoc 文档中
+- @Inherited：是否允许子类继承该注解
+
+**JAVA 的内置三大注解**
+
+- @Override：重写
+
+> 它没有任何的属性，所以并不能存储任何其他信息。它只能作用于方法之上，编译结束后将被丢弃。
+
+- @Deprecated：不推荐使用
+
+> 永久存在，可以修饰所有的类型，作用是标记当前的类或者方法或者属性等已经不再被推荐使用了
+
+- @SuppressWarnings：压制 java 的警告
+
+> 它有一个 value 属性需要你主动的传值，这个 value 代表的就是需要被压制的警告类型。既不再产生警告
+>
+> ```java
+> @SuppressWarning(value = "deprecated")
+> public static void main(String[] args) {
+>     Date date = new Date(2018, 7, 11);
+> }
+> ```
+
+## 多态
+
+
+
+# 关键字
+
 ## static
 
 > 1. static+属性---静态属性
@@ -997,67 +1063,95 @@ public thisTest(String name) {
 >
 > 普通代码块随方法调用执行
 
-## 继承
+## this
 
-### 简介
+this的使用:在本类中
 
-一种类与类之间的关系
+- 调用成员变量
+- 调用成员方法
+- 调用构造方法
 
-使用已存在的类的定义作为基础建立新类
+this:在类中就是代表当前对象,可以通过this关键字完成当前对象的成员属性、成员方法和构造方法的调用
 
-新类的定义可以增加新的数据或新的功能,也可以用父类的功能,但不能选择性地继承父类
+当在定义类中的方法时,如果需要调用该类对象,就可以用this来表示这个对象。也就是说,但凡在本类功能内部使用到了本类对象,都用this表示。至于代表哪个对象,就看其所在功能被哪个对象调用,这样就知道谁在参与运算。
 
-父类：基类
+![D081D0C2-C8B8-40A8-869F-0521D17A3352](https://tva1.sinaimg.cn/large/007S8ZIlly1gga558gjphj30jb08fdjo.jpg)
 
-子类：派生类
+```java
+调用构造函数：
 
-使用extends实现继承
+public thisTest() {
+  System.out.println("我是无参构造");
+}
+public thisTest(String name) {
+  this();//必须是构造方法第一条语句，调用被重载的（既无参）构造方法；如过this（arg），则调用相同形参的构造函数
+  this.name=name;
+  System.out.println("我是单参构造");
+}
+```
 
-### 方法重写
+## super
 
-语法规则:
+super的使用:在子类中
 
-> 在满足继承关系的子类中
+- 调用父类成员变量
+- 调用父类成员方法
+- 调用父类构造方法
+
+> 访问父类成员方法
 >
-> 返回值类型、方法名、参数类型、顺序、个数都要与父类继承的方法相同
+> ```java
+> super.print();
+> ```
 >
-> 访问修饰符的限定范围大于等于父类方法
-
-### 方法重载
-
-> 在同一个类中
+> 访向父类成员变量（属性）
 >
-> **方法名相同**
+> ```java
+> super.name;
+> ```
 >
-> 参数个数、顺序、类型不同
+> 访向父类构造方法
 >
-> 返回值类型、访问修饰符任意
+> ```java
+> super();//根据形参不同确定调用哪个构造函数
+> 
+> public Son() {
+>         super();  //此时调用父类无参构造方法。其实这里不写super()也可以起到同样的作用，因为Java在调用子类构造方法时默认调用父类的无参构造方法，不过这两种可行的前提是父类中还留有无参构造方法。
+>         System.out.println("Son的无参构造方法");
+>     }
+> ```
 
-### 访问修饰符
+**子类的构造的过程中必须调用其父类的构造方法**
 
-> 默认：default
+> 如果子类的构造方法中没有显示调用父类的构造方法,则系统系默认调用父类无参的构造方法
+>
+> 如果子类构造方法中既没有显式调用父类的构造方法,而父类又没有无参的构造方法,则编译出错
+>
+> 使用super调用父类指定构造方法,必须在子类的构造方法的第一行
 
-![5F2A632C-E952-4B50-A2C7-B961950F0968](https://tva1.sinaimg.cn/large/007S8ZIlly1ggadoikmnvj30ab03jmy4.jpg)
+## super&this
 
+![D9ED3751-4F9F-41EE-A1A5-20C080F5EC8C](https://tva1.sinaimg.cn/large/007S8ZIlly1ggaghrtd74j30hw06swie.jpg)
 
+> 构造方法调用时, super和this不能同时出现（隐式调用了super（），既调用了父类无参构造时可以）
 
+## final关键字
 
+**使用final修饰可以提高性能,但会降低可扩展性**
 
+1.修饰变量  
 
+> final变量经常和static关键字一起使用，作为常量。
+>
+> final修饰基本数据类型的变量时，必须赋予初始值且不能被改变，修饰引用变量时，该引用变量不能再指向其他对象
 
+2.修饰方法
 
+> final也可以声明方法。方法前面加上final关键字，代表这个方法不可以被子类的方法重写。如果你认为一个方法的功能已经足够完整了，子类中不需要改变的话，你可以声明此方法为final。final方法比非final方法要，因为在编译的时候已经静态绑定了，不需要在运行时再动态绑定。
 
+3.修饰类
 
-
-
-
-
-
-
-
-
-
-
+> 使用final来修饰的类叫作final类。final类通常功能是完整的，它们不能被继承。Java中有许多类是final的，譬如String, Interger以及其他包装类。
 
 
 

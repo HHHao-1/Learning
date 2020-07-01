@@ -1,4 +1,4 @@
-# SDN简介
+#  SDN简介
 
 ## 概念
 
@@ -405,7 +405,7 @@ Mininet结合了许多仿真器、硬件测试床和模拟器的优点。
 > sudo passwd root
 > ```
 
-### 快速使用
+## 快速使用
 
 ```shell
 sudo mn  #创建拓扑
@@ -415,7 +415,9 @@ sudo mn --controller=remote,ip=127.0.0.1,port=6653   #连接远程控制器
 
 ![BA328AEA-AEFF-4568-9BD3-E26655950962](https://tva1.sinaimg.cn/large/007S8ZIlly1gg5yqqrs50j310p0is7cm.jpg)
 
-###Mininet命令图谱
+##Mininet命令
+
+### 命令图谱
 
 ![BD618E1F-29A6-41AF-9FE0-777135E9D208](https://tva1.sinaimg.cn/large/007S8ZIlly1gga5vkif1ej30ga0bgq4e.jpg)
 
@@ -450,4 +452,68 @@ sudo mn --controller=remote,--ip=[controller IP],--port=[port]
 ```shell
 sudo mn --topo=tree,depth=2,fanout=2,--mac
 ```
+
+### 常用内部交互命令
+
+![DA5084CA-4DD3-476C-9157-3F1019205734](https://tva1.sinaimg.cn/large/007S8ZIlly1ggamlybhckj314z0jk16j.jpg)
+
+###拓扑扩展:添加主机
+
+> py help(s1)  /  py help(h1)  :查看命令详情
+>
+> Py dir(s1)  /  py help(h1)：查看可用命令
+
+```shell
+py net.addHost('h3')
+
+py net.addLink(s1,net.get ('h3'))
+
+py sl.attach('s1-eth3')
+
+py net.get('h3').cmd('ifconfig h3-eth0 10.3')
+
+dump  #此时看不到h3主机ip，ping之后可看到
+
+h1 ping h3
+
+dump
+```
+
+## Mininet可视化
+
+Miniedit可视化,直接在界面上编辑任意拓扑,生成python自定义拓扑脚本,简单方便。
+
+Mininet 2. 2.0+内置miniedit。在mininet/examples下提供miniedit. py脚本,执行脚本后显示可视化界面,可自定义拓扑及配置属性。
+
+**Miniedit三步走：**
+
+> Miniedit启动
+>
+> 自定义创建拓扑,设置设备信息
+>
+> 运行拓扑并生成拓扑脚本
+
+**Miniedit启动**
+
+> 进入mininet/examples目录下,执行miniedit.py文件:
+>
+> sudo ./miniedit.py
+>
+> 注意:执行miniedit.py ,需要在桌面版系统下,或支持X11(Xquartz)的情况下使用. Linux桌面版系统下可直接执行;远程使用Mininet虚拟机,需使用Xmanager或Xming.
+
+**自定义创建拓扑,设置设备信息**
+
+<img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggbekqhd68j30hf0dkdhf.jpg" alt="ACF59222-78FF-4EC3-A14A-17DA4DE1382A" style="zoom:67%;" align="left" />
+
+**运行拓扑并生成拓扑脚本**
+
+> 菜单栏file->save保存为.mn脚本
+>
+> save level 2 script保存为.py脚本
+>
+> 注意：
+>
+> 先推出CLI再STOP，就可以安全退出了
+>
+> 出现未将之前定义的拓扑文件清除干净，使用 mn -c 清除即可
 
