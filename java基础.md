@@ -920,6 +920,58 @@ Sub extends Base;
 >
 > java.awt：包含用于创建图形用户界面（GUI）和绘制图形图像的所有分类
 
+## 注解
+
+> 注解的本质就是一个继承了 Annotation 接口的接口
+
+**注解的分类**
+
+![44706FF7-E716-44C6-8C61-59A884D9C956](https://tva1.sinaimg.cn/large/007S8ZIlly1ggagymnqcyj30hj06wdig.jpg)
+
+**元注解**
+
+元注解是用于修饰注解的注解，通常用在注解的定义上
+
+元注解一般用于指定某个注解生命周期以及作用目标等信息。如：
+
+```java
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.SOURCE)
+public @interface Override {
+}
+```
+
+**JAVA 中有以下几个--元注解：**
+
+- @Target：注解的作用目标
+
+> 指明注解是用来修饰方法的？修饰类的？还是用来修饰属性的。
+
+- @Retention：注解的生命周期
+- @Documented：注解是否应当被包含在 JavaDoc 文档中
+- @Inherited：是否允许子类继承该注解
+
+**JAVA 的内置三大注解**
+
+- @Override：重写
+
+> 它没有任何的属性，所以并不能存储任何其他信息。它只能作用于方法之上，编译结束后将被丢弃。
+
+- @Deprecated：不推荐使用
+
+> 永久存在，可以修饰所有的类型，作用是标记当前的类或者方法或者属性等已经不再被推荐使用了
+
+- @SuppressWarnings：压制 java 的警告
+
+> 它有一个 value 属性需要你主动的传值，这个 value 代表的就是需要被压制的警告类型。既不再产生警告
+>
+> ```java
+> @SuppressWarning(value = "deprecated")
+> public static void main(String[] args) {
+>  Date date = new Date(2018, 7, 11);
+> }
+> ```
+
 ## 继承
 
 > 类：单继承，多实现（接口）
@@ -970,58 +1022,6 @@ Java中的每个类都可以使用Object中定义的方法
 
 ![E3D79569-E93C-4427-83E1-22F67BF87A04](https://tva1.sinaimg.cn/large/007S8ZIlly1ggagt39jpoj30fb05qtbq.jpg)
 
-## 注解
-
-> 注解的本质就是一个继承了 Annotation 接口的接口
-
-**注解的分类**
-
-![44706FF7-E716-44C6-8C61-59A884D9C956](https://tva1.sinaimg.cn/large/007S8ZIlly1ggagymnqcyj30hj06wdig.jpg)
-
-**元注解**
-
-元注解是用于修饰注解的注解，通常用在注解的定义上
-
-元注解一般用于指定某个注解生命周期以及作用目标等信息。如：
-
-```java
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.SOURCE)
-public @interface Override {
-}
-```
-
-**JAVA 中有以下几个--元注解：**
-
-- @Target：注解的作用目标
-
-> 指明注解是用来修饰方法的？修饰类的？还是用来修饰属性的。
-
-- @Retention：注解的生命周期
-- @Documented：注解是否应当被包含在 JavaDoc 文档中
-- @Inherited：是否允许子类继承该注解
-
-**JAVA 的内置三大注解**
-
-- @Override：重写
-
-> 它没有任何的属性，所以并不能存储任何其他信息。它只能作用于方法之上，编译结束后将被丢弃。
-
-- @Deprecated：不推荐使用
-
-> 永久存在，可以修饰所有的类型，作用是标记当前的类或者方法或者属性等已经不再被推荐使用了
-
-- @SuppressWarnings：压制 java 的警告
-
-> 它有一个 value 属性需要你主动的传值，这个 value 代表的就是需要被压制的警告类型。既不再产生警告
->
-> ```java
-> @SuppressWarning(value = "deprecated")
-> public static void main(String[] args) {
->     Date date = new Date(2018, 7, 11);
-> }
-> ```
-
 ## 多态
 
 ### 简介
@@ -1044,23 +1044,90 @@ public @interface Override {
 
 ### 详述
 
-**多态必要条件**
+#### 多态必要条件
 
 > 满足继承关系
 >
 > 父类引用指向子类对象
 
-**向上类型转换( Upcast ) :**
+#### 向上转型( Upcast ) 
 
 > 将子类型转换为父类型
 >
-> - Animal a = new Dog();
+> - Animal a = new Dog();  //所有狗狗都是动物
 >
 > 隐式/自动类型转换,是小类型到大类型的转换
 >
 > 对于向上的类型转换,不需要显示指定,即不需要加上前面的小括号和父类类型名
 
-**向下类型转换( Downcast ) :**
+注意：
+
+> （1）当一个子类对象向上转型父类类型以后,就被当成了父类的对象,所能调用的方法会
+> 减少,只能调用子类重写了父类的方法以及父类派生的方法(如set(), get()方法)而不能调用子类独有的方法。
+>
+> （2）父类中的静态方法是不允许被子类重写的。
+>
+> - 如父类 Pen 中含有静态方法 draw( ) ，当子类 Pencil 中也定义同名方法时，此时 draw( )算 Pencil 类自己独有的方法。
+>
+> ```java
+> public static void draw(){
+>     System.out.println("笔可以用来画画");
+> }
+> public static void draw(){
+>     System.out.printIn("铅笔用来素描");
+> }
+> Pen pc=new Pencil();//向上转型
+> pc.draw();
+> 
+> 返回结果为:
+> 笔可以用来画画
+> ```
+
+#### 动态绑定
+
+多态的实现可以通过向上转型和动态绑定机制来完成,向上转型实现了将子类对象向上转型为父类类型,而动态绑定机制能识别出对象转型前的类型,从而自动调用该类的方法,两者相辅相成。
+
+绑定就是将一个方法调用同一个方法所在的类连接到一起就是绑定。绑定分为静态绑定和动
+态绑定两种。
+
+静态绑定:在程序运行之前进行绑定(由编译器和链接程序完成的),也叫做前期绑定。
+
+```java
+Chinese c =new Chinese();
+c. speak();
+American a =new American();
+a. speak();
+British b =new British();
+b.speak();
+
+这种调用方式是在代码里指定的,编译时编译器就知道c调用的是Chinese的speak( ),a
+调用的是American的speak()。
+```
+
+动态绑定:在程序运行期间由JVM根据对象的类型自动的判断应该调用哪个方法,也叫做
+后期绑定。
+
+```java
+//生成父类对象数组,数组长度为5
+Human[] human=new Human[5];
+int n;
+for(int i=0;i<human.length;i++){
+    n=(int) (Math.random() *3);//随机产生从0到2中一个数
+    switch(n){
+        case 0:human[i]=new Chinese(); break;
+        case 1:human[i]=new American(); break;
+        case 2:human[i]=new British(); break;
+    }
+}
+//循环输出,循环体中每个对象分别调用speak()方法
+for(int i=0;ik human .length; i++){ 
+    human[i]. speak();
+}
+
+此时, Human类中随机生成Chinese类、American类和British类的对象,编译器不能根据代码直接确定调用哪个类中的speak( )方法,直到运行时才能根据产生的随机数n的值来确定humant[i]到底代表哪一个子类的对象,这样才能最终确定调用的是哪个类中的speak()方法,这就是动态绑定。
+```
+
+#### 向下转型( Downcast ) 
 
 > 将父类型转换为子类型。
 >
@@ -1072,13 +1139,28 @@ public @interface Override {
 >
 > 父类型的引用必须指向转型的子类的对象,即指向谁才能转换成谁。不然也会编译出错
 
-通过instanceof运算符,来解决引用对象的类型,避免类型转换的安全性问题,提高代码的健壮性。
+注意：
 
-**注意:**
+> 向下转型后,可以调用子类自己独有的方法。
+>
+> 兄弟类之间不能进行强制类型转换。
+>
+> ```java
+> //父类Pen类派生出另一个子类Brush
+> Pen b=new Brush();
+> Pencil p=(Pencil)b;
+> //Exception in thread "main" java.lang.classCastException:
+> ```
 
+
+
+#### 注意
+
+> 通过instanceof运算符,来判断引用对象的类型,避免类型转换的安全性问题,提高代码的健壮性。
+>
 > 父类引用指向子类实例时,可以调用子类重写父类的方法以及直接继承父类的方法,无法调用子类特有的方法。
 >
-> 静态static方法属于特殊情况,静态方法只能继承,不能重写。调用的时候用谁的引用,则调用谁的版本。
+> 静态static方法属于特殊情况,静态方法只能继承,不能重写。调用的时候用谁的引用,则调用谁的静态方法。
 
 ## 抽象类
 
@@ -1128,6 +1210,14 @@ public abstract void eat();
 7. abstract不能与static, final, private共存
 8. 抽象方法在子类实现时访问权限必须大于等于父类方法
 
+**抽象类的意义**
+
+(1)为其子类提供一个公共的类型(父类引用指向子类对象)
+
+(2)封装子类中的重复内容(成员变量和方法);
+
+(3)将父类设计成抽象类后,既可借由父子继承关系限制子类的设计随意性,在一定程度上避免了无意义父类的实例化。
+
 ## 接口
 
 ### 简介
@@ -1162,6 +1252,35 @@ public abstract void eat();
 >
 > 当一个类同时实现多接口,且其中同时具有相同方法时,实现类需重写该方法,否则会编译报错
 
+## 接口&抽象类
+
+### 概念比较
+
+![C69097A5-B932-4A45-9EA7-6EE5C13B6EFB](https://tva1.sinaimg.cn/large/007S8ZIlly1ggdp9sq48ij30g80jsjz8.jpg)
+
+### 代码比较
+
+什么时候用接口？什么时候用抽象类？
+
+> 如超人Superman类继承自父类People类, People类中除了包含超人,还包括一般人、蜘蛛侠、绿巨人等这时便可以将People类声明为一个抽象类。而超人Superman不仅是拥有People走路和跑步的功能,他还拥有一般人类没有的功能"飞",而很多东西都具有飞的功能,比如鸟飞、气球飞、飞机飞….这些东西都抽象不出来一个公共的父类,所以就将"飞"这个功能定义为一个接口,以便其它生物如鸟去调用飞的功能。
+>
+> - 既：一类相同类型且个体间有差异的事物使用抽象类，不能抽像出一个公共类的功能使用接口
+
+```java
+//接口: fly
+public interface IFly { void fly();}
+//父类: people类
+public abstract class People {
+    //声明抽象方法walk()和run()
+    public abstract void walk();
+    public abstract void run();}
+//子类superman类
+public class Superman extends People implements IFly{ 
+    public void walk(){System.out.println("超人可以走路");}
+    public void run(){System.out.println("超人可以奔跑");}
+    public void fly(){System.out.println("超人可以飞");}
+```
+
 ## 内部类
 
 ### 简介
@@ -1174,7 +1293,7 @@ public abstract void eat();
 
 ### 分类
 
-1. 成员内部类
+#### 成员内部类
 
 内部类中最常见的就是成员内部类,也称为普通内部类
 
@@ -1201,7 +1320,7 @@ Person.Heart heart = Person.new Heart();
 >
 > 编译后产生:外部类$内部类.class
 
-2. 静态内部类
+#### 静态内部类
 
 > 静态内部类对象可以不依赖于外部类对象,直接创建。
 >
@@ -1219,7 +1338,7 @@ public class Person{
 Person.Heart heart = new Person.Heart();
 ```
 
-3. 方法内部类
+#### 方法内部类
 
 > 定义在外部类方法中的内部类，也称局部内部类。
 >
@@ -1229,30 +1348,19 @@ Person.Heart heart = new Person.Heart();
 >
 > 编译后产生:外部类$数字+内部类.class
 
-4. 匿名内部类
+#### 匿名内部类
 
-```java
-public static void main(String [ ] args )
-{
-    Anonymous as= new Anonymous ();
-    as.test(new Product( )//此处实现接口并实现抽象方法或继承类重写方法
-            {
-                public double getPrice( )//实现方法
-                {
-                    return 8888;
-                }
-                public String getName( )//实现方法
-                {
-                    return "I can do it ";
-                }
+> 匿名子类声明和匿名子类对象创建同时进行
 
-            });
-}
-```
+**概念：**
 
-如果某个类的实例只是用一次,则可以将类的定义与实例的创建,放到一起完成,或者说在定义类的同时就创建一个类实例。以这种方法定义的没有名字的类称为匿名内部类。
+> 匿名内部类也就是没有名字的内部类
+>
+> 正因为没有名字,所以匿名内部类只能使用一次,它通常用来简化代码编写
+>
+> 但使用匿名内部类还有个前提条件:必须继承一个父类或实现一个接口
 
-适用场景:
+**适用场景:**
 
 > 只用到类的一个实例
 >
@@ -1260,21 +1368,278 @@ public static void main(String [ ] args )
 >
 > 给类命名并不会导致代码更容易被理解
 
-使用原则:
+**注意：**
 
-> 匿名内部类没有类型名称、实例对象名称
+> 编译后的文件命名:外部类$数字. class
 >
-> 编译后的文件命名：外部类$数字.class
+> 无法使用public, private, abstract. static修饰,匿名内部类不能出现抽象方法
 >
-> 无法使用private、public、protected、abstract、static修饰
->
-> 无法编写构造方法，可以添加构造代码块
+> 无法编写构造方法,但可以添加构造代码块
 >
 > 不能出现静态成员
 >
-> 一般来说,匿名内部类用于继承其他类或是实现接口,并不需要增加额外的方法,只是对继承方法的实现或是重写。
+> 匿名内部类可实现接口也可以继承类,但是不可兼得
 >
-> 通过匿名内部类返回的是一个对象的引用,所以可以直接使用或将其复制给一个对象变量。
+> 匿名内部类不能是抽象的,它必须要实现继承的类或者实现接口的所有抽象方法
+>
+> - 建立匿名内部类的关键点是重写或实现父类/接口的方法，而不是创建新的方法。因为用父类的引用不可能调用父类本身没有的方法,创建新的方法是多余的。
+
+**初始化**
+
+> 一般都是利用构造器来完成某个实例的初始化工作的,但是匿名内部类是没有构造器的,那怎么来初始化匿名内部类呢?使用构造代码块!利用构造代码块能够达到为匿名内部类创建一个构造器的效果。
+
+```java
+public interface InnerClass{
+    public String getName();
+    public int getAge();}
+
+public class OutClass {
+    public InnerClass getInnerClass (final int age,final string name){
+        return new InnerClass() {
+            int age_;
+            string name_;
+            //构造代码块完成初始化工作
+            {
+                if(0< age && age < 200){
+                    age_ = age;
+                    name_ = name;}
+            }
+            public string getName() { return name_;}
+            public int getAge() { return age_;}
+        }
+    }
+    public static void main(String[] args) { 
+        OutClass out = new OutClass();
+        InnerClass inner_1 = out.getInnerClass (201, "chenssy");
+        System.out.println(inner_1.getName());
+        InnerClass inner_2 = out.getInnerClass(23, "chenssy");
+        System.out.println(inner_2.getName());
+    }
+}
+```
+
+**实例**
+
+> 由下面三个例子可以看出,只要一个类是抽象的或是一个接口,那么其子类中的方法都可以使用匿名内部类来实现。最常用的情况就是在多线程的实现上,因为要实现多线程必须继承Thread类或是实现Runnable接口
+
+继承式的匿名内部类:
+
+```java
+abstract class Car {
+    public abstract void drive();
+}
+class Test{
+    public static void main(String[] args) {
+        Car car = new Car(){//匿名内部类
+            public void drive(){ 
+                System.out.println("Driving another car!");
+            }
+        };
+        car.drive();
+    }
+}
+
+注意：引用变量不是引用Car对象,而是Car匿名子类的对象
+```
+
+接口式的匿名内部类：
+
+```java
+interface Vehicle{ 
+    public void drive();
+}
+class Test{
+    public static void main(String[] args) {
+        Vehicle v = new Vehicle(){
+            public void drive(){ 
+                System.out.println("Driving a car!");
+            }
+        };
+        v.drive();
+    }
+}
+
+注意：上面的代码很怪,好像是在实例化一个接口。事实并非如此,接口式的匿名内部类是实
+现了一个接口的匿名类。而且只能实现一个接口。
+```
+
+参数式的匿名内部类:
+
+```java
+abstract class Bar{
+    void doStuff(Foo f){}
+}
+class BarOne extends Bar{ 
+    void dostuff(Foo f){}
+}
+interface Foo{ 
+    void foo();
+}
+class Test{
+    static void go(){
+        Bar b = new BarOne();
+        b.dostuff(new Foo(){ 
+            public void foo(){
+                System.out.println("foofy");
+            }
+        });
+    }
+}
+```
+
+Thread类的匿名内部类实现:
+
+```java
+public class Demo {
+    public static void main(String[] args) { 
+        Thread t=new Thread() {
+            public void run() {
+                for (int i=1; i <= 5; i++) {
+                    System.out.print(i + " ");
+                }
+            }
+        };
+        t.start();
+    }
+}
+```
+
+Runnable接口的匿名内部类实现:
+
+```java
+public class Demo {
+    public static void main(String[] args) { 
+        Runnable r = new Runnable() {
+            public void run() {
+                for (int i =1; i <= 5; i++) {
+                    System.out.print(i +" ");
+                }
+            }
+        };
+        Thread t = new Thread(r);
+        t.start();
+    }
+}
+```
+
+### 接口中的内部类
+
+> 在实际开发过程中,如果想要创建某些公共代码,使得它们可以被某个接口的所有不同实现所共用,那么接口内部的嵌套类会显得很方便。也就是说,在接口中可以含有内部类。
+
+1. 首先创建接口,接口中定义了普通内部类InnerClass和抽象内部类AbInnerClass
+
+```java
+package com.imooc.inter;
+//接口IOuterInterface
+public interface IouterInterface {
+    int TEMP=100; //常量
+    void abMethod(); //抽象方法
+    public default void deMethod(){ System.out.printIn("接口中默认方法");}
+    public static void stMethod(){System.out.print1n("接口中静态方法");}
+    //普通内部类
+    public class InnerClasst{
+        public void show(){
+            System.out.println("接口中可定义普通成员内部类");
+        }
+    }
+    //抽象内部类
+    public abstract class AbInnerClassf{
+        public abstract void abInfo();
+        public void info(){
+            System.out.printIn("接口中可定义抽象成员内部类");
+        }
+    }
+}
+```
+
+2. 普通成员内部类的实例化
+
+```java
+--创建接口的实现类ClassDemo
+package com.imooc.inter;
+//实现类ClassDemo
+public class ClassDemo implements IOuterInterface {
+    @Override
+    public void abMethod() {
+        System.out.println("实现类");
+    }
+    //获取接口中内部类方法
+    public InnerClass getInner(){ 
+        return new InnerClass();
+                                }
+}
+
+--获取普通内部类对象,调用方法
+package com.imooc.test;
+import com.imooc.inter.ClassDemo;
+import com.imooc.inter. IOuterInterface;
+import com.imooc.inter. IOuterInterface. InnerClass;
+//测试类:普通成员内部类
+public class Test {
+    public static void main(String[] args) {
+        /*第一种实例化对象方式:
+		*通过接口名,类名进行实例化*/
+        IOuterInterface. InnerClass inner=new IOuterInterface. InnerClass();
+        inner.show();
+        /*第二种实例化对象方式：
+		*通过在实现类中创建接口中内部类获取方法
+		*用实现类对象调用获取方法*/
+        ClassDemo demo=new ClassDemo();
+        demo.getInner().show();
+        /*第三种实例化对象方式:
+		*将内部类导入后,直接实例化*/
+        InnerClass innerTwo = new InnerClass();
+        innerTwo.show();
+    }
+}
+```
+
+3. 抽象成员内部类的实例化
+
+```java
+--创建接口的实现类AbClassDemo
+package com.imooc.inter;
+//实现类AbClassDemo
+public class AbClassDemo implements IouterInterface {
+    @override
+    public void abMethod() {
+    }
+    //继承抽象类AbInnerClass
+    public class AbDemo extends AbInnerClass{ 
+        @Override
+        public void abInfo() {
+            System.out.println("重写接口фh象类фt象i法");
+        }
+    }
+}
+
+--获取抽象内部类对象,调用方法
+package com.imooc.test;
+import com.imooc.inter.AbClassDemo;
+import com.imooc.inter.IOuterInterface;
+//测试类:抽象成员内部类
+public class TestOne {
+    public static void main(String[] args) {
+        /*第一种实例化对象方式
+通过接口名,类名进行实例化
+但是对于抽象类而言,不能直接实例化,所以这里可使用匿名内部类的方式*/
+        IOuterInterface.AbInnerClass abInner=new IOuterInterface.AbInnerClass(){ public void abInfo(){
+            system.out.println("重写抽象类中的抽象方法");
+        }
+                                                                               };
+        abInner. abInfo();
+        abInner.info();
+        System.out.println("===============");
+        /*第二种实例化方法:
+*在实现类中定义内部类继承接口中的抽象内部类*/
+        IOuterInterface.AbInnerClass abInnerOne=new AbClassDemo().new AbDemo();
+        abInnerOne.abInfo();
+        abInnerOne.info();
+    }
+}
+```
+
+
 
 # 关键字
 
@@ -1327,11 +1692,12 @@ this的使用:在本类中
 - 调用成员方法
 - 调用构造方法
 
-this:在类中就是代表当前对象,可以通过this关键字完成当前对象的成员属性、成员方法和构造方法的调用
-
-当在定义类中的方法时,如果需要调用该类对象,就可以用this来表示这个对象。也就是说,但凡在本类功能内部使用到了本类对象,都用this表示。至于代表哪个对象,就看其所在功能被哪个对象调用,这样就知道谁在参与运算。
-
-![D081D0C2-C8B8-40A8-869F-0521D17A3352](https://tva1.sinaimg.cn/large/007S8ZIlly1gga558gjphj30jb08fdjo.jpg)
+> this:在类中就是代表当前对象,可以通过this关键字完成当前对象的成员属性、成员方法和构造方法的调用
+>
+> 当在定义类中的方法时,如果需要调用该类对象,就可以用this来表示这个对象。也就是说,但凡在本类功能内部使用到了本类对象,都用this表示。至于代表哪个对象,就看其所在功能被哪个对象调用,这样就知道谁在参与运算。
+>
+> ![D081D0C2-C8B8-40A8-869F-0521D17A3352](https://tva1.sinaimg.cn/large/007S8ZIlly1gga558gjphj30jb08fdjo.jpg)
+>
 
 ```java
 调用构造函数：
@@ -1417,10 +1783,27 @@ super的使用:在子类中
 
 ```java
 if (o instanceof Vector)
-      System.out.println("对象是 java.util.Vector 类的实例");
+      System.out.println("对象 o 是 java.util.Vector 类的实例");
 ```
 
+```java
+//父类Parents类, Father类和Mother类分别为它的两个子类
+//对象实例化
+Parents f=new Father();
+Parents m=new Mother();
+//用instanceof运算符判断对象是否满足某个特定对象实例特征
+System.out.println(m instanceof Father);
+System.out.println(m instanceof Mother);
+System.out.println(m instanceof Object);
+System.out.println(f instanceof Father);
 
+运行结果为:
+false
+true
+true
+true
+注:java中所有类都直接或间接继承于Object类。
+```
 
 
 

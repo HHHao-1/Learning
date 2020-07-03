@@ -89,7 +89,7 @@ $ ./src/redis- cli -p 端口号
 
 ```shell
 $ kill -9 PID #kill进程
-$ ./src/redis- cli shutdow
+$ ./src/redis-cli shutdown
 ```
 
 ## Redis通用命令
