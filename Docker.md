@@ -13,7 +13,7 @@
 2. 端口转发创建容器
 
 ```shell
-$ run -d -h hao --name Mininet --privileged=true -p 6663:6653 -p 5003:22 --privileged=true centos-ssh /usr/sbin/init
+$ docker run -d -h hao --name Mininet --privileged=true -p 6663:6653 -p 5003:22 --privileged=true centos-ssh /usr/sbin/init
 ```
 
 3. 进入容器
