@@ -147,7 +147,160 @@ e.printStackTrace); //打印出错误的堆栈信息，包括：错误的描述�
 异常出现位置：在经历导入包中类的若干方法最后抛出异常
 
 ```
-强制终止finally执行
+（异常）终止程序执行，catch中此语句后以及finally的代码不执行
+System. exit(1);//非0参数表示异常终止状态
 
+java.lang这个包在系统运行时自动加载
 ```
 
+return关键字的使用 
+
+```
+public static void main(String[] args) { // TODO Auto-generated method stub
+int result=testC);
+System. out.println("one和two的商是: "+ result);
+}
+public static int test(){
+Scanner input=new Scanner(System. in);
+System. out.println("=-==运算开始====s");
+try{
+System. out.print("请输入第一个整数: ");
+nt one-input.nextInt();
+System. out.print("请输入第二个整数: ");
+int two-input.nextInt();
+return one/two;
+}catch(ArithmeticException e){
+System. out.printLn("除数不允许为零");
+return o;
+}finally{
+System. out.println("=====运算结束=====");
+return -100000;
+}
+```
+
+throw & throws
+
+可以通过throws声明将要抛出何种类型的异常,通过throw将产生的异常抛出。
+
+如果一个方法可能会出现异常，但没有能力处理这种异常，可以在方法声明处用throws子句来声明抛出异常。谁调用由谁处理
+
+![C136C0E6-13DA-450F-873D-6DD973A2E4EA](https://tva1.sinaimg.cn/large/007S8ZIlly1ghg2fumgknj30u30co448.jpg)
+
+通过throws抛出异常时,针对可能出现的多种异常情况,解决方案:
+
+1, throws后面接多个异常类型,中间用逗号分隔
+
+2、 throws后面接Exception
+
+非检查异常编译器不会提示，写上文档注释，放在方法调用用处可看到抛出的异常
+
+![8DF560B0-1966-45D8-961E-D3E493444DA8](https://tva1.sinaimg.cn/large/007S8ZIlly1ghg2nn45juj30p30bb796.jpg)
+
+![A437F455-0FF7-4260-81D7-276C34F2A973](https://tva1.sinaimg.cn/large/007S8ZIlly1ghg2p4j1maj30un09bjug.jpg)
+
+两种使用方案
+
+1.自己抛出自己设置异常处理
+
+![6756A9AE-DF70-40F4-A798-02D7412B2D38](https://tva1.sinaimg.cn/large/007S8ZIlly1ghg2pt9c4nj30e70b4mzh.jpg)
+
+2.谁调用谁处理
+
+![35994B2E-3C91-4911-B1E5-EBE3D0201BEE](https://tva1.sinaimg.cn/large/007S8ZIlly1ghg2rdf91hj30h005t400.jpg)
+
+异常可用来：1、规避可能出现的风险
+2、完成一些程序的逻辑
+
+![176E52F6-5758-408C-A6D4-D5324F411535](https://tva1.sinaimg.cn/large/007S8ZIlly1ghg2ysdob3j30pz0fzn6z.jpg)
+
+![16FCD266-5C32-434D-AA80-8CE878D8DB5A](https://tva1.sinaimg.cn/large/007S8ZIlly1ghg334bojvj30pm0bw46t.jpg)
+
+trows可以跟抛出的异常或其父类
+
+不提倡主动抛出非检查类型，编译器对此异常约束力度不大
+
+![3AB65740-CC18-452F-A0E5-1118950CE80B](https://tva1.sinaimg.cn/large/007S8ZIlly1ghg3cw5broj30su0fhwjb.jpg)![4D454DB0-7BE5-4F3E-A0CE-A039011B1E07](https://tva1.sinaimg.cn/large/007S8ZIlly1ghg3is1ynoj30iu043jtd.jpg)
+
+![ED1C8EB0-234F-4007-A259-D379CA61F208](https://tva1.sinaimg.cn/large/007S8ZIlly1ghg3jhcyu5j30nu08idkp.jpg)
+
+![6BD2B38B-56DB-4E60-9A10-D1830BFF72B9](https://tva1.sinaimg.cn/large/007S8ZIlly1ghg3k1guoej30nq0esq8g.jpg)
+
+![70575182-A7E9-462E-B6E7-E834EEFD5681](https://tva1.sinaimg.cn/large/007S8ZIlly1ghg3hw8629j30rt0e278w.jpg)
+
+```java
+public class TryDemoFive {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		try {
+			testThree();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public static void testOne() throws HotelAgeException {
+		throw new HotelAgeException();
+	}
+
+	public static void testTwo() throws Exception {
+		try {
+			testOne();
+		} catch (HotelAgeException e) {
+			throw new Exception("我是新产生的异常1",e);//保留异常
+		}
+	}
+
+	public static void testThree() throws Exception {
+		try {
+			testTwo();
+		} catch (Exception e) {
+			Exception e1=new Exception("我是新产生的异常2");//Throwble类的方法
+			e1.initCause(e);//用一个异常信息初始化一个新的异常
+			throw e1;
+// throw new Exception("我是新产生的异常2"）若这样会导致异常信息丢失，只能得到异常2的信息
+//			throw new Exception("我是新产生的异常2",e);//保留异常，Throwble类的构造方法
+		}
+	}
+}
+```
+
+```
+//保留异常链中之前的异常信息
+public Throwable(String message,Throwable cause);
+public Throwable initCause(Throwable cause);
+```
+
+![98B0A669-5A01-44D0-A5AD-DE3A5942B636](https://tva1.sinaimg.cn/large/007S8ZIlly1ghg41iuh14j30ra0bugpi.jpg)
+
+而形成的一种链条
+
+总结
+
+程序中的异常
+在程序运行过程中,意外发生的情况,背离我们程序本身的意图的表现,都可以理解为异常。
+利用Java中的异常机制,我们可以更好地提升程序的健壮性。
+在Java中,通过Throwable及其子类描述各种不同的异常类型。
+
+
+
+在Java应用程序中,异常处理机制为:抛出异常、捕捉异常
+
+![DBA308B4-4F32-45CC-BB60-91139545FAF8](https://tva1.sinaimg.cn/large/007S8ZIlly1ghg4iwgvefj30w20ecain.jpg)
+
+![2D36D441-A123-48F5-B925-87DF7A843BB9](https://tva1.sinaimg.cn/large/007S8ZIlly1ghg4k8gvzuj30kx0cdtcw.jpg)![E6FBEB82-2376-497A-B539-EC5D0C3C368F](https://tva1.sinaimg.cn/large/007S8ZIlly1ghg4jzohdxj30f90bugnv.jpg)![811DE4D8-A672-4D88-AD72-71DF40211329](https://tva1.sinaimg.cn/large/007S8ZIlly1ghg4kwvtoyj30hs0cnad8.jpg)
+
+![88C34F1B-3CD4-43A2-95CB-CAF1F5273A9C](https://tva1.sinaimg.cn/large/007S8ZIlly1ghg4l6s11ej30jq0d1wir.jpg)
+
+实际应用中的经验与总结
+处理运行时异常时,采用逻辑去合理规避同时辅助try-catch处理
+在多重catch块后面,可以加一个catch ( Exception )来处理可能会被遗漏的异常
+
+对于不确定的代码,也可以加上try-catch ,处理潜在的异常
+
+尽量去处理异常,切忌只是简单的调用printStackTrace()去打印输出
+
+,具体如何处理异常,要根据不同的业务需求和异常类型去决定
+
+尽量添加finally语句块去释放占用的资源
