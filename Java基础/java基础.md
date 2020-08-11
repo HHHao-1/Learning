@@ -1805,82 +1805,8 @@ true
 注:java中所有类都直接或间接继承于Object类。
 ```
 
-# 问题记录
-
-1. java.lang这个包在系统运行时自动加载
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# 集合
-
-为什么使用集合,而不用数线
-
-应用场景
-
-无法预测存储数据的数量
-
-同时存储具有一对一关系的数据
-
-需要进行数据的增删改查
-
-数据重复问题
-
-集合框架的体系结构
-
-![8CB72A2E-68DB-45F3-992D-C2E8B6C43B69](https://tva1.sinaimg.cn/large/007S8ZIlly1gg7y1w67sqj30dt07f75y.jpg)
-
-List(列表）
-
-List是元素有序并且可以重复的集合,称为序列
-
-List可以精确的控制每个元素的插入位置,或删除某个位置的元素
-
-List的两个主要实现类是ArrayList和LinkedList
-
-- ArrayList可变长的动态数组
-- LinkedList是一个链表
-- 与ArrayList一样, LinkedList也按照索引位置排序,但它的元素之间是双向链接的
-- 适合快速地插入和删除元素
-- LinkedList实现List和Queue两个接口
-
-ArrayList
-
-ArrayList底层是由数组实现的
-
-动态增长，以满足应用程序的需求
-
-在列表尾部插入或删除数据非常有效
-
-更适合查找和更新元素
-
-ArrayList中的元素可以为null
