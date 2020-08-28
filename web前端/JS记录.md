@@ -210,3 +210,4 @@ async function eat () {
 ```
 
 这个东西呢，其实就是一层语法糖，加上async命令的函数，会return出一个promise。
+

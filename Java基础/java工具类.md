@@ -1,17 +1,5 @@
 # 异常处理
 
-什么是异常
-
-如何处理异常try-catch-finally
-
-throw
-
-throws
-
-自定义异常
-
-异常链
-
 ## 异常简介
 
 异常：意外、例外
@@ -668,3 +656,6 @@ public static void main(String[] args) {
 | `abstract int`    | `intValue()`<br />Returns the value of the specified number as an `int`, which may involve rounding or truncation. |
 | `abstract long`   | `longValue()`<br />Returns the value of the specified number as a `long`, which may involve rounding or truncation. |
 | `short`           | `shortValue()`<br />Returns the value of the specified number as a `short`, which may involve rounding or truncation. |
+
+# 字符串
+

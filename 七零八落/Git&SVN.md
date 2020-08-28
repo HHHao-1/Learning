@@ -395,7 +395,7 @@ git rm -r --cached .``git add .``git commit -m ``'update .gitignore'
 
 ## 问题记录
 
-### 1. github无法显示图片
+1. github无法显示图片
 
 - 输入raw.githubusercontent.com查询IP地址
 - 修改hosts文件:sudo vi /etc/hosts
@@ -423,6 +423,14 @@ git rm -r --cached .``git add .``git commit -m ``'update .gitignore'
 151.101.76.133 avatars8.githubusercontent.com
 # GitHub End
 ```
+
+2. 强制推送到github
+
+```shell
+git push -u origin +master
+```
+
+
 
 # SVN 
 
