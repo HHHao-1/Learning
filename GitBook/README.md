@@ -1,4 +1,4 @@
-# GitBook 使用教程
+# GitBook
 
 插件&样式：https://www.jianshu.com/p/427b8bb066e6
 
