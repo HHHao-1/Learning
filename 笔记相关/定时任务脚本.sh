@@ -11,4 +11,4 @@ git commit -m  "提交的时间是: $time"
 #git push origin master
 git push https://HHHao-1:chzaizg556677@github.com/HHHao-1/Notes.git master
 
-echo -e `date '+%Y-%m-%d %H:%M:%S'` "提交笔记" >> /Users/hao/programming/log/notes.log
+echo -e `date '+%Y-%m-%d %H:%M:%S'` "提交笔记" >> /Users/hao/program/log/notes.log
