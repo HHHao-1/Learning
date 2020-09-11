@@ -603,7 +603,7 @@ session.commit();//提交事务数据
 >
 > 使用：batchSize
 >
-> - 每条操作参数设置完之后，调用addBatch方法，然后再所有操作都pstmt.addBatch()完之后，调用pstmt.executeBatch()这种方式有个缺陷就是数据量大容易消耗内存，因此建议再分批次处理；小批量提交,避免OOM（内存不足）
+> - 每条操作参数设置完之后，调用addBatch方法，然后再所有操作都pstmt.addBatch()完之后，调用pstmt.executeBatch()这种方式有个缺陷就是数据量大容易消耗内存，因此建议再分批次处理；小批量提交,避免         （内存不足）
 
 ```properties
 #useSSL=false 解决驱动与mysql版本问题

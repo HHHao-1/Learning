@@ -139,7 +139,7 @@ $ git branch
 $ git branch -r
  
 # 列出所有本地分支和远程分支
-$ git branch -a
+$ c
  
 # 新建一个分支，但依然停留在当前分支
 $ git branch [branch-name]
@@ -427,7 +427,9 @@ git rm -r --cached .``git add .``git commit -m ``'update .gitignore'
 2. 强制推送到github
 
 ```shell
+//强制推送覆盖，既自动产生了一次merge
 git push -u origin +master
+git push -f origin(远程地址) master(远程分支)
 ```
 
 

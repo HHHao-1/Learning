@@ -4,31 +4,30 @@
 >
 > 作用：1.接口的文档在线自动生成；2.功能测试
 
-
-
 # 快速使用
 
 ## 1. 打开文档
 
-> Swagger-ui：http://localhost:8080/swagger-ui.html
+> Swagger-ui：http://localhost:8088/swagger-ui/index.html
 >
 > Bootstrap-ui：http://localhost:8080/doc.html（knife4j启动器）
 >
 > knife4文档：https://doc.xiaominfo.com/guide/
 
+**注意：**3.0更新
+
+> - 移除了2.x版本的冲突版本，移除了guava等
+> - 移除了@EnableSwagger2
+> - 新增了springfox-boot-starter
+
 ## 2. 导入依赖
 
 ```xml
+<!--启动器-->
 <dependency>
-      <groupId>io.springfox</groupId>
-      <artifactId>springfox-swagger2</artifactId>
-      <version>2.6.1</version>
-</dependency>
-<!--swagger-ui-->
-<dependency>
-     <groupId>io.springfox</groupId>
-     <artifactId>springfox-swagger-ui</artifactId>
-     <version>2.6.1</version>
+    <groupId>io.springfox</groupId>
+    <artifactId>springfox-boot-starter<artifactId>
+    <version>3.0.0</version>
 </dependency>
 
 <!--knife4j启动器,继承类swagger2，需要swagger-ui再可添加-->
@@ -49,16 +48,71 @@
 </properties>
 ```
 
+```css
+3.0版本:
+添加依赖后再应用主类增加注解@EnableOpenApi，删除之前版本的SwaggerConfig.java，启动项目，访问地址：http://localhost:8088/swagger-ui/index.html，注意2.x版本中访问的地址的为http://localhost:8088/swagger-ui.html
+```
+
 ## 3.配置类
+
+**拦截配置**
 
 ```java
 @Configuration
+public class WebMvcConfig implements WebMvcConfigurer {
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.
+                addResourceHandler("/swagger-ui/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/")
+                .resourceChain(false);
+    }
+
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/swagger-ui/")
+                .setViewName("forward:/swagger-ui/index.html");
+    }
+}
+```
+
+**可选配置**
+
+```java
+//3.0配置
+@Configuration
+public class Swagger3Config {
+    @Bean
+    public Docket createRestApi() {
+        return new Docket(DocumentationType.OAS_30)
+                .apiInfo(apiInfo())
+                .select()
+                .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
+                .paths(PathSelectors.any())
+                .build();
+    }
+
+    private ApiInfo apiInfo() {
+        return new ApiInfoBuilder()
+                .title("Swagger3接口文档")
+                .description("文档描述")
+                .contact(new Contact("fanl", "#", "862844083@qq.com"))
+                .version("1.0")
+                .build();
+    }
+}
+
+```
+
+```java
+//3.0以下配置
+@Configuration
 @EnableSwagger2
-public class Swagger2 {
-    
+public class Swagger2 { 
     //是否开启swagger，正式环境一般是需要关闭的，可根据springboot的多环境配置进行设置
-	@Value(value = "${swagger.enabled}")
-	Boolean swaggerEnabled;
+    @Value(value = "${swagger.enabled}")
+    Boolean swaggerEnabled;
     
     // swagger2核心配置：docket
     @Bean
@@ -70,7 +124,7 @@ public class Swagger2 {
             .apis(RequestHandlerSelectors
                   .basePackage("com.imooc.controller")) // 指定controller包
             .paths(PathSelectors.any())                 // 所有controller
-            .build()
+            .build();
             //.pathMapping("/");
             //最终调用接口后会和paths拼接在一起,可不写,如：/demo，会url错误而导致测试失败
     }
@@ -97,7 +151,21 @@ public class Swagger2 {
 swagger.enabled=true
 ```
 
+**SpringSecurity 拦截**
 
+```java
+    private static final String[] AUTH_WHITELIST = {
+            // -- swagger ui
+            "/swagger-ui.html",
+            "/swagger-ui/*",
+            "/swagger-resources/**",
+            "/v2/api-docs",
+            "/v3/api-docs",
+            "/webjars/**"
+    };
+//追加
+ .antMatchers(AUTH_WHITELIST).permitAll()
+```
 
 ## 4.注解的使用
 

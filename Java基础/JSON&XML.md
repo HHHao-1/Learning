@@ -410,9 +410,10 @@ public class XPathTestor {
         <artifactId>jackson-core</artifactId> -->核心包
         <version>2.8.7</version>
 </dependency>
+
 <!--返回xml数据还需导入此依赖-->
 <dependency>
-     <groupId>com.fasterxml.jackson.dataformat</groupId>
+ <groupId>com.fasterxml.jackson.dataformat</groupId>
      <artifactId>jackson-dataformat-xml</artifactId>
      <!--spring boot中不需要version-->
      <version>2.9.8</version> 
