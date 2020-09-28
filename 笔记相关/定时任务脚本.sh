@@ -2,13 +2,13 @@
 # 上面中的 #! 是一种约定标记, 它可以告诉系统这个脚本需要什么样的解释器来执行;
 cd /Users/chenghao/Nutstore\ Files/我的坚果云/01_笔记
 
-time=`date`
+time=`date '+%Y/%m/%d %T'`
 
 git add .
 
-git commit -m  "提交的时间是: $time"
+git commit -m  "$time"
 
 #git push origin master
 git push https://HHHao-1:chzaizg556677@github.com/HHHao-1/Notes.git master
 
-echo -e `date '+%Y-%m-%d %H:%M:%S'` "提交笔记" >> /Users/chenghao/program/Log/notes.log
+echo -e $time >> /Users/chenghao/program/Log/notes.log
