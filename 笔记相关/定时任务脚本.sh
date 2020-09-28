@@ -11,4 +11,4 @@ git commit -m  "$time"
 #git push origin master
 git push https://HHHao-1:chzaizg556677@github.com/HHHao-1/Notes.git master
 
-echo -e $time >> /Users/chenghao/program/Log/notes.log
+echo -e $time "提交笔记" >> /Users/chenghao/program/Log/notes.log
