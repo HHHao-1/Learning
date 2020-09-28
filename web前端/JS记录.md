@@ -98,7 +98,7 @@ Promise对象的状态改变，只有两种可能：从pending变为resolved、�
 
 ```javascript
 function loadImg(src, callback, fail){
-  var img = document.createElement('img')
+var img = document.createElement('img')
   img.onload = function () {
     callback(img)
   }

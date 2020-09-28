@@ -139,7 +139,7 @@ $ git branch
 $ git branch -r
  
 # 列出所有本地分支和远程分支
-$ c
+$ git branch -a
  
 # 新建一个分支，但依然停留在当前分支
 $ git branch [branch-name]
@@ -179,6 +179,15 @@ $ git branch -dr [remote/branch]
 ### 6. 标签
 
 ```shell
+# 使用
+1. 查看提交过的commit，命令git log
+2. 打上标签
+git tag -a v1.0 c98c186ebb381005b495f6f1f2a65dc72195ad9d -m '完后第一版'
+3. 上传远程
+git push origin v1.0
+4. 删除远程
+git push origin :v1.0
+
 # 列出所有tag
 $ git tag
  
@@ -194,7 +203,7 @@ $ git tag -d [tag]
 # 删除远程tag
 $ git push origin :refs/tags/[tagName]
  
-# 查看tag信息
+# 查看tag信息 显示此tag的commit信息
 $ git show [tag]
  
 # 提交指定tag
@@ -432,7 +441,110 @@ git push -u origin +master
 git push -f origin(远程地址) master(远程分支)
 ```
 
+3. Push落后于远程分支
 
+```shell
+git push origin master
+# 更新被拒绝，因为您当前分支的最新提交落后于其对应的远程分支。
+# 再次推送前，先与远程变更合并（如 'git pull ...'）。详见
+
+git pull origin master 等于
+git fetch origin master + git merge origin master
+# fatal:拒绝合并无关的历史
+
+git pull --rebase origin master
+# 变基成功后解决冲突，再提交
+```
+
+![981600313729_.pic_hd](https://tva1.sinaimg.cn/large/007S8ZIlly1gitqwgtk6kj31960auwhp.jpg)
+
+4. 强制覆盖本地代码
+
+```shell
+git fetch --all
+git reset --hard origin/master
+git pull
+```
+
+5. **stash, checkout, reset**
+
+使用git的几种常见情形：
+
+（1）正常的情形，修改工作区的文件然后add，commit，我使用git一般的流程是：
+
+```shell
+git status ——> git stash save "message..."——> git pull --> git stash pop ——> git add . 或 git add filename ——> git commit -m 'message...' ——> git push
+```
+
+（2）只需要撤销工作区的文件修改，即用暂存区(或本地仓库[commit后的])的文件覆盖工作区中的文件
+
+```shell
+git checkout -- filenpath
+```
+
+（3）当修改的文件已经add到暂存区，需要撤销这次添加，即撤销上一次git add filename 操作：
+
+```shell
+git reset --filepath / git reset HEAD filename
+```
+
+　　撤销暂存区内所有的文件改动:
+
+```shell
+git reset / git reset HEAD
+```
+
+（4）当对上次提交不满意，可以让HEAD指针回退，而暂存区和工作区可以不用动
+
+```shell
+git reset --soft HEAD^
+```
+
+（5）如果让工作区不改变，而暂存区和引用（HEAD指针）回退一次
+
+```shell
+git reset --mixed HEAD^
+```
+
+（6）当需要彻底撤销最近的提交，HEAD指针、暂存区、工作区都回到上次的提交状态，自上一次以来的提交全部丢失
+
+```shell
+git reset --hard HEAD^
+```
+
+详细：https://www.cnblogs.com/shih/p/6826743.html
+
+6. fetch
+
+fetch更新本地仓库两种方式：
+
+```shell
+# 方法一
+$ git fetch origin master          //从远程的origin仓库的master分支下载代码到本地的origin master
+
+$ git log -p master.. origin/master//比较本地的仓库和远程参考的区别
+
+$ git merge origin/master          //把远程下载下来的代码合并到本地仓库，远程的和本地的合并
+
+# 方法二
+$ git fetch origin master:temp     //从远程的origin仓库的master分支下载到本地并新建一个分支temp
+
+$ git diff temp                    //比较master分支和temp分支的不同
+
+$ git merge temp                   //合并temp分支到master分支
+
+$ git branch -d temp               //删除temp
+```
+
+理解 fetch 的关键, 是理解 FETCH_HEAD，FETCH_HEAD指的是: 某个branch在服务器上的最新状态’。这个列表保存在 .Git/FETCH_HEAD 文件中, 其中每一行对应于远程服务器的一个分支。
+
+**当前分支指向的FETCH_HEAD**, 就是这个文件第一行对应的那个分支.
+
+一般来说, 存在两种情况:
+
+> 如果没有显式的指定远程分支, 则远程分支的master将作为默认的FETCH_HEAD.
+>
+> 如果指定了远程分支, 就将这个远程分支作为FETCH_HEAD.
 
 # SVN 
 
