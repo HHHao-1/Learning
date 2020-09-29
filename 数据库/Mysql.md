@@ -1,18 +1,6 @@
 # CRUD总览
 
-1、执行WHERE筛选数据
-
-2、执行GROUP BY分组形成中间分组表
-
-3、执行WITH ROLLUP生成统计分析数据记录并加入中间分组表
-
-4、执行HAVING筛选中间分组表
-
-5、执行ORDER BY排序
-
-<img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gih7hr88lij30j81lujyb.jpg" alt="数据库" style="zoom:200%;" />
-
-
+<img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gj7c6evwacj30j31ssgt5.jpg" alt="未命名"  />
 
 # 数据类型
 
@@ -198,11 +186,11 @@ SET 变量名 = 表达式值 /值
 
 - ORDER BY... ... ASC：将查询数据排序后再返回数据
 
-  > 可以使用任何字段来作为排序的条件
-  >
-  > 可以设定多个字段来排序
-  >
-  > 可以使用 ASC 或 DESC 关键字来设置查询结果是按升序或降序排列， 默认升序
+> 可以使用任何字段来作为排序的条件
+>
+> 可以设定多个字段来排序
+>
+> 可以使用 ASC 或 DESC 关键字来设置查询结果是按升序或降序排列， 默认升序
 
 ```sql
 -- MySQL 拼音排序
@@ -220,7 +208,7 @@ ORDER BY CONVERT(runoob_title using gbk);
 
 - GROUP BY 根据一个或多个列对结果集进行分组
 
-  > GROUP BY 一般和聚合函数配合使用
+> GROUP BY 一般和聚合函数配合使用
 
 ```sql
 SELECT name, COUNT(*) FROM   employee GROUP BY name  with rollup ;
