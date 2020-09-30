@@ -30,6 +30,49 @@ clone在第一步是和new相似的， 都是分配内存，调用clone方法时
 
 ![Untitled Diagram](https://tva1.sinaimg.cn/large/007S8ZIlly1gj7hgzggz4j30sk095dh2.jpg)
 
+- 深拷贝与浅拷贝
+
+> object.clone是浅拷贝的
+>
+> **浅拷贝：**值类型 — 拷贝数值；引用类型 — 拷贝引用（指向同一引用）
+>
+> **深拷贝：**值类型 — 拷贝数值；引用类型 — 拷贝内容；对于有多层对象的引用，每个对象都需要实现 `Cloneable` 并重写 `clone()` 方法，进而实现了对象的串行层层拷贝
+
+![img](https://tva1.sinaimg.cn/large/007S8ZIlly1gj8ow6aadmj30j60ciq3s.jpg)
+
+```java
+Person p = new Person(23, "zhang");
+Person p1 = (Person) p.clone();
+
+String result = p.getName() == p1.getName() ? "clone是浅拷贝的" : "clone是深拷贝的";
+
+System.out.println(result);
+```
+
+```java
+String[] aa = {"123"};
+String[] bb = {"123"};
+String[] cc = bb;
+String[] dd = bb.clone();
+System.out.println(aa);
+System.out.println(bb);
+System.out.println(cc);
+System.out.println(dd);
+
+/* 输出：
+[Ljava.lang.String;@3b9a45b3
+[Ljava.lang.String;@7699a589
+[Ljava.lang.String;@7699a589
+[Ljava.lang.String;@58372a00
+
+[：表示一维数组 
+[[：表示二维数组 
+L：表示一个对象 
+java.lang.String：表示对象的类型 
+@：后面表示该对象的hashCode
+*/
+```
+
 - finalize
 
 > 当对象bai不再被任何对象引用时，GC会调用该对象的finalize()方法
