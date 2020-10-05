@@ -11,4 +11,4 @@ time=`date '+%Y/%m/%d %T'`
 #git push origin master
 /usr/local/bin/git push https://HHHao-1:chzaizg556677@github.com/HHHao-1/Learning.git master
 
-echo -e $time "提交笔记 first" >> /Users/hao/program/log/notes.log
+echo -e $time "提交笔记" >> /Users/hao/program/log/notes.log
