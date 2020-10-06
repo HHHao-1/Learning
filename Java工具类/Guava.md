@@ -30,7 +30,7 @@ map.put("aa", 2);
 System.out.println(map.get("aa"));  //[1, 2]
 ```
 
-## 黑科技集合
+## 非基本集合类型
 
 ```java
 //MultiSet: 无序+可重复   count()方法获取单词的次数  增强了可读性+操作简单
@@ -45,6 +45,64 @@ BiMap<String, String> biMap = HashBiMap.create();
 //Table: 双键的Map rowKey+columnKey+value  
 //和sql中的联合主键有点像
 Table<String, String, Integer> tables = HashBasedTable.create();
+```
+
+## 集合的过滤
+
+- 条件过滤
+
+```java
+//按照条件过滤
+ImmutableList<String> names = ImmutableList.of("begin", "code", "Guava", "Java");
+Iterable<String> fitered = Iterables.filter(names, Predicates.or(Predicates.equalTo("Guava"), Predicates.equalTo("Java")));
+System.out.println(fitered); // [Guava, Java]
+
+//自定义过滤条件   使用自定义回调方法对Map的每个Value进行操作
+ImmutableMap<String, Integer> m = ImmutableMap.of("begin", 12, "code", 15);
+// Function<F, T> F表示apply()方法input的类型，T表示apply()方法返回类型
+Map<String, Integer> m2 = Maps.transformValues(m, new Function<Integer, Integer>() {
+    public Integer apply(Integer input) {
+        if(input>12){
+            return input;
+        }else{
+            return input+1;
+        }
+    }
+});
+System.out.println(m2);   //{begin=13, code=15}
+```
+
+- set的交集, 并集, 差集
+
+```java
+HashSet setA = newHashSet(1, 2, 3, 4, 5);  
+HashSet setB = newHashSet(4, 5, 6, 7, 8);  
+
+SetView union = Sets.union(setA, setB);  
+System.out.println("union:");  
+for (Integer integer : union)  
+    System.out.println(integer);           //union:12345867
+
+SetView difference = Sets.difference(setA, setB);  
+System.out.println("difference:");  
+for (Integer integer : difference)  
+    System.out.println(integer);        //difference:123
+
+SetView intersection = Sets.intersection(setA, setB);  
+System.out.println("intersection:");  
+for (Integer integer : intersection)  
+    System.out.println(integer);  //intersection:45
+```
+
+- map的交集，并集，差集
+
+```java
+MapDifference differenceMap = Maps.difference(mapA, mapB);  
+differenceMap.areEqual();  
+Map entriesDiffering = differenceMap.entriesDiffering();  
+Map entriesOnlyOnLeft = differenceMap.entriesOnlyOnLeft();  
+Map entriesOnlyOnRight = differenceMap.entriesOnlyOnRight();  
+Map entriesInCommon = differenceMap.entriesInCommon();  
 ```
 
 # 字符串
@@ -121,7 +179,9 @@ List<String> list = Splitter.on("-").splitToList(str);
 str="1-2-3-4- 5-  6  ";
 ```
 
-guava还可以使用 "-" 切分字符串并去除空串与空格omitEmptyStrings().trimResults() 去除空串与空格
+guava还可以使用 "-" 切分字符串并去除空串与空格
+
+omitEmptyStrings().trimResults() 去除空串与空格
 
 ```java
 String str = "1-2-3-4-  5-  6   ";  
@@ -134,64 +194,6 @@ System.out.println(list);
 ```java
 String str = "xiaoming=11,xiaohong=23";
 Map<String,String> map = Splitter.on(",").withKeyValueSeparator("=").split(str);
-```
-
-### 集合的过滤
-
-- 条件过滤
-
-```java
-//按照条件过滤
-ImmutableList<String> names = ImmutableList.of("begin", "code", "Guava", "Java");
-Iterable<String> fitered = Iterables.filter(names, Predicates.or(Predicates.equalTo("Guava"), Predicates.equalTo("Java")));
-System.out.println(fitered); // [Guava, Java]
-
-//自定义过滤条件   使用自定义回调方法对Map的每个Value进行操作
-ImmutableMap<String, Integer> m = ImmutableMap.of("begin", 12, "code", 15);
-// Function<F, T> F表示apply()方法input的类型，T表示apply()方法返回类型
-Map<String, Integer> m2 = Maps.transformValues(m, new Function<Integer, Integer>() {
-    public Integer apply(Integer input) {
-        if(input>12){
-            return input;
-        }else{
-            return input+1;
-        }
-    }
-});
-System.out.println(m2);   //{begin=13, code=15}
-```
-
-- set的交集, 并集, 差集
-
-```java
-HashSet setA = newHashSet(1, 2, 3, 4, 5);  
-HashSet setB = newHashSet(4, 5, 6, 7, 8);  
-
-SetView union = Sets.union(setA, setB);  
-System.out.println("union:");  
-for (Integer integer : union)  
-    System.out.println(integer);           //union:12345867
-
-SetView difference = Sets.difference(setA, setB);  
-System.out.println("difference:");  
-for (Integer integer : difference)  
-    System.out.println(integer);        //difference:123
-
-SetView intersection = Sets.intersection(setA, setB);  
-System.out.println("intersection:");  
-for (Integer integer : intersection)  
-    System.out.println(integer);  //intersection:45
-```
-
-- map的交集，并集，差集
-
-```java
-MapDifference differenceMap = Maps.difference(mapA, mapB);  
-differenceMap.areEqual();  
-Map entriesDiffering = differenceMap.entriesDiffering();  
-Map entriesOnlyOnLeft = differenceMap.entriesOnlyOnLeft();  
-Map entriesOnlyOnRight = differenceMap.entriesOnlyOnRight();  
-Map entriesInCommon = differenceMap.entriesInCommon();  
 ```
 
 # 检查参数
@@ -289,7 +291,7 @@ try {
 	list = Files.readLines(file, Charsets.UTF_8);
 } catch (Exception e) {
 }
- 
+
 Files.copy(from,to);  //复制文件
 Files.deleteDirectoryContents(File directory); //删除文件夹下的内容(包括文件与子文件夹)  
 Files.deleteRecursively(File file); //删除文件或者文件夹  
