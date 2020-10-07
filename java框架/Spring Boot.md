@@ -1,3 +1,15 @@
+# 字母哥
+
+- Springboot-starter：一组被依赖的第三方类库的集合
+
+- Spring Boot Starter Parent：统一管理依赖版本号
+
+> 可按住command点击spring-boot-starter-parent再点击spring-boot-dependencies查看依赖版本号
+
+- 内置web容器：maven install打成jar包，在target目录下
+
+- 启动工程：java -jar 路径/文件名.jar
+
 # 简介
 
 **概述**

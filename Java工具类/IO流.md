@@ -1,18 +1,25 @@
 # 概念
 
-![4B412703-903C-463C-A0AA-65813432F535](https://tva1.sinaimg.cn/large/007S8ZIlgy1gjeuw5cucbj30ta0guwjc.jpg)
-
 ![ECC84071-FF09-43E3-B61A-31419A897C0E](https://tva1.sinaimg.cn/large/007S8ZIlgy1gjeuw6moukj30vf0gsjwr.jpg)
+
+![4B412703-903C-463C-A0AA-65813432F535](https://tva1.sinaimg.cn/large/007S8ZIlgy1gjeuw5cucbj30ta0guwjc.jpg)
 
 # File类
 
-什么是文件?
+- 简介
 
-文件可认为是放在一起的数据的集合
+> 什么是文件?
+>
+> 文件可认为是放在一起的数据的集合
+>
+> 绝对路径：是从盘符开始的路径
+>
+> 相对路径：是从当前目录开始的路径
+>
 
-绝对路径：是从盘符开始的路径
+- 作用
 
-相对路径：是从当前路径开始的路径
+  操作文件
 
 # 字节流
 
