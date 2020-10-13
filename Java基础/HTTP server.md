@@ -1,6 +1,6 @@
 # HTTP 协议
 
-```css
+```sh
 	HTTP的全称是超文本传输协议(英文：HyperText Transfer Protocol)，它是客户端与服务器请求和响应的标准。HTTP使得客户端与服务器之间可以进行通信，传输与接收数据。
 ```
 
