@@ -1,16 +1,14 @@
-# idea
-
-1. 设置默认配置
+# 设置默认配置
 
 File--->Other Setting--->Default Settings--->设置maven--->Apply--->OK
 
-2. lombok的使用
+# lombok的使用
 
 Preferences，Build, Execution, Deployment-Compiler-Annotation Processors中点击Enable annotation processors
 
 导入依赖 -- 添加注解
 
-3. update project
+# update project
 
 使用情景：当你使用git pull拉取远程代码而发生冲突的时候，使用update project命令可打开代码解决冲突的三视窗口，在这里可解决代码冲突。
 
