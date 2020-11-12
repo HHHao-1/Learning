@@ -275,7 +275,7 @@ h2{color:green;}
 
 ### 1. html内嵌
 
-前端内嵌
+- 前端内嵌
 
 ```html
 < iframe name="XXX" width=X height=X frameborder=0 src="XXX.htm" >< /iframe >
@@ -315,7 +315,7 @@ $.ajax({
 --使用脚本，这种方法的特点是外部页面不具有自己的方形区域，和宿主页面浑然一体，但由于外部页面内容全部写在脚本中，无法做到所见即所得，必须等到脚本运行时才能看到实际效果，这样就为修改调试增加了困难。
 ```
 
-后端内嵌
+- 后端内嵌
 
 SSI （server side include）服务器端包含，如：<#include>类似jsp的 include 标签
 
