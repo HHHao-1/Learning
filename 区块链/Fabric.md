@@ -1,18 +1,18 @@
-DLT:分布式账本技术
+- DLT:分布式账本技术
 
-Hyperledger:
+- Hyperledger:
 
 由linux基金会那化的区块链技术
 
-Hyperledger Fabirc:
+- Hyperledger Fabirc:
 
 第一个那化出来的商用的DLT框架
 
-Hyperledger composer:
+- Hyperledger composer:
 
 一个在DLT框架上创建商业应用的工具
 
-背书：节点对交易的担保(背书)
+- 背书：节点对交易的担保(背书)
 
 
 
