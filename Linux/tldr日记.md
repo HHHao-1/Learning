@@ -1,7 +1,7 @@
-# 这里是标题
+# navi
 
-> 这里是注释
+> 关于cheat.
 
-- 这里是条目
+- 路径:
 
-`这里是内容`
+`~/Library/Application Support/navi/cheats/`
