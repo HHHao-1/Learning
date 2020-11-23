@@ -404,7 +404,7 @@ git rm -r --cached .``git add .``git commit -m ``'update .gitignore'
 
 ## 问题记录
 
-1. github无法显示图片
+### github无法显示图片
 
 - 输入raw.githubusercontent.com查询IP地址
 - 修改hosts文件:sudo vi /etc/hosts
@@ -433,7 +433,7 @@ git rm -r --cached .``git add .``git commit -m ``'update .gitignore'
 # GitHub End
 ```
 
-2. 强制推送到github
+### 强制推送到github
 
 ```shell
 //强制推送覆盖，既自动产生了一次merge
@@ -441,7 +441,7 @@ git push -u origin +master
 git push -f origin(远程地址) master(远程分支)
 ```
 
-3. Push落后于远程分支
+### Push落后于远程分支
 
 ```shell
 git push origin master
@@ -458,7 +458,7 @@ git pull --rebase origin master
 
 ![981600313729_.pic_hd](https://tva1.sinaimg.cn/large/007S8ZIlly1gitqwgtk6kj31960auwhp.jpg)
 
-4. 强制覆盖本地代码
+### 强制覆盖本地代码
 
 ```shell
 git fetch --all
@@ -466,7 +466,7 @@ git reset --hard origin/master
 git pull
 ```
 
-5. **stash, checkout, reset**
+### **stash, checkout, reset**
 
 使用git的几种常见情形：
 
@@ -514,7 +514,7 @@ git reset --hard HEAD^
 
 详细：https://www.cnblogs.com/shih/p/6826743.html
 
-6. fetch
+### fetch
 
 fetch更新本地仓库两种方式：
 
@@ -545,6 +545,18 @@ $ git branch -d temp               //删除temp
 > 如果没有显式的指定远程分支, 则远程分支的master将作为默认的FETCH_HEAD.
 >
 > 如果指定了远程分支, 就将这个远程分支作为FETCH_HEAD.
+
+## rebase与merge
+
+- merge除了本身提交会产生一个merge提交
+
+- rebase保持分支提交记录整洁（一条直线）
+
+### .ignore不生效
+
+```shell
+git rm -r -f --cached .
+```
 
 # SVN 
 
