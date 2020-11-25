@@ -546,7 +546,7 @@ $ git branch -d temp               //删除temp
 >
 > 如果指定了远程分支, 就将这个远程分支作为FETCH_HEAD.
 
-## rebase与merge
+### rebase与merge
 
 - merge除了本身提交会产生一个merge提交
 
