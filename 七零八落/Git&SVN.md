@@ -558,6 +558,15 @@ $ git branch -d temp               //删除temp
 git rm -r -f --cached .
 ```
 
+### upstream问题
+
+```shell
+git remote add upstream github仓库地址
+idea 中对话框 upstream/main(master) 再点击一下upstream可确认
+```
+
+
+
 # SVN 
 
 ## SVN 原理
