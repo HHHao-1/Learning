@@ -8,7 +8,7 @@
 
 ![image-20201104182722261](https://tva1.sinaimg.cn/large/0081Kckwly1gkdbfibh8gj31360eeq6c.jpg)
 
-- .Sass与.Sass
+- .Sass与.Scss
 
 可互相转换：`sass-convert   main.scss   main. sass`
 
