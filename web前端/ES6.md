@@ -922,7 +922,7 @@ class Example {
 Example.b = 2;
 ```
 
-公共属性
+原型属性
 
 ```js
 class Example{} 
@@ -1000,6 +1000,85 @@ class Example {
     }
 }
 ```
+
+## 原型属性\方法
+
+- 实例对象可直接访问，可以在new实例之后添加，也可添加到实例上
+
+- 写在原型中的方法可以被所有的实例共享， 实例化的时候不会在实例内存中再复制一份，占有的内存消耗少。
+
+- js中每个函数(类的本质是函数)都有一个prototype属性，这个属性指向一个对象（所有属性的集合（除静态属性外））
+
+- 默认constructor的值指向这个函数(类)本身。
+
+- 每个原型对象都属于对象，所以它也有自己的原型，而它自己的原型对象又有自己的原型，所以就形成了原型链。
+
+- js的继承也就是通过原型链来实现的，当访问一个对象的属性，如果这个属性不存在，则沿着__proto__依次往上查找，如果有则返回值，没有则一直到查到Object.prototype的__proto__的值为null.
+
+  - ```js
+    console.log(Cat.__proto__.__proto__.__proto__)//null
+    Cat.__proto__等于Animal.prototype ,
+    Animal.prototype.__proto__等于Object.prototype.
+    ```
+
+  - 这里ch是在new出aaa实例后添加的原型属性
+
+    ![image-20201130101953194](https://tva1.sinaimg.cn/large/0081Kckwly1gl6zgbt3z3j30j20eymyu.jpg)
+
+  - \__proto__是Chrome的标准，不通用
+
+    ```js
+    // 通用获取原型对象
+    Object.getPrototypeOf(aaa)// =aaa.__proto__,推荐
+    aaa.constructor.prototype// =aaa.__proto__，不推荐，间接获取，aaa.constructor是获取原始函数,可调用静态属性、方法
+    ```
+
+- 示例
+
+```js
+function Animal() {
+  //实例属性
+  this.name = name || 'Animal';
+  //实例方法
+  this.sleep = function () {
+    console.log(this.name + "正在睡觉")
+  }
+  this.play=function(play){
+    console.log(this.name+'正在玩'+ play)
+  }
+}
+// 原型属性
+Animal.prototype.play1 = 1;
+// 原型方法
+Animal.prototype.play2 = function (play2) {
+  console.log(play2)
+}
+```
+
+## 私有属性\方法
+
+- 私有属性\方法只能在函数内部，用this. 调用
+
+```js
+// ES6可用
+function Animal() {
+  this.name = name || 'Animal'; //公有
+  var/let/const a = 1;
+  var/let/const b = () => {
+    console.log(123);
+  }
+
+// ES11
+class Person {
+  name;   // 公有
+  #age;   // 私有
+  #a=()=>{ //私有
+  console.log(123)
+}
+}
+```
+
+
 
 ## 实例化
 
