@@ -5,7 +5,6 @@
 - 设计模式
 - labuladuo算法
 - JavaGuide
-- 多线程
 
 > 工作
 
