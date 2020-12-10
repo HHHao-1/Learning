@@ -508,6 +508,24 @@ var b = new B(); // B
 
 # Map
 
+**Map记录**
+
+```js
+map = new Map()
+
+map.set("key",999)
+map.get("key")
+map.test = 1 // 给map添加属性
+
+map.forEach((v,k,m)=>console.log(`${v},${k},${m}`))
+999,key,[object Map]
+888,key1,[object Map]
+
+map.forEach((k,v,m)=>console.log(`${v},${k},${m}`))
+key,999,[object Map]
+key1,888,[object Map]
+```
+
 **Map 与 Array的转换**
 
 ```js
@@ -1015,23 +1033,23 @@ class Example {
 
 - js的继承也就是通过原型链来实现的，当访问一个对象的属性，如果这个属性不存在，则沿着__proto__依次往上查找，如果有则返回值，没有则一直到查到Object.prototype的__proto__的值为null.
 
-  - ```js
-    console.log(Cat.__proto__.__proto__.__proto__)//null
-    Cat.__proto__等于Animal.prototype ,
+  ```js
+  console.log(Cat.__proto__.__proto__.__proto__)//null
+  Cat.__proto__等于Animal.prototype ,
     Animal.prototype.__proto__等于Object.prototype.
-    ```
+  ```
 
-  - 这里ch是在new出aaa实例后添加的原型属性
+- 这里ch是在new出aaa实例后添加的原型属性
 
-    ![image-20201130101953194](https://tva1.sinaimg.cn/large/0081Kckwly1gl6zgbt3z3j30j20eymyu.jpg)
+  ![image-20201130101953194](https://tva1.sinaimg.cn/large/0081Kckwly1gl6zgbt3z3j30j20eymyu.jpg)
 
-  - \__proto__是Chrome的标准，不通用
+- \__proto__是Chrome的标准，不通用
 
-    ```js
-    // 通用获取原型对象
-    Object.getPrototypeOf(aaa)// =aaa.__proto__,推荐
-    aaa.constructor.prototype// =aaa.__proto__，不推荐，间接获取，aaa.constructor是获取原始函数,可调用静态属性、方法
-    ```
+  ```js
+  // 通用获取原型对象
+  Object.getPrototypeOf(aaa)// =aaa.__proto__,推荐
+  aaa.constructor.prototype// =aaa.__proto__，不推荐，间接获取，aaa.constructor是获取原始函数,可调用静态属性、方法
+  ```
 
 - 示例
 
