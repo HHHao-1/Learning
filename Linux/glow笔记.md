@@ -3,7 +3,7 @@
 > 学习
 
 - 设计模式
-- labuladuo算法
+- labuladuo算法及其余知识
 - JavaGuide
 
 > 工作
@@ -25,3 +25,4 @@
 - JVM
 - RPC
 - 从url开始做了什么
+- 反向代理
