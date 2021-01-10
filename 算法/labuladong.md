@@ -120,5 +120,17 @@ void traverse(TreeNode root) {
 
 刷算法题建议从「树」分类开始刷，结合框架思维，把这几十道题刷完，对于树结构的理解应该就到位了。这时候去看回溯、动规、分治等算法专题，对思路的理解可能会更加深刻一些。
 
+## 五、补充
+
+- 递归：先递进，后回归
+
+用递归来算阶乘 f(n)
+
+```js
+let f = n => n === 1 ? 1 : n * f(n-1) 
+```
+
+![preview](https://tva1.sinaimg.cn/large/008eGmZEgy1gmhntx2rvvj30zv0fndgu.jpg)
+
 # 数据结构
 
