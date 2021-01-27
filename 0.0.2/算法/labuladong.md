@@ -132,5 +132,3 @@ let f = n => n === 1 ? 1 : n * f(n-1)
 
 ![preview](https://tva1.sinaimg.cn/large/008eGmZEgy1gmhntx2rvvj30zv0fndgu.jpg)
 
-# 数据结构
-

@@ -41,15 +41,13 @@
 | File(URI uri)                     |
 
 ```java
-File file1=new File("c:\\imooc\\io\\score.txt");
-File file1=new File("c:\\imooc","io\\score.txt");
-File file=new File("c:\\imooc");
-File file1=new File(file,"io\\score.txt");
-
+File file1=new File("src/com/a.txt");
+File file1=new File("src/com","a.txt");
+File file=new File("src/com");
+File file1=new File(file,"a.txt");
 File file = new File("src");
 File file2 = new File(file.toURI());
-System.out.println(file2.toURI());
-// file:/Users/hao/Desktop/测试/untitled/src/
+System.out.println(file2.toURI());// file:/Users/hao/Desktop/测试/untitled/src/
 ```
 
 # Path
@@ -236,12 +234,12 @@ file.toURI();
 
   **如果返回值为-1,则表示已经达到文件末尾!**
 
-| 方法                                     | 描述                                                   |
-| ---------------------------------------- | ------------------------------------------------------ |
-| public int read()                        | 从输入流中读取一个数据字节                             |
-| public int read(byte] b)                 | 人输入流中将最多b.length个字节的数据读入一个byte数组中 |
-| public int read(bytel b,int off,int len) | 从输入流中将最多len个字节的数据读入byte数组中          |
-| public void close()                      | 关闭此文件输入流并放与此流有关的所有系统资源           |
+| 方法                                       | 描述                                                   |
+| ------------------------------------------ | ------------------------------------------------------ |
+| public int read()                          | 从输入流中读取一个数据字节                             |
+| public int read(byte[ ] b)                 | 人输入流中将最多b.length个字节的数据读入一个byte数组中 |
+| public int read(byte[ ] b,int off,int len) | 从输入流中将最多len个字节的数据读入byte数组中          |
+| public void close()                        | 关闭此文件输入流并放与此流有关的所有系统资源           |
 
 - OutputStream
 

@@ -10,7 +10,7 @@
 | protected void finalize()                | 当垃圾回收器确定不再有对该对象的引用时，由垃圾回收器在对象上调用。 | 回收     |
 | void wait()                              | 使当前线程等待，直到另一个线程为此对象<br />调用notify（）方法或notifyAll（）方法。 | 线程相关 |
 | void <br />wait(long timeout)            | 使当前线程等待，直到另一个线程为此对象<br />调用notify（）方法或thenotifyAll（）方法，<br />或者经过指定的时间。 |          |
-| void <br />wait(long timeout, int nanos) | 使当前线程等待，直到另一个线程为此对象<br />调用notify（）方法或notifyAll（）方法，<br />或其他线程中断了当前线程，或经过了一定的时间。 |          |
+| void <br />wait(long timeout, int nanos) | timeout - 等待时间（以毫秒为单位）。 <br />nanos - 额外等待时间（以纳秒为单位）。<br />nanos 大于半毫秒 timout 加1毫秒；<br />如果timeout为0且nanos大于0,则timout加1毫秒 |          |
 | void notify()                            | 唤醒正在此对象的监听器上等待的单个线程。                     |          |
 | void notifyAll()                         | 唤醒正在此对象的监视器上等待的所有线程。                     |          |
 
