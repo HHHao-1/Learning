@@ -721,13 +721,14 @@ public void method() {
 > Lock和ReadWriteLock是两大锁的根接口，扩展了synchronized的功能：
 >
 > 1. Lock唯一实现类是ReentrantLock（可重入锁），实现一些锁的高级功能如：公平锁、中断锁、超时锁、共享锁等。
->    - ReentrantLock构造方法（不带参数 和带参数 true： 公平锁； false: 非公平锁）
+>    - ReentrantLock构造方法（不带参数和带参数 true： 公平锁； false: 非公平锁）
 >    - 在资源竞争不是很激烈的情况下，Synchronized的性能要优于ReetrantLock，但是在资源竞争很激烈的情况下，ReetrantLock的性能能维持常态。
 >
 > 2. ReadWriteLock（读写锁）的唯一实现类是ReentrantReadWriteLock，实现一些读取者可以共享写入者独占的锁的功能。
 
 **注意：**
 
+- synchor*nized是*JVM的*内置*锁，而*lock是*java代码实现的
 - 采用synchronized不需要手动释放锁，代码执行完后，系统会自动让线程释放锁；而Lock则必须要手动释放锁，如果没有主动释放锁，就有可能出现死锁现象。
 
 #### 比较synchronized
@@ -781,9 +782,7 @@ if(lock.tryLock()) {
 }
 ```
 
-3. `void lockInterruptibly(); `
-
-   `// 获取锁；线程.interrupt()可中断阻塞过程中的线程,这个方法可以手动中断阻塞线程，并触发异常 `
+3. `void lockInterruptibly(); // 获取锁；可中断锁`
 
 ```java
 Thread a = new Thread(() -> {
@@ -793,7 +792,7 @@ Thread a = new Thread(() -> {
     test++;
     for (;;) {
       System.out.println(Thread.currentThread().getName() + "test值：" + test);
-      Thread.sleep(1000);
+       TimeUnit.SECONDS.sleep(1);
     }
   } catch (InterruptedException e) {
     System.out.println("异常");
@@ -808,7 +807,7 @@ Thread b = new Thread(() -> {
     test++;
     for (int i = 0; i < 6; i++) {
       System.out.println(Thread.currentThread().getName() + "test值：" + test);
-      Thread.sleep(1000);
+      TimeUnit.SECONDS.sleep(1);
     }
   } catch (InterruptedException e) {
     System.out.println("中断");
@@ -818,13 +817,21 @@ Thread b = new Thread(() -> {
 });
 
 a.start();
-Thread.sleep(1000);
+TimeUnit.SECONDS.sleep(1);
 b.start();
 b.interrupt()
 ```
 
-4. Condition newCondition();// 返回绑定到此 Lock 实例的新 Condition 实例
-5. void unlock();// 释放锁 
+4. `Condition newCondition();// 返回绑定到此 Lock 实例的新 Condition 实例`
+
+```java
+private Lock lock = new ReentrantLock();
+private Condition condition  = lock.newCondition();
+condition.await(); //会释放锁,await方法必须在lock和unlock中使用
+condition.signal(); //signal方法必须在lock和unlock中使用
+```
+
+5. `void unlock();// 释放锁 `
 
 #### ReadWriteLock接口
 
@@ -1013,6 +1020,387 @@ public class DCLSingleTon {
 }
 ```
 
+## 线程操作
+
+### Object
+
+#### wait与notify
+
+- wait()：使当前线程阻塞
+  - 直到另一个线程为此对象调用notify()方法或notifyAll()方法，或者被中断
+  - 被中断，若异常处理没有中断方法，相当被唤醒继续执行
+- wait(long)：notify()、notifyAll()、超时等待一段时间（单位毫秒），被唤醒。
+- wait(long，int)：等待时间timeout(毫秒)、额外等待时间nanos(纳秒)
+  - nanos 大于半毫秒 timeout 加1，timeout为0且nanos大于0,则timeout加1
+- notify()：唤醒正在此对象的监听器上等待的单个线程。
+- notifyAll()：使唤醒正在此对象的监视器上等待的所有线程。
+
+```java
+public class AwaitAndNotify {
+  public static void main(String[] args) throws InterruptedException {
+    Thread t1 = new Thread(() -> awaitMethod());
+    Thread t2 = new Thread(() -> notifyMethod());
+    t1.start();
+    TimeUnit.SECONDS.sleep(1);
+    t2.start();
+    // awaitMethod() start...
+    // notifyMethod() start...
+    // notifyMethod() end...
+    // awaitMethod() end...
+  }
+
+  private static Object object = new Object();
+
+  public static void awaitMethod() {
+    synchronized (object) {
+      System.out.println("awaitMethod() start...");
+      try {
+        object.wait();
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+      System.out.println("awaitMethod() end...");
+    }
+  }
+
+  public static void notifyMethod() {
+    synchronized (object) {
+      System.out.println("notifyMethod() start...");
+      object.notify();
+      System.out.println("notifyMethod() end...");
+    }
+  }
+}
+```
+
+### Condition
+
+#### await与signal
+
+- void await()：一直等待直到被唤醒或者被中断
+- void awaituninterruptibly()  ：一直等待直到被唤，不会被中断 
+- 使当前线程等待直到被唤醒、或中断、或者指定的时间过去
+  - boolean await(long time, Timeunit unit)：在等待时间内被唤醒返回true，超过等待时间false
+  - long awaitnanos(long nanostimeout)：返回被唤醒时所剩纳秒数的估计值，超时返回负数/0。
+  - boolean awaituntil(Date deadline)：在最后期限前被唤醒返回true，超过等待时间false
+- signal()：唤单个线程 
+- signalAll()：唤醒所有线程
+
+```java
+public class AwaitAndNotify {
+  public static void main(String[] args) throws InterruptedException {
+    Thread t1 = new Thread(() -> awaitMethod());
+    Thread t2 = new Thread(() -> signalMethod());
+    t1.start();
+    TimeUnit.SECONDS.sleep(1);
+    t2.start();
+  }
+
+  private static Lock lock = new ReentrantLock();
+  private static Condition condition = lock.newCondition();
+
+  public static void awaitMethod() {
+    try {
+      lock.lock();
+      System.out.println("awaitMethod() start...");
+      condition.await();
+      System.out.println("awaitMethod() end...");
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+      return;
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  public static void signalMethod() {
+    try {
+      lock.lock();
+      System.out.println("notifyMethod() start...");
+      condition.signalAll();
+      System.out.println("notifyMethod() end...");
+    } catch (Exception ex) {
+      ex.printStackTrace();
+    } finally {
+      lock.unlock();
+    }
+  }
+}
+```
+
+### Thread
+
+#### --- 实例方法 --
+
+#### 优先级
+
+Java中线程优先级用1~10来表示，分为三个级别：
+
+- 低优先级：1~4，其中类变量Thread.MIN_PRORITY最低，数值为1；
+- 默认优先级：5，如果一个线程没有指定优先级，由类变量Thread.NORM_PRORITY表示；
+- 高优先级：6~10，类变量Thread.MAX_PRORITY最高，数值为10。
+
+**注意：不是高优先级的线程就一定比低优先级先执行，而是高优先级线程先执行的概率比低优先级的高**
+
+```java
+thread1.setPriority(Thread.MAX_PRORITY);
+thread1.getPriority();
+thread1.start();
+```
+
+#### isAlive()
+
+用来判断线程目前是否正在执行，可以用来判断线程是否执行完毕。
+
+如果线程已被启动并且未被终止(Dead)，则返回true；但是没有进一步判断线程是就绪或是阻塞的；
+
+如果线程是新创建的或已被终止(Dead)的，则返回false。
+
+```java
+thread1.isAlive()
+```
+
+#### interrupt()
+
+> 中断响应:
+>
+> 是描述当一个线程或方法A处于运行、阻塞或死锁状态时，外界(通常指其他线程、系统IO等)对A的影响能否让A线程或者方法抛出InterruptedException异常并提前返回，如果会提前返回并且抛出InterruptedException，就叫可中断响应方法或线程，如果不会抛出InterruptedException，就叫不可中断线程或方法。
+
+- interrupt()：中断此线程；
+  - 实际上设置线程中断标志为true，让线程提早的结束阻塞状态
+  - 触发异常后中断标志为false
+  - 线程是否中断，由线程本身决定，既在程序或异常处理中编写return或throw new Exception
+- isinterrupted()：测试此线程是否被中断（检查中断标志） 
+  - 返回一个boolean不清除中断状态
+- interrupted()：测试当前线程是否被中断（检查中断标志）
+  - 返回一个boolean并清除中断状态（设中断状态为false）
+
+```java
+// interrupt应用
+public class ThreadInterrupted {
+  public static void main(String[] args) throws InterruptedException {
+    Thread thread1 = new Thread(() -> {
+      try {
+        Thread.sleep(10000000);
+        System.out.println("继续运行try");
+      } catch (InterruptedException e) {
+        System.out.println(e);
+        System.out.println("继续运行catch");
+      } finally {
+        System.out.println("继续运行finally");
+      }
+      System.out.println("继续运行");
+    });
+    thread1.start();
+    Thread.sleep(1000);
+    thread1.interrupt();
+    Thread.sleep(1000);
+    System.out.println("main end");
+  }
+}	
+// java.lang.InterruptedException: sleep interrupted
+// 继续运行catch
+// 继续运行finally
+// 继续运行
+// main end
+```
+
+```java
+// isInterrupted应用
+public class ThreadInterrupted extends Thread {
+  public void run() {
+    while (!isInterrupted()) {
+      try {
+        sleep(1000); // 延迟1秒
+        System.out.println(getName() + " 中断状态：" + isInterrupted());
+      } catch (InterruptedException e) {
+        System.out.println(getName() + " 异常后，中断状态：" + isInterrupted());
+        interrupt();
+        System.out.println(getName() + " 再次中断，状态：" + isInterrupted());
+      }
+    }
+    System.out.println("任务退出！");
+  }
+
+  public static void main(String[] args) throws Exception {
+    ThreadInterrupted thread = new ThreadInterrupted();
+    thread.interrupt();
+    thread.start();
+    // 这里换成其他的语句都可能达不到预期效果,所以异常前中断状态值不靠谱
+    System.out.println(thread.getName() + " 准备中断");
+    thread.interrupt();
+    // 这里的boolean值不靠谱
+    System.out.println(thread.getName() + " 异常前，中断状态：" + thread.isInterrupted());
+    System.out.println("main线程已经退出!");
+  }
+}
+// Thread-0 准备中断
+// Thread-0 异常前，中断状态：true
+// main线程已经退出!
+// Thread-0 异常后，中断状态：false
+// Thread-0 再次中断，状态：true
+// 任务退出！
+```
+
+#### join()
+
+thread.Join把指定的线程加入到当前线程，顺序执行。
+
+比如在线程B中调用了线程A的Join()方法，直到线程A执行完毕后，才会继续执行线程B。
+
+`t.join();    //调用join方法，等待线程t执行完毕`
+
+`t.join(1000); //等待 t 线程，等待时间是1000毫秒。`
+
+**注意：一般常用于主线程调用子线程join()，等子线程执行完再执行主线程**
+
+```java
+public class ThreadMethod {
+  public static void main(String[] args) throws InterruptedException {
+    Thread thread1 = new Thread(() -> {
+      try {
+        Thread.sleep(1000);
+        System.out.println(Thread.currentThread().getName() + "----0");
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    });
+    Thread thread2 = new Thread(() -> {
+      try {
+        thread1.start();
+        thread1.join();
+        System.out.println(Thread.currentThread().getName() + "----1");
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    });
+    thread2.start();
+  }
+}
+```
+
+```java
+public class ThreadMethod {
+  public static void main(String[] args) throws InterruptedException {
+    Thread thread = new Thread(() -> {
+      try {
+        Thread.sleep(1000);
+        System.out.println(Thread.currentThread().getName() + "子线程 end");
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    });
+    thread.start();
+    thread.join();
+    System.out.println("主线程 end");
+  }
+}
+/* 
+加join：
+Thread-0子线程 end
+主线程 end
+
+不加join：
+Thread-0子线程 end
+主线程 end
+*/
+```
+
+#### --- 类方法 --
+
+#### yield()
+
+将当前正在执行的线程暂停并放置就绪线程队列最后，让Java线程调度器重新调度处于就绪状态的线程。
+
+**注意：一般来说，重新调度之后与被暂停线程优先级相同的或比它优先级高的线程对象获取CPU使用权的可能性较大，但也有可能重新调度的仍是被暂停的同一个线程对象。**
+
+```java
+//暂停当前正在执行的线程，让CPU重新调度
+Thread.currentThread().yield();
+Thread.yield();
+```
+
+### ThreadLocal
+
+#### 使用
+
+一个线程内部的存储类，可以在指定线程内存储数据，数据存储以后，只有指定线程可以得到存储数据。
+
+> 特点：
+>
+> ThreadLocal和Synchronized都可以解决多线程中相同变量的访问冲突问题，不同的是：
+>
+> - Synchronized是通过线程等待，牺牲时间来解决访问冲突
+> - ThreadLocal是通过每个线程单独一份存储空间，牺牲空间来解决冲突
+
+```java
+public class ThreadMethod {
+  static ThreadLocal<Integer> sThreadLocal = new ThreadLocal<>();
+  public static void main(String[] args) throws InterruptedException {
+    Thread thread = new Thread(() -> {
+      sThreadLocal.set(1);
+      System.out.println("子线程：" + sThreadLocal.get());
+    });
+    thread.start();
+    thread.join();
+    sThreadLocal.set(2);
+    System.out.println("主线程：" + sThreadLocal.get());
+  }
+}
+// 子线程：1
+// 主线程：2
+```
+
+#### 源码
+
+```java
+public class ThreadLocal<T> {
+
+  public void set(T value) {
+    Thread t = Thread.currentThread();
+    ThreadLocalMap map = getMap(t); 
+    if (map != null)
+      map.set(this, value);
+    else
+      createMap(t, value);
+  }
+
+  public T get() {
+    Thread t = Thread.currentThread();
+    ThreadLocalMap map = getMap(t);
+    if (map != null) {
+      ThreadLocalMap.Entry e = map.getEntry(this);
+      if (e != null) {
+        @SuppressWarnings("unchecked")
+        T result = (T)e.value;
+        return result;
+      }
+    }
+    return setInitialValue();
+  }
+
+  ThreadLocalMap getMap(Thread t) {
+    return t.threadLocals;
+  }
+
+  static class ThreadLocalMap {
+    private Entry[] table;
+    static class Entry extends WeakReference<ThreadLocal<?>> {
+      Object value;
+      Entry(ThreadLocal<?> k, Object v) {
+        super(k);// this.referent = referent;
+        value = v;
+      }
+    }
+  }
+}
+
+class Thread implements Runnable {
+
+  ThreadLocal.ThreadLocalMap threadLocals = null;
+}
+```
+
 # Stream
 
 ## Reduce
@@ -1079,3 +1467,62 @@ public static List<BillsNums> merge(List<BillsNums> list) {
 }
 ```
 
+# CASE
+
+## 重写hashcode、equals
+
+- **equals：**Object的equals方法就是a==b，即比较两个对象的引用是否相同
+
+  ```java
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Goods)) return false;
+    Goods goods = (Goods) o;
+    return Objects.equals(name, goods.name) && Objects.equals(price, goods.price);
+  }
+  
+  // Objects.equals
+  public static boolean equals(Object a, Object b) {
+    return (a == b) || (a != null && a.equals(b));
+  }
+  
+  // object.equals
+  public boolean equals(Object obj) {
+    return (this == obj);
+  }
+  ```
+
+- **hashcode：**HashMap、HashTable、HashSet等，先比较对象的hashcode，若相同再equals比较
+
+  - 只重写了equals的两个“相等”对象，而hashcode不同，如：HashSet就会保留两个对象(HashSet底层通过HashMap实现)
+
+  ```java
+  public int hashCode() {
+    return Objects.hash(name, price);
+  }
+  
+  // Objects.hash
+  public static int hash(Object... values) {
+    return Arrays.hashCode(values);
+  }
+  
+  Arrays.hashCode
+    public static int hashCode(Object a[]) {
+    if (a == null)
+      return 0;
+    int result = 1;
+    for (Object element : a)
+      result = 31 * result + (element == null ? 0 : element.hashCode());
+    return result;
+  }
+  ```
+
+  ```java
+  public int hashCode() {
+    final int prime = 31; //取一个尽可能小的正整数(怕最终得到的结果超出了int的取数范围)
+    int result = 1;
+    result = prime * result + ((name == null) ? 0 : name.hashCode());
+    result = prime * result + ((price == null) ? 0 : price.hashCode());
+    return result;
+  }
+  ```

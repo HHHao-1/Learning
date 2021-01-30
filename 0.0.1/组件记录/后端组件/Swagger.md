@@ -25,17 +25,17 @@
 ```xml
 <!--启动器-->
 <dependency>
-    <groupId>io.springfox</groupId>
-    <artifactId>springfox-boot-starter<artifactId>
-    <version>3.0.0</version>
+  <groupId>io.springfox</groupId>
+  <artifactId>springfox-boot-starter</artifactId>
+  <version>3.0.0</version>
 </dependency>
 
 <!--knife4j启动器,继承类swagger2，需要swagger-ui再可添加-->
 <!--使用knife4j对swagger的增强功能，需在配置类上添加@EnableKnife4j-->
 <dependency>
-    <groupId>com.github.xiaoymin</groupId>
-    <artifactId>knife4j-spring-boot-starter</artifactId>
-    <version>2.0.3</version>
+  <groupId>com.github.xiaoymin</groupId>
+  <artifactId>knife4j-spring-boot-starter</artifactId>
+  <version>2.0.3</version>
 </dependency>
 ```
 
@@ -50,7 +50,7 @@
 
 ```css
 3.0版本:
-添加依赖后再应用主类增加注解@EnableOpenApi，删除之前版本的SwaggerConfig.java，启动项目，访问地址：http://localhost:8088/swagger-ui/index.html，注意2.x版本中访问的地址的为http://localhost:8088/swagger-ui.html
+添加依赖后再应用主类增加注解@EnableOpenApi，删除之前版本的SwaggerConfig.java，启动项目，访问地址：http://localhost:8080/swagger-ui/index.html，注意2.x版本中访问的地址的为http://localhost:8080/swagger-ui.html
 ```
 
 ## 3.配置类
