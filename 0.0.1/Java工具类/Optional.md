@@ -24,6 +24,12 @@
 | T **orElseGet**(Supplier<? extends T> other)                 | 如果存在值，则返回值，否则调用其他值，并返回该调用的结果     |          |
 | <X extends Throwable> T **orElseThrow**(Supplier<? extends X> exceptionSupplier) | 返回包含的值(如果存在)，否则抛出exceptionSupplier            |          |
 
+**注意：**
+
+- map与flatMap的区别：
+  - map：出参是个对象
+  - flatMap：出参是个Optional
+
 **示例：**
 
 ```java

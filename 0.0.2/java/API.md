@@ -1,6 +1,6 @@
 # IO流
 
-- 流家族
+- IO流家族
 
 ![img](https://tva1.sinaimg.cn/large/008eGmZEly1gmvasuwj0oj30iq0ktdhd.jpg)
 
@@ -229,14 +229,11 @@ try (Stream<String> lines = Files.lines( filePath ))
   List<String> filteredLines = lines
     .filter(s -> s.contains("password"))
     .collect(Collectors.toList());
-
   filteredLines.forEach(System.out::println);
 } catch (IOException e) {
   e.printStackTrace();//只是测试用例，生产环境下不要这样做异常处理
 }
 ```
-
-
 
 # 文件
 
@@ -299,6 +296,88 @@ file.toURI();
 > 在大多数情况下，这里定义的方法将委托给相关的文件系统提供程序来执行文件操作。
 >
 > 对文件进行增、删、改、查等操作。
+
+## 应用
+
+### 读取目录
+
+#### Files.walkFileTree
+
+```java
+Path path = Paths.get(logPath);
+Files.walkFileTree(
+  path,
+  new SimpleFileVisitor<Path>() {
+    // 先遍历文件
+    @Override
+    public FileVisitResult visitFile(
+      Path file,
+      BasicFileAttributes attrs) throws IOException {
+      // 上级目录名
+      String parentDirName = file.getParent().getFileName().toString();
+      System.out.println(file);
+      return FileVisitResult.CONTINUE;
+    }
+    // 再遍历目录
+    @Override
+    public FileVisitResult postVisitDirectory(
+      Path dir,
+      IOException exc) throws IOException {
+      System.out.println(file);
+      return FileVisitResult.CONTINUE;
+    }
+  }
+);
+//   /Users/chenghao/Desktop/node_test/beijing/transaction_2020-11-21.log
+//   /Users/chenghao/Desktop/node_test/beijing/transaction_2020-11-20.log
+//   /Users/chenghao/Desktop/node_test/beijing
+//   /Users/chenghao/Desktop/node_test/nanjing/transaction_2020-11-21.log
+//   /Users/chenghao/Desktop/node_test/nanjing/transaction_2020-11-20.log
+//   /Users/chenghao/Desktop/node_test/nanjing
+//   /Users/chenghao/Desktop/node_test
+```
+
+#### Files.walk
+
+```java
+Path path = Paths.get(logPath);
+try (Stream<Path> walk = Files.walk(path)) {
+  walk.forEach(System.out::println);
+}
+//   /Users/chenghao/Desktop/node_test
+//   /Users/chenghao/Desktop/node_test/beijing
+//   /Users/chenghao/Desktop/node_test/beijing/transaction_2020-11-21.log
+//   /Users/chenghao/Desktop/node_test/beijing/transaction_2020-11-20.log
+//   /Users/chenghao/Desktop/node_test/nanjing
+//   /Users/chenghao/Desktop/node_test/nanjing/transaction_2020-11-21.log
+//   /Users/chenghao/Desktop/node_test/nanjing/transaction_2020-11-20.log
+```
+
+#### 递归
+
+```JAVA
+public void getFiles(String pathString) {
+  Path path = Paths.get(pathString);
+  File[] tempList = path.toFile().listFiles();
+  if (tempList != null) {
+    for (File file : tempList) {
+        if (file.isFile()) {
+          System.out.println(file);
+        }
+        if (file.isDirectory()) {
+          System.out.println(file);
+          getFiles(file.toString());
+        }
+    }
+  }
+}
+//    /Users/chenghao/Desktop/node_test/beijing
+//    /Users/chenghao/Desktop/node_test/beijing/transaction_2020-11-21.log
+//    /Users/chenghao/Desktop/node_test/beijing/transaction_2020-11-20.log
+//    /Users/chenghao/Desktop/node_test/nanjing
+//    /Users/chenghao/Desktop/node_test/nanjing/transaction_2020-11-21.log
+//    /Users/chenghao/Desktop/node_test/nanjing/transaction_2020-11-20.log
+```
 
 # 多线程
 
@@ -990,7 +1069,7 @@ singleTon = new DCLSingleTon(); 可以分为以下3步完成:
 所以当一条线程访问实例不为null时,由于实例未必已经完成初始化,也就造成了线程安全问题;
 */
 public class DCLSingleTon {
-  private static DCLSingleTon singleTon;
+  private volatile static DCLSingleTon singleTon;
 
   private DCLSingleTon() {
     System.out.println(Thread.currentThread().getName() + " 构造方法执行了");

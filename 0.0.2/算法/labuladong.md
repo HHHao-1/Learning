@@ -1,4 +1,4 @@
-# 思维框架
+# 框架思维
 
 ## 一、数据结构的存储方式
 
@@ -122,7 +122,9 @@ void traverse(TreeNode root) {
 
 ## 五、补充
 
-- 递归：先递进，后回归
+### 递归
+
+> 递归：先递进，后回归
 
 用递归来算阶乘 f(n)
 
@@ -131,4 +133,6 @@ let f = n => n === 1 ? 1 : n * f(n-1)
 ```
 
 ![preview](https://tva1.sinaimg.cn/large/008eGmZEgy1gmhntx2rvvj30zv0fndgu.jpg)
+
+# 动态规划框架
 

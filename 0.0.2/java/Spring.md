@@ -87,3 +87,58 @@ test(@RequestParam(value = "Aname", defaultValue = "0", required = false) String
 > </bean>
 > ```
 
+## @Value
+
+### @Value(“#{}”) 
+
+用SpEl（Spring Expression Language）表达式来获取bean的属性、方法，表示常量
+
+```java
+@Value("#{1}")  
+private int number; //获取数字 1  
+
+@Value("#{'Spring Expression Language'}") //获取字符串常量  
+private String str;  
+
+@Value("#{dataSource.url}") //获取bean的属性  
+private String jdbcUrl;  
+```
+
+### @Value(“${}”)
+
+从配置文件中读取值
+
+```java
+@Value("${init.password}")  
+private String initPwd;    
+```
+
+## @PostConstruct
+
+> 静态方法*调用Spring容器*bean
+
+```java
+@SpringBootApplication
+public class NodeLogApplication {
+
+  @Resource private ParseLog parseLog;
+
+  private static NodeLogApplication nodeLogApplication;
+
+  @PostConstruct
+  public void init() {
+    nodeLogApplication = this;
+    nodeLogApplication.parseLog = this.parseLog;
+  }
+
+  public static void main(String[] args) {
+    SpringApplication.run(NodeLogApplication.class, args);
+    try {
+      nodeLogApplication.parseLog.parse();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+}
+```
+

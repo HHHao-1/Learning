@@ -8,7 +8,7 @@
 
 ## 1. 打开文档
 
-> Swagger-ui：http://localhost:8088/swagger-ui/index.html
+> Swagger-ui：http://localhost:8080/swagger-ui/index.html
 >
 > Bootstrap-ui：http://localhost:8080/doc.html（knife4j启动器）
 >

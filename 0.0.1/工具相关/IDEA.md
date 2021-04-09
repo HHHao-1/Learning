@@ -10,9 +10,10 @@ Preferences，Build, Execution, Deployment-Compiler-Annotation Processors中点�
 
 # update project
 
-使用情景：当你使用git pull拉取远程代码而发生冲突的时候，使用update project命令可打开代码解决冲突的三视窗口，在这里可解决代码冲突。
-
-等于git fetch + 解决冲突 +git merge
+- 选 Merge the incoming changes into the current branch相当于：
+  - git fetch然后 git merge,或 git pull -no-rebase
+- 选 Rebase the current branch on top of the incoming changes相当于：
+  - git fetch然后 git rebase,或 git pull --rebase
 
 # maven自动导入
 

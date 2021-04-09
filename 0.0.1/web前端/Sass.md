@@ -111,7 +111,7 @@
       float:left;
     }
     .webdemo-sec {
-      @include col-6                 // 通过@include引入@col-6()函数;并且可以引入多个;
+      @include col-6;                 // 通过@include引入@col-6()函数;并且可以引入多个;
       &:hover {                      // &:表示父类选择器;
         background-color:#f5f5f5;
       }
