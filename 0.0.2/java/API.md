@@ -212,6 +212,28 @@ public static void ioTest7() throws IOException {
 }
 ```
 
+> 注意：
+>
+> next()与nextLine()
+>
+> - next()遇到空白字符就读取结束
+> - nextLine()遇到回车符("\r")读取结束
+
+```java
+try (Scanner sc = new Scanner(System.in)) {
+    if (sc.hasNext()) {
+        String str1 = sc.next();
+        System.out.println(str1);
+        String str2 = sc.nextLine();
+        System.out.println(str2);
+    }
+}
+//输入111 222回车
+//输出:
+//111
+// 222
+```
+
 ## Stream
 
 > 特点：
@@ -424,7 +446,6 @@ public class ThreadTest1 extends Thread {
 
 ```java
 public class ThreadTest2 implements Runnable {
-
   @Override
   public void run() {
     System.out.println(Thread.currentThread().getName());
@@ -1380,6 +1401,10 @@ Thread-0子线程 end
 主线程 end
 
 不加join：
+可能：
+主线程 end
+Thread-0子线程 end
+也可能:
 Thread-0子线程 end
 主线程 end
 */
@@ -1546,7 +1571,38 @@ public static List<BillsNums> merge(List<BillsNums> list) {
 }
 ```
 
-# CASE
+## flatMap
+
+与map：map内出参是对象，flatMap内出参是stream
+
+```java
+public void test1() {
+    int[] a = {1, 1, 1};
+    int[] b = {2, 2, 2};
+    // Arrays.stream返回IntStream
+    Stream.of(a, b).flatMapToInt(Arrays::stream).forEach(System.out::println);
+    Integer[] aa = {1, 1, 1};
+    Integer[] bb = {2, 2, 2};
+    Stream.of(aa, bb).flatMap(Arrays::stream).forEach(System.out::println);
+    mainTest main = new mainTest();
+    Stream.of(aa, bb).flatMap(main::test2).forEach(System.out::println);
+    List<Integer> list1 = new ArrayList<>();
+    list1.add(3);
+    list1.add(3);
+    List<Integer> list2 = new ArrayList<>();
+    list2.add(4);
+    list2.add(4);
+    Stream.of(list1, list2).flatMap(Collection::stream).forEach(System.out::println);
+}
+
+public Stream<Integer> test2(Integer[] a) {
+    return Stream.of(99, 88);
+}
+```
+
+
+
+# 基础
 
 ## 重写hashcode、equals
 
@@ -1605,3 +1661,42 @@ public static List<BillsNums> merge(List<BillsNums> list) {
     return result;
   }
   ```
+
+## 2、8、16进制表达
+
+### 表达
+
+- 2进制：0b开头，最大值0b11111111
+  - int a = 0b00110000  -->48
+- 8进制：0开头，最大0377
+  - int a = 0060  -->48
+- 16进制：0x开头，最大值0xFF
+  - int a = 0x30  -->48
+
+### 转换
+
+- 10进制转2进制字符串	Integer.toBinaryString(n);
+- 10进制转8进制字符串	Integer.toOctalString(n);
+- 10进制转16进制字符串	Integer.toHexString(n);
+- 10进制转 r 进制字符串	Integer.toString(100, 16);
+
+## 基本数据类型
+
+### 数值默认类型
+
+- 整数不加L默认是int，int转为long安全，能编译通过
+  - 当不加L，给long赋值一个超过int范围的值的时候，不能编译通过
+- float浮点数不加F默认是double类型，double转float可能损失精度，不能编译通过
+
+### 内存占用
+
+| 对象类型 | 内存 |
+| -------- | ---- |
+| boolean  | 1    |
+| byte     | 1    |
+| short    | 2    |
+| char     | 2    |
+| int      | 4    |
+| float    | 4    |
+| long     | 8    |
+| double   | 8    |

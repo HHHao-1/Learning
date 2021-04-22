@@ -926,4 +926,12 @@ $ sudo apachectl restart
 
 打开浏览器，在地址栏中访问http://localhost/svn/你将看到浏览器弹出了密码框让我们输入用户名密码。
 
+# GitHub
 
+## 镜像站点
+
+https://github.com.cnpmjs.org 
+
+https://hub.fastgit.org
+
+https://github.wuyanzheshui.workers.dev
