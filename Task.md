@@ -347,3 +347,57 @@ fabric 2.x 排序模式已经更改为Raft模式  1.x是kafka模式
 crypto-config.yaml是配置文件模板文件
 
 ![image-20210420164735835](/Users/hao/Library/Application Support/typora-user-images/image-20210420164735835.png)
+
+```shell
+测试网络：test-network
+
+#开启网络
+./network.sh up
+#关闭网络
+./network.sh down
+#创建通道
+./network.sh createChannel 
+#部署链码：deployCC--不熟链码 -ccn 链码名称 -ccp 链码路径 -ccl 链码所用语言
+./network.sh deployCC -ccn basic -ccp ../asset-transfer-basic/chaincode-go -ccl go
+#谷歌1.13换源
+go env -w GOPROXY=https://goproxy.cn,direct
+export GOPROXY=https://goproxy.cn
+#../asset-transfer-basic/chaincode-go go程序没有依赖包 手动下载依赖 生成vendor文件夹
+go mod vendor
+
+#开始与fabric网络交互，添加环境变量 保证可以找到配置文件路径
+export PATH=${PWD}/../bin:$PATH
+export FABRIC_CFG_PATH=$PWD/../config/
+
+#客户端与机构1交互，添加机构1的环境变量
+export CORE_PEER_TLS_ENABLED=true
+export CORE_PEER_LOCALMSPID="Org1MSP"
+export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+export CORE_PEER_ADDRESS=localhost:7051
+
+#组织1与调用链码的InitLedger方法初始化账本
+peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n basic --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"function":"InitLedger","Args":[]}'
+
+#用CLI工具来查询账本。运行以下指令来获取添加到通道账本的资产列表：
+peer chaincode query -C mychannel -n basic -c '{"Args":["ReadAsset","asset6"]}'
+
+#调用TransferAsset方法改变账本上的资产所有者
+#asset-transfer (basic) 链码的背书策略需要交易同时被 Org1 和 Org2 签名，链码调用指令需要使用 --peerAddresses 标签来指向 peer0.org1.example.com 和 peer0.org2.example.com。因为网络的 TLS 被开启，指令也需要用 --tlsRootCertFiles 标签指向每个 peer 节点的 TLS 证书。
+peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C mychannel -n basic --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"function":"TransferAsset","Args":["asset6","Christopher"]}'
+
+#设置环境变量操作Org2
+export CORE_PEER_TLS_ENABLED=true
+export CORE_PEER_LOCALMSPID="Org2MSP"
+export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
+export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
+export CORE_PEER_ADDRESS=localhost:9051
+
+#查询运行在 peer0.org2.example.com asset-transfer (basic) 链码
+peer chaincode query -C mychannel -n basic -c '{"Args":["ReadAsset","asset6"]}'
+# 结果显示 "asset6" 转给了 Christopher:
+#{"ID":"asset6","color":"white","size":15,"owner":"Christopher","appraisedValue":800}
+
+./network.sh down
+```
+
