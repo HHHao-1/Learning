@@ -357,7 +357,7 @@ crypto-config.yaml是配置文件模板文件
 ./network.sh down
 #创建通道
 ./network.sh createChannel 
-#部署链码：deployCC--不熟链码 -ccn 链码名称 -ccp 链码路径 -ccl 链码所用语言
+#部署链码：deployCC--部署链码 -ccn 链码名称 -ccp 链码路径 -ccl 链码所用语言
 ./network.sh deployCC -ccn basic -ccp ../asset-transfer-basic/chaincode-go -ccl go
 #谷歌1.13换源
 go env -w GOPROXY=https://goproxy.cn,direct
