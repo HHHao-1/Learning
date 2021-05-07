@@ -4,11 +4,11 @@ cd /Users/hao/我的坚果云/01_笔记
 
 time=`date '+%Y/%m/%d %T'`
 
-/usr/local/bin/git add .
+git add .
 
-/usr/local/bin/git commit -m  "$time"
+git commit -m  "$time"
 
 #git push origin master
-/usr/local/bin/git push https://HHHao-1:chzaizg556677@github.com/HHHao-1/Learning.git master
+git push https://HHHao-1:chzaizg556677@github.com/HHHao-1/Learning.git master
 
 echo -e $time "提交笔记" >> /Users/hao/program/log/notes.log

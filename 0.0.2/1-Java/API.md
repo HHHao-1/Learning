@@ -131,11 +131,24 @@ public static void ioTest5() throws IOException {
 
 > In/OutputStream（单独操作）：每次从硬盘读入一个字节到中转站， 再写入目的文件（硬盘）
 >
-> BufferedIn/OutputStream（批量操作）：一次读入n个字节到输入缓冲区，接着经中转站一个个写入到输出缓冲区，输入缓冲区为空时再次从硬盘读入批量数据，同理输出缓冲区满了以后再批量写入到目的文件（硬盘）。
+> BufferedIn/OutputStream（批量操作）：一次读入n个字节到输入缓冲区，当输入缓冲区满了就将输入缓冲区刷新到输出缓冲区，同理输出缓冲区满了以后再将输出缓冲区的数据写入到目的文件（硬盘）。
 >
 > 缓冲流内置缓冲数组`byte buf[8192]，既8kb`,也可指定大小。
 
-![image-20210121152321598](https://tva1.sinaimg.cn/large/008eGmZEly1gmvcgcsk12j30ot07ddik.jpg)
+```java
+class BufferedInputStream extends FilterInputStream {
+    private static int DEFAULT_BUFFER_SIZE = 8192;
+    public BufferedInputStream(InputStream in) {
+        this(in, DEFAULT_BUFFER_SIZE);
+    }
+}
+
+class BufferedOutputStream extends FilterOutputStream {
+    public BufferedOutputStream(OutputStream out) {
+        this(out, 8192);
+    }
+}
+```
 
 ## 对象序列化
 
@@ -256,6 +269,67 @@ try (Stream<String> lines = Files.lines( filePath ))
   e.printStackTrace();//只是测试用例，生产环境下不要这样做异常处理
 }
 ```
+
+## 注意：
+
+### flush()与close()
+
+> 区别：
+>
+> 1. flush()在输出流中调用，清空输出缓冲区数据；
+> 2. close()默认包含了一次flush()操作，关闭之后，不能再写入；flush()后，可以接着写入;
+> 3. 缓冲流默认缓冲区大小是8192字节(8kb)，如果数据小于8kb，不会触发自动刷新操作；
+> 4. flush方法只有带缓冲区的流进行了重写，通过write方法刷新输出；
+
+**源码：**
+
+```java
+public abstract class OutputStream implements Closeable, Flushable {
+    public void flush() throws IOException {
+    }
+}
+
+public class BufferedOutputStream extends FilterOutputStream
+{  
+    public synchronizedvoid flush()  throws IOException
+    {
+        flushBuffer();
+        out.flush();
+    }
+    private void flushBuffer()  throws IOException
+    {
+        if(count > 0)
+        {
+            out.write(buf, 0, count);
+            count = 0;
+        }
+    }
+}
+```
+
+```java
+public class FileOutputStream extends OutputStream{
+    protected void finalize() throws IOException {
+        if (fd != null) {
+            if (fd == FileDescriptor.out || fd == FileDescriptor.err) {
+                flush();
+            } else {
+                close();
+            }
+        }
+    }
+}
+
+public class FileInputStream extends InputStream{
+    protected void finalize() throws IOException {
+        if ((fd != null) &&  (fd != FileDescriptor.in)) {
+            close();
+        }
+    }
+}
+```
+
+
 
 # 文件
 
@@ -562,18 +636,18 @@ public class ThreadTest4 {
 >   // ExecutorService extends Executor
 >   ExecutorService threadPool = Executors.newFixedThreadPool(10);
 >   threadPool.execute(**)/threadPool.submit(**)
->   
->   // Executor
+>       
+>   // Executor 向线程池添加任务
 >   void execute(Runnable command);
->   
+>       
 >   // ExecutorService
 >   Future<T> submit(Callable<T> task);
 >   Future<?> submit(Runnable task);
 >   Future<T> submit(Runnable task, T result);
->   
+>       
 >   List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks);
 >   T invokeAny(Collection<? extends Callable<T>> tasks);
->   
+>       
 >   void shutdown();
 >   List<Runnable> shutdownNow();
 >   boolean isShutdown();
@@ -642,6 +716,44 @@ public class ThreadTest4 {
 >    }
 >    // 有sleep只有一个线程，没sleep有多个线程
 >    ```
+
+#### 生产环境
+
+- Executors返回的线程池对象弊端：
+  - FixedThreadPool和SingleThreadPool：
+    允许的请求队列长度为Integer.MAX_VALUE,可能会堆积大量的请求,从而导致OOM.
+  - CachedThreadPool和ScheduledThreadPool:
+    允许的创建线程数量为Integer.MAX_ALLE,可能会创建大量的线程,从而导致OOM.
+- 手动创建线程池:
+
+> 创建线程池的7个参数：
+>
+> 1. corePoolSize线程池的核心线程数
+> 2. maximumPoolSize能容纳的最大线程数
+> 3. keepAliveTime空闲线程存活时间
+> 4. unit 存活的时间单位
+> 5. workQueue 存放提交但未执行任务的队列
+> 6. threadFactory 创建线程的工厂类
+> 7. handler 等待队列满后的拒绝策略
+
+```java
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+// 使用guva工具包
+private ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("thread-call-runner-%d").build();
+private ThreadPoolExecutor executor = new ThreadPoolExecutor(4,16,200L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>(),namedThreadFactory,new ThreadPoolExecutor.AbortPolicy());
+
+public static void threadPool(){
+    // 新建 1000 个任务，每个任务是打印当前线程名称
+    for (int i = 0; i < 1000; i++) {
+        executor.execute(() -> System.out.println(Thread.currentThread().getName()));
+    }
+    // 优雅关闭线程池
+    executor.shutdown();
+    boolean flag = executor.awaitTermination(10L, TimeUnit.SECONDS);
+    // 任务执行完毕后打印"Done"
+    System.out.println("Done");
+}
+```
 
 ### 6. parallelStream
 
@@ -1602,101 +1714,160 @@ public Stream<Integer> test2(Integer[] a) {
 
 
 
-# 基础
+# 碎片化
 
-## 重写hashcode、equals
+## equals
 
-- **equals：**Object的equals方法就是a==b，即比较两个对象的引用是否相同
+- Object的equals方法就是a==b，即比较两个对象的引用是否相同
 
-  ```java
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof Goods)) return false;
-    Goods goods = (Goods) o;
-    return Objects.equals(name, goods.name) && Objects.equals(price, goods.price);
-  }
-  
-  // Objects.equals
-  public static boolean equals(Object a, Object b) {
-    return (a == b) || (a != null && a.equals(b));
-  }
-  
-  // object.equals
-  public boolean equals(Object obj) {
-    return (this == obj);
-  }
-  ```
+```java
+public boolean equals(Object o) {
+  if (this == o) return true;
+  if (!(o instanceof Goods)) return false;
+  Goods goods = (Goods) o;
+  return Objects.equals(name, goods.name) && Objects.equals(price, goods.price);
+}
 
-- **hashcode：**HashMap、HashTable、HashSet等，先比较对象的hashcode，若相同再equals比较
+// Objects.equals
+public static boolean equals(Object a, Object b) {
+  return (a == b) || (a != null && a.equals(b));
+}
 
-  - 只重写了equals的两个“相等”对象，而hashcode不同，如：HashSet就会保留两个对象(HashSet底层通过HashMap实现)
+// object.equals
+public boolean equals(Object obj) {
+  return (this == obj);
+}
+```
 
-  ```java
-  public int hashCode() {
-    return Objects.hash(name, price);
-  }
-  
-  // Objects.hash
-  public static int hash(Object... values) {
-    return Arrays.hashCode(values);
-  }
-  
-  Arrays.hashCode
-    public static int hashCode(Object a[]) {
-    if (a == null)
-      return 0;
-    int result = 1;
-    for (Object element : a)
-      result = 31 * result + (element == null ? 0 : element.hashCode());
-    return result;
-  }
-  ```
+## hashcode
 
-  ```java
-  public int hashCode() {
-    final int prime = 31; //取一个尽可能小的正整数(怕最终得到的结果超出了int的取数范围)
-    int result = 1;
-    result = prime * result + ((name == null) ? 0 : name.hashCode());
-    result = prime * result + ((price == null) ? 0 : price.hashCode());
-    return result;
-  }
-  ```
+- HashMap、HashTable、HashSet等，先比较对象的hashcode，若相同再equals比较
 
-## 2、8、16进制表达
+- 只重写了equals的两个“相等”对象，而hashcode不同，如：HashSet就会保留两个对象(HashSet底层通过HashMap实现)
 
-### 表达
+```java
+public int hashCode() {
+  return Objects.hash(name, price);
+}
 
-- 2进制：0b开头，最大值0b11111111
-  - int a = 0b00110000  -->48
-- 8进制：0开头，最大0377
-  - int a = 0060  -->48
-- 16进制：0x开头，最大值0xFF
-  - int a = 0x30  -->48
+// Objects.hash
+public static int hash(Object... values) {
+  return Arrays.hashCode(values);
+}
 
-### 转换
+Arrays.hashCode
+  public static int hashCode(Object a[]) {
+  if (a == null)
+    return 0;
+  int result = 1;
+  for (Object element : a)
+    result = 31 * result + (element == null ? 0 : element.hashCode());
+  return result;
+}
+```
 
-- 10进制转2进制字符串	Integer.toBinaryString(n);
-- 10进制转8进制字符串	Integer.toOctalString(n);
-- 10进制转16进制字符串	Integer.toHexString(n);
-- 10进制转 r 进制字符串	Integer.toString(100, 16);
+```java
+public int hashCode() {
+  final int prime = 31; //取一个尽可能小的正整数(怕最终得到的结果超出了int的取数范围)
+  int result = 1;
+  result = prime * result + ((name == null) ? 0 : name.hashCode());
+  result = prime * result + ((price == null) ? 0 : price.hashCode());
+  return result;
+}
+```
 
-## 基本数据类型
+## 断言
 
-### 数值默认类型
+- IDEA开启断言：Run/Debug Configurations -->  VM options --> 输入：-ea 或 -enableassertions
+- 命令行模式：java -ea ... ...
 
-- 整数不加L默认是int，int转为long安全，能编译通过
-  - 当不加L，给long赋值一个超过int范围的值的时候，不能编译通过
-- float浮点数不加F默认是double类型，double转float可能损失精度，不能编译通过
+```java
+// java 原生语法
+boolean isSafe = false;
+assert isSafe;
+assert isSafe : "Not safe at all";
+assert ( args.length > 0);
+// junit 语法
+assertEquals(1, 2);
+int[] a = new int[2];
+int[] b = new int[2];
+assertArrayEquals(a, b);
+assertTrue(1 == 1);
+assertFalse(1 == 2);
+List list = null;
+assertNull(list);
+list = new ArrayList();
+assertNotNull(list);
+List list1 = null;
+List list2 = list1; 
+assertSame(list1, list2);
+assertNotSame(list1, list2);
+```
 
-### 内存占用
+```java
+import static org.junit.Assert.*;  
+import static org.hamcrest.Matchers.*;  
+import org.junit.Test;  
 
-| 对象类型 | 内存 |
-| -------- | ---- |
-| boolean  | 1    |
-| byte     | 1    |
-| short    | 2    |
-| char     | 2    |
-| int      | 4    |
-| float    | 4    |
-| long     | 8    |
-| double   | 8    |
+public class CTest {  
+
+    @Test  
+    public void testAdd() {  
+
+        //一般匹配符   
+        int s = new C().add(1, 1);  
+        //allOf：所有条件必须都成立，测试才通过   
+        assertThat(s, allOf(greaterThan(1), lessThan(3)));  
+        //anyOf：只要有一个条件成立，测试就通过   
+        assertThat(s, anyOf(greaterThan(1), lessThan(1)));  
+        //anything：无论什么条件，测试都通过   
+        assertThat(s, anything());  
+        //is：变量的值等于指定值时，测试通过   
+        assertThat(s, is(2));  
+        //not：和is相反，变量的值不等于指定值时，测试通过   
+        assertThat(s, not(1));  
+
+        //数值匹配符   
+        double d = new C().div(10, 3);  
+        //closeTo：浮点型变量的值在3.0±0.5范围内，测试通过   
+        assertThat(d, closeTo(3.0, 0.5));  
+        //greaterThan：变量的值大于指定值时，测试通过   
+        assertThat(d, greaterThan(3.0));  
+        //lessThan：变量的值小于指定值时，测试通过   
+        assertThat(d, lessThan(3.5));  
+        //greaterThanOrEuqalTo：变量的值大于等于指定值时，测试通过   
+        assertThat(d, greaterThanOrEqualTo(3.3));  
+        //lessThanOrEqualTo：变量的值小于等于指定值时，测试通过   
+        assertThat(d, lessThanOrEqualTo(3.4));  
+
+        //字符串匹配符   
+        String n = new C().getName("Magci");  
+        //containsString：字符串变量中包含指定字符串时，测试通过   
+        assertThat(n, containsString("ci"));  
+        //startsWith：字符串变量以指定字符串开头时，测试通过   
+        assertThat(n, startsWith("Ma"));  
+        //endsWith：字符串变量以指定字符串结尾时，测试通过   
+        assertThat(n, endsWith("i"));  
+        //euqalTo：字符串变量等于指定字符串时，测试通过   
+        assertThat(n, equalTo("Magci"));  
+        //equalToIgnoringCase：字符串变量在忽略大小写的情况下等于指定字符串时，测试通过   
+        assertThat(n, equalToIgnoringCase("magci"));  
+        //equalToIgnoringWhiteSpace：字符串变量在忽略头尾任意空格的情况下等于指定字符串时，测试通过   
+        assertThat(n, equalToIgnoringWhiteSpace(" Magci   "));  
+
+        //集合匹配符   
+        List<String> l = new C().getList("Magci");  
+        //hasItem：Iterable变量中含有指定元素时，测试通过   
+        assertThat(l, hasItem("Magci"));  
+
+        Map<String, String> m = new C().getMap("mgc", "Magci");  
+        //hasEntry：Map变量中含有指定键值对时，测试通过   
+        assertThat(m, hasEntry("mgc", "Magci"));  
+        //hasKey：Map变量中含有指定键时，测试通过   
+        assertThat(m, hasKey("mgc"));  
+        //hasValue：Map变量中含有指定值时，测试通过   
+        assertThat(m, hasValue("Magci"));  
+    }  
+}
+```
+
