@@ -284,6 +284,11 @@ Fabric目前可以支持的世界状态数据库有两种：
 
 - Fabric区块链的网络节点本质上是**互相复制的状态机**，节点之间需要保持相同的账本状态。
 - 为实现分布式节点的一致性，各个节点需要**通过共识过程，对账本状态的变化达成一致性的认同。**
+- 注意：
+  - Fabric的共识算法和比特币等公链有很大不同
+  - Fabric由permissioned节点组成的分布式系统，默认所有记账节点都是可信的（不会恶意伪造交易信息），所以，不需要如POW的算力证明
+  - Fabric的各个节点的交易信息统一由排序服务节点（orderer service node）处理，保证每个节点上的交易顺序一致，天然避免了分叉问题
+  - Fabric正式版目前支持Solo、Kafka、Raft三种共识算法
 
 > Fabric区块链的共识过程包括3个阶段：背书、排序、校验
 
@@ -308,7 +313,7 @@ Fabric目前可以支持的世界状态数据库有两种：
   - 第二：把排序后的批量交易打包成区块
   - 第三：再把区块广播给通道中的成员
 - 排序算法：
-  - 目前，Fabric正式版支持三种交易排序算法：Solo、Kafka和Raft（非拜占庭故障共识算法）
+  - Fabric正式版目前支持三种交易排序算法：Solo、Kafka和Raft（非拜占庭故障共识算法）
     - Fabric提供可插拔式的共识插件，可使用SBFT等拜占庭共识插件
     - Solo：只有一个排序服务节点负责接收交易信息并排序，是最简单的一种排序算法，**一般用于开发测试环境中。Solo共识模式属于中心化的处理方式，不支持拜占庭容错。**
     - Kafka：Kafka是Apache的一个开源项目，主要提供分布式的消息处理／分发服务，每个Kafka集群由多个服务节点组成。Hyperledger Fabric利用Kafka对交易信息进行排序处理，提供高吞吐、低延时的处理能力，并且在集群内部**支持节点故障容错，但不支持拜占庭容错。**
@@ -370,4 +375,68 @@ Fabric联盟链的开发人员主要分为三类：
 
   ![img](https://tva1.sinaimg.cn/large/008i3skNly1gqb7y2hd0aj30go0fd40c.jpg)
 
-Hyperledger Fabric的共识算法和比特币有很大不同，首先，前者是由permissioned节点组成的分布式系统，所有记账节点都是可信的（不会恶意伪造交易信息），所以，不需要POW算力证明。同时，Hyperledger Fabric的各个节点的交易信息统一由排序服务节点（orderer service node）处理，保证每个节点上的交易顺序一致，天然避免了分叉问题。目前，Hyperledger Fabric提供两种排序算法，SOLO和Kafka，其中SOLO模式只有一个order服务节点负责接收交易信息并排序，这是最简单的一种排序算法，不适合大规模的实际生产环境，一般用在实验室测试环境中。
+## 源码包目录
+
+### bccsp 
+- 区块链加密服务提供者（Blockchain Crypto Service Provider）
+- 提供一些**密码学相关操作的实现**，包括 Hash、签名、校验、加解密等
+- 主要支持 MSP 的相关调用
+
+###  common
+
+- 通用的功能模块
+- 包括常用的配置config、加密签名的crypto、ledger设置
+- 工具包含协议设置等
+
+### core 
+
+- 大部分核心实现代码都在本包下
+- **其它包的代码封装上层接口，最终调用本包内代码**
+- 包含区块链操作Chaincode代码实现、peer节点消息处理及行为的实现、容器container的实现如docker交互实现、策略实现policy及预处理endorser等
+
+### docs
+
+- 项目相关的所有文档
+- 包含客户定制主题以及一些工具的源代码
+
+### gossip 
+
+- 流言算法 --- gossip算法
+- 一个基于pull的gossip算法的实现；**最终确保状态一致。**
+
+### images
+
+- 一些跟 Docker 镜像生成相关的配置和脚本
+- 主要包括各个镜像的 Dockerfile.in 文件；这些文件是生成 Dockerfile 的模板
+
+### msp 
+
+- 成员服务提供者（Member Service Provider）
+- 提供一组认证相关的密码学机制和协议
+- 用来负责对网络提供证书分发、校验，身份认证管理等
+
+### orderer 
+- 在 fabric 1.0 开始，共识功能被抽取出来，作为单独的fabric-orderer模块实现，**完成核心的排序功能**
+- **最核心的功能是实现从客户端过来的 broadcast 请求，和从 orderer 发送到 peer 节点的 deliver 接口**
+- orderer 需要支持多 channel 的维护
+- 排序主要包含Solo、Kafka、Raft三个算法
+
+### release_notes
+- 关于最新版本更新的相关资讯
+
+### sampleconfig
+
+- 提供了一些样例证书文件和配置文件
+- pem格式，通过openssl来查看内容
+- 内容基于BASE64来进行编码
+
+### scripts
+
+- 一些辅助脚本，多数为外部 Makefile 调用
+- 比如一些依赖环境的安装如python-pip、然后pip的安装包中的一些依赖环境等
+- 还有一些配置，如让容器永不退出等
+
+### vendor
+
+- 关于部分提供商的内容及管理依赖
+- 包含 github.com、golang.org、google系列及gopkg.in相关内容
