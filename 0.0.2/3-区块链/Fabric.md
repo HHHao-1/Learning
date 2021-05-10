@@ -266,14 +266,24 @@ Fabric目前可以支持的世界状态数据库有两种：
 
 ## MSP
 
-- Membership Service Provider，负责联盟链成员的证书管理
+- Fabric基于PKI体系，生成数字证书以标识成员身份
+- MSP是Membership Service Provider - 是可插拔的接口
+- MSP抽象提供：
+  - 具体的身份格式
+  - 用户证书验证
+  - 用户证书撤销
+  - 签名生成和验证
+- Fabric-CA 用于生成证书和密钥，以真正的初始化MSP
+- Fabric-CA是用于身份管理的MSP接口的默认实现
+  - **即，MSP只是一个接口，Fabric-CA是MSP接口的一种实现**
 - 定义了哪些RCA以及ICA在链里是可信任的
 - 每个组织都有自己的CA及MSP
   - CA给每个peer颁发证书
   - MSP授权，赋予相应权限策略
-  - **peer节点必须拥有CA和MSP才能访问链网**
+  - peer节点必须拥有CA和MSP才能访问链网
   - 一个MSP下含有以下结构
   - ![img](https://tva1.sinaimg.cn/large/008i3skNly1gqa7o8mffxj30na09jmyb.jpg)
+
 - 每个管理协作企业的组织都可以拥有自己的MSP
   - 如下图所示，ORG1拥有的MSP叫ORG1.MSP；而组织ORG2业务复杂，所以维护了3个MSP
   - ![img](https://tva1.sinaimg.cn/large/008i3skNly1gqa7plpeslj30r80blabu.jpg)
