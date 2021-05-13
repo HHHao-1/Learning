@@ -454,7 +454,5 @@ Fabric联盟链的开发人员主要分为三类：
 - 关于部分提供商的内容及管理依赖
 - 包含 github.com、golang.org、google系列及gopkg.in相关内容
 
-# 性能测试
 
-使用Hyperledger Caliper工具
 
