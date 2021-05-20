@@ -454,5 +454,179 @@ Fabric联盟链的开发人员主要分为三类：
 - 关于部分提供商的内容及管理依赖
 - 包含 github.com、golang.org、google系列及gopkg.in相关内容
 
+# 网络搭建
 
+`1. cryptogen showtemplate > crypto-config.yaml`
+
+- cryptogen证书文件相关操作
+
+- 构建网络配置模板文件
+
+```yaml
+OrdererOrgs:
+  - Name: Orderer
+    Domain: example.com
+    EnableNodeOUs: true #是否使用OU这个配置；OU：组织单元；组织下面的一个单元
+    
+PeerOrgs:
+  - Name: Org1
+    Domain: org1.example.com
+    EnableNodeOUs: true
+    
+    Template:
+      Count: 1 #在组织下有几个节点，节点名称顺序排列 peer0.org1、peer1.org1
+    Users:
+      Count: 1 #操作人员的个数，或cli的个数
+```
+
+`2. cryptogen generate --config=crypto-config.yaml ` 
+
+- 生成证书文件
+
+使用configtx.yaml (test_network中有)创建通道配置
+
+https://hyperledger-fabric.readthedocs.io/zh_CN/release-2.2/create_channel/create_channel_config.html
+
+六个部分
+
+Organizations
+
+Capabilities
+
+Application 
+
+Orderer
+
+Channel
+
+Profles（通道创世块配置）
+
+测试网络使用的`configtx.yaml`包含两个通道配置文件`TwoOrgsOrdererGenesis`和`TwoOrgsChannel`：
+
+`TwoOrgsOrdererGenesis`配置文件用于创建系统通道创世块：
+
+测试网络使用`TwoOrgsChannel`配置文件创建应用程序通道：
+
+1. 更改msp路径MSPDir 既 第2步生成的crypto-config文件夹下
+2. 排序模式证书文件路径修改
+3. 修改profile
+   1. ![image-20210520164353208](https://tva1.sinaimg.cn/large/008i3skNly1gqozitf49gj30ht0c4gpz.jpg)
+4. configtxgen来生成通道配置
+   1. https://hyperledger-fabric.readthedocs.io/zh_CN/release-2.2/commands/configtxgen.html
+5. 下图：
+   1. 第一条生成创世块（注：创世块要与其他通道创世块通道名称不同）
+   2. 第二条生成通道文件（应用程序通道）
+   3. 第三、四条生成锚节点文件
+
+![image-20210520163826260](https://tva1.sinaimg.cn/large/008i3skNly1gqozdgorq7j30r206jq4p.jpg)
+
+```
+Usage of configtxgen:
+  -asOrg string
+      以特定组织（按名称）执行配置生成，仅包括组织（可能）有权设置的写集中的值。
+  -channelCreateTxBaseProfile string
+      指定要视为排序系统通道当前状态的轮廓（profile），以允许在通道创建交易生成期间修改非应用程序参数。仅在与 “outputCreateChannelTX”  结合时有效。
+  -channelID string
+      配置交易中使用的通道 ID。
+  -configPath string
+      包含所用的配置的路径。（如果设置的话）
+  -inspectBlock string
+      打印指定路径的区块中包含的配置。
+  -inspectChannelCreateTx string
+      打印指定路径的交易中包含的配置。
+  -outputAnchorPeersUpdate string
+      创建一个更新锚节点的配置更新（仅在默认通道创建时有效，并仅用于第一次更新）。
+  -outputBlock string
+      写入创世区块的路径。（如果设置的话）
+  -outputCreateChannelTx string
+      写入通道创建交易的路径。（如果设置的话）
+  -printOrg string
+      以 JSON 方式打印组织的定义。（手动向通道中添加组织时很有用）
+  -profile string
+      configtx.yaml 中用于生成的轮廓。
+  -version
+      显示版本信息。	
+```
+
+# 启动节点
+
+![image-20210520171035042](https://tva1.sinaimg.cn/large/008i3skNly1gqp0alkb12j30n804nwfx.jpg)
+
+https://hyperledger-fabric.readthedocs.io/zh_CN/release-2.2/deployment_guide_overview.html#peer
+
+启动节点的两种方式：
+
+1. 在本机配置core.yaml
+2. 使用docker容器
+   1. https://hub.docker.com/r/hyperledger/fabric-peer
+   2. ![image-20210520172104360](https://tva1.sinaimg.cn/large/008i3skNly1gqp0lif54mj30pl0kp423.jpg)
+   3. core.yaml要大修改的话要与镜像目录挂载到一起，不想修改容器里内置了core.yaml
+3. 写docker-compose配置文件，用容器将所有节点启动起来
+   1.  ![image-20210520172402118](https://tva1.sinaimg.cn/large/008i3skNly1gqp0olent2j310t09j0vl.jpg)
+   2. docker-compose-test-net的
+      1. volumes路径要修改
+      2. 每个节点的network要是相同的，才会在一个网络内运行
+      3. ![image-20210520174229506](https://tva1.sinaimg.cn/large/008i3skNly1gqp17siimgj30dw05gtag.jpg)
+         1. 这里fabric是项目目录名_后面随便
+      4. ![image-20210520174407595](https://tva1.sinaimg.cn/large/008i3skNly1gqp19hupddj30xo09vadi.jpg)
+         1. 指定cli节点，用来控制组织1或组织2的节点
+         2. 在测试网络中的使用：
+            1. 操作组织1，切换组织1环境变量![image-20210520174549852](https://tva1.sinaimg.cn/large/008i3skNly1gqp1b9in5sj30lq04a0tu.jpg)
+            2. 操作组织2，切换组织2环境变量![image-20210520174754598](https://tva1.sinaimg.cn/large/008i3skNly1gqp1dfpl05j30ll04g3zi.jpg)
+            3. 可以换一种方式，写成两个cli
+      5. 实际使用的修改位置
+         1. ![image-20210520175055332](https://tva1.sinaimg.cn/large/008i3skNly1gqp1gkll4dj30dc0gq435.jpg)
+         2. ![image-20210520175146230](https://tva1.sinaimg.cn/large/008i3skNly1gqp1hggx8gj312k0e9alj.jpg)
+         3. ![image-20210520175217299](https://tva1.sinaimg.cn/large/008i3skNly1gqp1hzmk8qj30va0d1dmc.jpg)
+         4. 参考测试网络切换组织环境变量![image-20210520175347898](https://tva1.sinaimg.cn/large/008i3skNly1gqp1jkcibcj312z0i4qev.jpg)
+         5. ![image-20210520175434770](https://tva1.sinaimg.cn/large/008i3skNly1gqp1kdau4cj311q0fcal9.jpg)
+   3. 启动： -d表示后台执行
+      1.  ![image-20210520175523126](https://tva1.sinaimg.cn/large/008i3skNly1gqp1l7qnmjj30rh03kgn6.jpg)
+      2. ![image-20210520175624588](https://tva1.sinaimg.cn/large/008i3skNly1gqp1ma7b2lj30oz0ehk44.jpg)
+   4. 停止网络
+      1. ![image-20210520180647340](https://tva1.sinaimg.cn/large/008i3skNly1gqp1x37x16j30hu01qdhe.jpg)
+   5. 删除挂载的内容
+      1. ![image-20210520180737827](https://tva1.sinaimg.cn/large/008i3skNly1gqp1xy5ygvj30l802a0uh.jpg)
+
+![image-20210520172544144](https://tva1.sinaimg.cn/large/008i3skNly1gqp0qd1n47j30ok06vach.jpg)
+
+- 排序节点与peer节点是同样的道理
+
+## 补充
+
+这一行要删掉，官方test-network没有创世块，由于我们已经自己生成所以要删掉，改成以下两行
+
+![image-20210520180301713](https://tva1.sinaimg.cn/large/008i3skNly1gqp1t5xvodj30mp0iin6y.jpg)
+
+含义：创世块的导入方法：通过一个文件传给它，及文件目录，这里的目录是容器内的目录（已被挂载）
+
+![image-20210520180434348](https://tva1.sinaimg.cn/large/008i3skNly1gqp1us0zf6j30t30gqtrh.jpg)
+
+# 加入通道、安装链码、调用链码
+
+- 链码目录
+  - ![image-20210520180846241](https://tva1.sinaimg.cn/large/008i3skNly1gqp1z53yxej30ql036q5q.jpg)
+
+- 命令操作
+  - ![image-20210520180920071](https://tva1.sinaimg.cn/large/008i3skNly1gqp1zq65j6j30y40kpq85.jpg)
+  - https://hyperledger-fabric.readthedocs.io/zh_CN/release-2.2/commands/peerchaincode.html
+
+- 操作
+
+  - ![image-20210520181134382](https://tva1.sinaimg.cn/large/008i3skNly1gqp2227q3hj30tc0nwn2s.jpg)
+
+  1.  ![image-20210520181225992](https://tva1.sinaimg.cn/large/008i3skNly1gqp22yh5qvj30lb02g0vs.jpg)
+  2.  生成了mychannel.block 通都文件![image-20210520181354776](https://tva1.sinaimg.cn/large/008i3skNly1gqp24hojshj30g401pjs1.jpg)
+  3. 将mychannel.block复制到本地，因为cli1和cli2要加入同样的一个通道的话，需要同样的这一个通道文件![image-20210520181725258](https://tva1.sinaimg.cn/large/008i3skNly1gqp284p6fzj30ny06zgrr.jpg)
+  4.  ![image-20210520181815572](https://tva1.sinaimg.cn/large/008i3skNly1gqp290lm97j30ec01pwfh.jpg)
+  5.  cli2加入![image-20210520181842005](https://tva1.sinaimg.cn/large/008i3skNly1gqp29gz0iuj30ka03q41c.jpg)
+  6. cli1加入![image-20210520182016963](https://tva1.sinaimg.cn/large/008i3skNly1gqp2b417hdj30mr03ltc8.jpg)
+  7. 现在两个组织都已经加入同一个通道内
+  8. 下来更新组织1、组织2的锚节点
+     1.  ![image-20210520182824259](https://tva1.sinaimg.cn/large/008i3skNly1gqp2jkelavj30nm054n2v.jpg)
+     2.  ![image-20210520182845185](https://tva1.sinaimg.cn/large/008i3skNly1gqp2jxeg2lj30mo065q8i.jpg)
+  9. 通道操作完成，两个节点已加入到同一通道内
+  10. 链码操作
+      1.  ![image-20210520183033093](https://tva1.sinaimg.cn/large/008i3skNly1gqp2lsz5inj30uq0jbtfy.jpg)
+      2. 链码有生命周期期![image-20210520183103777](https://tva1.sinaimg.cn/large/008i3skNly1gqp2mc57qoj311d0jwqcg.jpg)
 
