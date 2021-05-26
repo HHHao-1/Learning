@@ -467,6 +467,7 @@ OrdererOrgs:
   - Name: Orderer
     Domain: example.com
     EnableNodeOUs: true #是否使用OU这个配置；OU：组织单元；组织下面的一个单元
+    # 如果设置了EnableNodeOUs，就在msp下生成config.yaml文件
     
 PeerOrgs:
   - Name: Org1
@@ -515,7 +516,15 @@ Profles（通道创世块配置）
    1. https://hyperledger-fabric.readthedocs.io/zh_CN/release-2.2/commands/configtxgen.html
 5. 下图：
    1. 第一条生成创世块（注：创世块要与其他通道创世块通道名称不同）
+   
+      1. ```
+         configtxgen -profile FourOrgsOrdererGenesis -outputBlock ./channel-artifacts/genesis.block -channelID order-channel
+         ```
+   
+         
+   
    2. 第二条生成通道文件（应用程序通道）
+   
    3. 第三、四条生成锚节点文件
 
 ![image-20210520163826260](https://tva1.sinaimg.cn/large/008i3skNly1gqozdgorq7j30r206jq4p.jpg)
@@ -614,19 +623,75 @@ https://hyperledger-fabric.readthedocs.io/zh_CN/release-2.2/deployment_guide_ove
 - 操作
 
   - ![image-20210520181134382](https://tva1.sinaimg.cn/large/008i3skNly1gqp2227q3hj30tc0nwn2s.jpg)
+  - ![image-20210521120553125](https://tva1.sinaimg.cn/large/008i3skNly1gqpx3velbsj30us0jr7cp.jpg)
 
   1.  ![image-20210520181225992](https://tva1.sinaimg.cn/large/008i3skNly1gqp22yh5qvj30lb02g0vs.jpg)
+
   2.  生成了mychannel.block 通都文件![image-20210520181354776](https://tva1.sinaimg.cn/large/008i3skNly1gqp24hojshj30g401pjs1.jpg)
+
   3. 将mychannel.block复制到本地，因为cli1和cli2要加入同样的一个通道的话，需要同样的这一个通道文件![image-20210520181725258](https://tva1.sinaimg.cn/large/008i3skNly1gqp284p6fzj30ny06zgrr.jpg)
+
   4.  ![image-20210520181815572](https://tva1.sinaimg.cn/large/008i3skNly1gqp290lm97j30ec01pwfh.jpg)
+
   5.  cli2加入![image-20210520181842005](https://tva1.sinaimg.cn/large/008i3skNly1gqp29gz0iuj30ka03q41c.jpg)
+
   6. cli1加入![image-20210520182016963](https://tva1.sinaimg.cn/large/008i3skNly1gqp2b417hdj30mr03ltc8.jpg)
+
   7. 现在两个组织都已经加入同一个通道内
+
   8. 下来更新组织1、组织2的锚节点
+
      1.  ![image-20210520182824259](https://tva1.sinaimg.cn/large/008i3skNly1gqp2jkelavj30nm054n2v.jpg)
      2.  ![image-20210520182845185](https://tva1.sinaimg.cn/large/008i3skNly1gqp2jxeg2lj30mo065q8i.jpg)
-  9. 通道操作完成，两个节点已加入到同一通道内
-  10. 链码操作
-      1.  ![image-20210520183033093](https://tva1.sinaimg.cn/large/008i3skNly1gqp2lsz5inj30uq0jbtfy.jpg)
-      2. 链码有生命周期期![image-20210520183103777](https://tva1.sinaimg.cn/large/008i3skNly1gqp2mc57qoj311d0jwqcg.jpg)
 
+  9. 通道操作完成，两个节点已加入到同一通道内
+
+  10. 链码操作
+
+      1.  ![image-20210520183033093](https://tva1.sinaimg.cn/large/008i3skNly1gqp2lsz5inj30uq0jbtfy.jpg)
+
+      2. 链码有生命周期期 ![image-20210520183103777](https://tva1.sinaimg.cn/large/008i3skNly1gqp2mc57qoj311d0jwqcg.jpg)
+
+          ![image-20210521113458835](https://tva1.sinaimg.cn/large/008i3skNly1gqpw7pvivrj30o309ywi6.jpg)
+
+      3. 挂载链码，创建链码依赖![image-20210521113811769](https://tva1.sinaimg.cn/large/008i3skNly1gqpwb23gndj30k508on4i.jpg)
+      4. 回到工作目录，对链码打包![image-20210521114217720](https://tva1.sinaimg.cn/large/008i3skNly1gqpwfbpkfdj30jx03lq5n.jpg)
+      5. 复制打包文件到cli2 ![image-20210521114509291](https://tva1.sinaimg.cn/large/008i3skNly1gqpwiajvz2j30mb082tfy.jpg)
+      6. 这里label是链码标签，_1指第一版，以后还可以改![image-20210521114124981](https://tva1.sinaimg.cn/large/008i3skNly1gqpweenvvbj30h802a3yz.jpg)
+      7. cli1、cli2安装链码![image-20210521115029740](https://tva1.sinaimg.cn/large/008i3skNly1gqpwnuswb8j30n104743n.jpg)
+      8. 每个组织批准链码
+         1. init-required : 链码是否需要初始化
+         2. -sequence序列号是1 
+         3. package-id在这里
+            1.  ![image-20210521115526649](https://tva1.sinaimg.cn/large/008i3skNly1gqpwt0dayrj30l303pjw1.jpg)
+            2. 也可以查到
+               1.  ![image-20210521115628880](https://tva1.sinaimg.cn/large/008i3skNly1gqpwu38t0vj30o705h3zn.jpg)
+         4.  ![image-20210521115213096](https://tva1.sinaimg.cn/large/008i3skNly1gqpwpn5adyj30ti03cmy7.jpg)
+         5. 操作：![image-20210521115710644](https://tva1.sinaimg.cn/large/008i3skNly1gqpwuth8i2j30kz06810c.jpg)
+         6. 查询是否approve成功
+            1. ![image-20210521115822536](https://tva1.sinaimg.cn/large/008i3skNly1gqpww1wklxj30l406ztd9.jpg)
+      9. 生命周期期最后一步，commit，之前的操作需要每个节点都操作一下，commit只需要一个节点提交就好了
+         1. 需要指出节点地址及端口；以及组织1和组织2的根证书地址
+            1.  ![image-20210521120002150](https://tva1.sinaimg.cn/large/008i3skNly1gqpwxs2u9tj30rf062go9.jpg)
+         2. 操作![image-20210521120144465](https://tva1.sinaimg.cn/large/008i3skNly1gqpwzk7ttej30n00917g8.jpg)
+      10. 链码调用
+          1.  ![image-20210521120345818](https://tva1.sinaimg.cn/large/008i3skNly1gqpx1ns1i4j30wk0kjdme.jpg)
+          2.  调用，在组织1上操作，传入一个键值对参数
+             1. ![image-20210521120638792](https://tva1.sinaimg.cn/large/008i3skNly1gqpx4npu41j30s406kq5i.jpg)
+          3. 查询， 在组织2上进行查询
+             1. ![image-20210521120928880](https://tva1.sinaimg.cn/large/008i3skNly1gqpx8ug3o6j30hd01k0t8.jpg)
+             2. ![image-20210521120946970](https://tva1.sinaimg.cn/large/008i3skNly1gqpx8tz6fqj30s1039abw.jpg)
+          4. 调用，在组织2上修改数据
+             1. ![image-20210521121118727](https://tva1.sinaimg.cn/large/008i3skNly1gqpx9ieqd1j30qy05pgo0.jpg)
+             2. ![image-20210521121142175](https://tva1.sinaimg.cn/large/008i3skNly1gqpx9x5c0zj30ml079qc1.jpg)
+          5. 查询，在组织1上查询
+             1. ![image-20210521121304226](https://tva1.sinaimg.cn/large/008i3skNly1gqpxbcf8bqj30gh025glt.jpg)
+             2. ![image-20210521121317747](https://tva1.sinaimg.cn/large/008i3skNly1gqpxbkreeij30ky03i75z.jpg)
+
+# 补充
+
+- 在加入通道或安装链码之前，有很重要的一点
+  - 要在hosts下配置我们节点对应的ip
+    - ![image-20210521121608608](https://tva1.sinaimg.cn/large/008i3skNly1gqpxejp6yxj30dn012aal.jpg)
+    -  ![image-20210521121649475](https://tva1.sinaimg.cn/large/008i3skNly1gqpxf8xn7tj30n208waeu.jpg)
+    - 不配置的话，各节点直接无法通信
