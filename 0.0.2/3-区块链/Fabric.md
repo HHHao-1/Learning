@@ -518,14 +518,36 @@ Profles（通道创世块配置）
    1. 第一条生成创世块（注：创世块要与其他通道创世块通道名称不同）
    
       1. ```
-         configtxgen -profile FourOrgsOrdererGenesis -outputBlock ./channel-artifacts/genesis.block -channelID order-channel
+         configtxgen -profile FourOrgsApplicationGenesis -outputBlock ./channel-artifacts/genesis.block -channelID order-channel
          ```
-   
-         
    
    2. 第二条生成通道文件（应用程序通道）
    
+      1. ```
+         configtxgen -profile NavyChannel -outputCreateChannelTx ./channel-artifacts/navy-channel.tx -channelID navy-channel
+         
+         configtxgen -profile ArmyChannel -outputCreateChannelTx ./channel-artifacts/army-channel.tx -channelID army-channel
+         
+         configtxgen -profile AirForceChannel -outputCreateChannelTx ./channel-artifacts/air-force-channel.tx -channelID air-force-channel
+         ```
+   
    3. 第三、四条生成锚节点文件
+   
+      1. ```
+         configtxgen -profile NavyChannel -outputAnchorPeersUpdate ./channel-artifacts/Org1MSPanchors.tx -channelID navy-channel -asOrg Org1MSP
+         
+         configtxgen -profile ArmyChannel -outputAnchorPeersUpdate ./channel-artifacts/Org2MSPanchors.tx -channelID army-channel -asOrg Org2MSP
+         
+         configtxgen -profile AirForceChannel -outputAnchorPeersUpdate ./channel-artifacts/Org3MSPanchors.tx -channelID air-force-channel -asOrg Org3MSP
+         
+         configtxgen -profile NavyChannel -outputAnchorPeersUpdate ./channel-artifacts/Org4MSPanchors1.tx -channelID navy-channel -asOrg Org4MSP
+         
+         configtxgen -profile ArmyChannel -outputAnchorPeersUpdate ./channel-artifacts/Org4MSPanchors2.tx -channelID army-channel -asOrg Org4MSP
+         
+         configtxgen -profile AirForceChannel -outputAnchorPeersUpdate ./channel-artifacts/Org4MSPanchors3.tx -channelID air-force-channel -asOrg Org4MSP
+         ```
+         
+         
 
 ![image-20210520163826260](https://tva1.sinaimg.cn/large/008i3skNly1gqozdgorq7j30r206jq4p.jpg)
 
