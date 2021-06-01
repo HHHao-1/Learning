@@ -456,6 +456,8 @@ Fabric联盟链的开发人员主要分为三类：
 
 # 网络搭建
 
+> cp * /usr/local/bin
+
 `1. cryptogen showtemplate > crypto-config.yaml`
 
 - cryptogen证书文件相关操作
@@ -593,7 +595,8 @@ https://hyperledger-fabric.readthedocs.io/zh_CN/release-2.2/deployment_guide_ove
    2. ![image-20210520172104360](https://tva1.sinaimg.cn/large/008i3skNly1gqp0lif54mj30pl0kp423.jpg)
    3. core.yaml要大修改的话要与镜像目录挂载到一起，不想修改容器里内置了core.yaml
 3. 写docker-compose配置文件，用容器将所有节点启动起来
-   1.  ![image-20210520172402118](https://tva1.sinaimg.cn/large/008i3skNly1gqp0olent2j310t09j0vl.jpg)
+   1. ![image-20210520172402118](https://tva1.sinaimg.cn/large/008i3skNly1gqp0olent2j310t09j0vl.jpg)
+   
    2. docker-compose-test-net的
       1. volumes路径要修改
       2. 每个节点的network要是相同的，才会在一个网络内运行
@@ -611,13 +614,34 @@ https://hyperledger-fabric.readthedocs.io/zh_CN/release-2.2/deployment_guide_ove
          3. ![image-20210520175217299](https://tva1.sinaimg.cn/large/008i3skNly1gqp1hzmk8qj30va0d1dmc.jpg)
          4. 参考测试网络切换组织环境变量![image-20210520175347898](https://tva1.sinaimg.cn/large/008i3skNly1gqp1jkcibcj312z0i4qev.jpg)
          5. ![image-20210520175434770](https://tva1.sinaimg.cn/large/008i3skNly1gqp1kdau4cj311q0fcal9.jpg)
+      
    3. 启动： -d表示后台执行
-      1.  ![image-20210520175523126](https://tva1.sinaimg.cn/large/008i3skNly1gqp1l7qnmjj30rh03kgn6.jpg)
-      2. ![image-20210520175624588](https://tva1.sinaimg.cn/large/008i3skNly1gqp1ma7b2lj30oz0ehk44.jpg)
+      
+      1. ```
+         docker-compose -f docker-compose-military.yaml up -d
+         ```
+      
+         
+      
+      2. ![image-20210520175523126](https://tva1.sinaimg.cn/large/008i3skNly1gqp1l7qnmjj30rh03kgn6.jpg)
+      
+      3. ![image-20210520175624588](https://tva1.sinaimg.cn/large/008i3skNly1gqp1ma7b2lj30oz0ehk44.jpg)
+      
    4. 停止网络
-      1. ![image-20210520180647340](https://tva1.sinaimg.cn/large/008i3skNly1gqp1x37x16j30hu01qdhe.jpg)
+   
+      1. ```
+         docker-compose -f docker-compose-military.yaml down
+         ```
+   
+      2. ![image-20210520180647340](https://tva1.sinaimg.cn/large/008i3skNly1gqp1x37x16j30hu01qdhe.jpg)
+   
    5. 删除挂载的内容
-      1. ![image-20210520180737827](https://tva1.sinaimg.cn/large/008i3skNly1gqp1xy5ygvj30l802a0uh.jpg)
+   
+      1. ```
+         docker volume prune
+         ```
+   
+      2. ![image-20210520180737827](https://tva1.sinaimg.cn/large/008i3skNly1gqp1xy5ygvj30l802a0uh.jpg)
 
 ![image-20210520172544144](https://tva1.sinaimg.cn/large/008i3skNly1gqp0qd1n47j30ok06vach.jpg)
 
@@ -649,7 +673,7 @@ https://hyperledger-fabric.readthedocs.io/zh_CN/release-2.2/deployment_guide_ove
 
   1.  ![image-20210520181225992](https://tva1.sinaimg.cn/large/008i3skNly1gqp22yh5qvj30lb02g0vs.jpg)
 
-  2.  生成了mychannel.block 通都文件![image-20210520181354776](https://tva1.sinaimg.cn/large/008i3skNly1gqp24hojshj30g401pjs1.jpg)
+  2.  生成了mychannel.block 通道文件![image-20210520181354776](https://tva1.sinaimg.cn/large/008i3skNly1gqp24hojshj30g401pjs1.jpg)
 
   3. 将mychannel.block复制到本地，因为cli1和cli2要加入同样的一个通道的话，需要同样的这一个通道文件![image-20210520181725258](https://tva1.sinaimg.cn/large/008i3skNly1gqp284p6fzj30ny06zgrr.jpg)
 
@@ -670,18 +694,20 @@ https://hyperledger-fabric.readthedocs.io/zh_CN/release-2.2/deployment_guide_ove
 
   10. 链码操作
 
-      1.  ![image-20210520183033093](https://tva1.sinaimg.cn/large/008i3skNly1gqp2lsz5inj30uq0jbtfy.jpg)
+      1. 链码部署：https://hyperledger-fabric.readthedocs.io/zh_CN/latest/deploy_chaincode.html#install-the-chaincode-package
 
-      2. 链码有生命周期期 ![image-20210520183103777](https://tva1.sinaimg.cn/large/008i3skNly1gqp2mc57qoj311d0jwqcg.jpg)
+      2. ![image-20210520183033093](https://tva1.sinaimg.cn/large/008i3skNly1gqp2lsz5inj30uq0jbtfy.jpg)
+
+      3. 链码有生命周期期 ![image-20210520183103777](https://tva1.sinaimg.cn/large/008i3skNly1gqp2mc57qoj311d0jwqcg.jpg)
 
           ![image-20210521113458835](https://tva1.sinaimg.cn/large/008i3skNly1gqpw7pvivrj30o309ywi6.jpg)
-
-      3. 挂载链码，创建链码依赖![image-20210521113811769](https://tva1.sinaimg.cn/large/008i3skNly1gqpwb23gndj30k508on4i.jpg)
-      4. 回到工作目录，对链码打包![image-20210521114217720](https://tva1.sinaimg.cn/large/008i3skNly1gqpwfbpkfdj30jx03lq5n.jpg)
-      5. 复制打包文件到cli2 ![image-20210521114509291](https://tva1.sinaimg.cn/large/008i3skNly1gqpwiajvz2j30mb082tfy.jpg)
-      6. 这里label是链码标签，_1指第一版，以后还可以改![image-20210521114124981](https://tva1.sinaimg.cn/large/008i3skNly1gqpweenvvbj30h802a3yz.jpg)
-      7. cli1、cli2安装链码![image-20210521115029740](https://tva1.sinaimg.cn/large/008i3skNly1gqpwnuswb8j30n104743n.jpg)
-      8. 每个组织批准链码
+      
+      4. 挂载链码，创建链码依赖![image-20210521113811769](https://tva1.sinaimg.cn/large/008i3skNly1gqpwb23gndj30k508on4i.jpg)
+      5. 回到工作目录，对链码打包![image-20210521114217720](https://tva1.sinaimg.cn/large/008i3skNly1gqpwfbpkfdj30jx03lq5n.jpg)
+      6. 复制打包文件到cli2 ![image-20210521114509291](https://tva1.sinaimg.cn/large/008i3skNly1gqpwiajvz2j30mb082tfy.jpg)
+      7. 这里label是链码标签，_1指第一版，以后还可以改![image-20210521114124981](https://tva1.sinaimg.cn/large/008i3skNly1gqpweenvvbj30h802a3yz.jpg)
+      8. cli1、cli2安装链码![image-20210521115029740](https://tva1.sinaimg.cn/large/008i3skNly1gqpwnuswb8j30n104743n.jpg)
+      9. 每个组织批准链码
          1. init-required : 链码是否需要初始化
          2. -sequence序列号是1 
          3. package-id在这里
@@ -692,11 +718,11 @@ https://hyperledger-fabric.readthedocs.io/zh_CN/release-2.2/deployment_guide_ove
          5. 操作：![image-20210521115710644](https://tva1.sinaimg.cn/large/008i3skNly1gqpwuth8i2j30kz06810c.jpg)
          6. 查询是否approve成功
             1. ![image-20210521115822536](https://tva1.sinaimg.cn/large/008i3skNly1gqpww1wklxj30l406ztd9.jpg)
-      9. 生命周期期最后一步，commit，之前的操作需要每个节点都操作一下，commit只需要一个节点提交就好了
+      10. 生命周期期最后一步，commit，之前的操作需要每个节点都操作一下，commit只需要一个节点提交就好了
          1. 需要指出节点地址及端口；以及组织1和组织2的根证书地址
             1.  ![image-20210521120002150](https://tva1.sinaimg.cn/large/008i3skNly1gqpwxs2u9tj30rf062go9.jpg)
          2. 操作![image-20210521120144465](https://tva1.sinaimg.cn/large/008i3skNly1gqpwzk7ttej30n00917g8.jpg)
-      10. 链码调用
+      11. 链码调用
           1.  ![image-20210521120345818](https://tva1.sinaimg.cn/large/008i3skNly1gqpx1ns1i4j30wk0kjdme.jpg)
           2.  调用，在组织1上操作，传入一个键值对参数
              1. ![image-20210521120638792](https://tva1.sinaimg.cn/large/008i3skNly1gqpx4npu41j30s406kq5i.jpg)
