@@ -613,7 +613,7 @@ https://hyperledger-fabric.readthedocs.io/zh_CN/release-2.2/deployment_guide_ove
          2. ![image-20210520175146230](https://tva1.sinaimg.cn/large/008i3skNly1gqp1hggx8gj312k0e9alj.jpg)
          3. ![image-20210520175217299](https://tva1.sinaimg.cn/large/008i3skNly1gqp1hzmk8qj30va0d1dmc.jpg)
          4. 参考测试网络切换组织环境变量![image-20210520175347898](https://tva1.sinaimg.cn/large/008i3skNly1gqp1jkcibcj312z0i4qev.jpg)
-         5. ![image-20210520175434770](https://tva1.sinaimg.cn/large/008i3skNly1gqp1kdau4cj311q0fcal9.jpg)
+         5. ![image-20210520175434770](https://tva1.sinaimg.cn/large/008i3skNly1gr3wvigj7nj30v905gq6v.jpg)
       
    3. 启动： -d表示后台执行
       
@@ -651,7 +651,7 @@ https://hyperledger-fabric.readthedocs.io/zh_CN/release-2.2/deployment_guide_ove
 
 这一行要删掉，官方test-network没有创世块，由于我们已经自己生成所以要删掉，改成以下两行
 
-![image-20210520180301713](https://tva1.sinaimg.cn/large/008i3skNly1gqp1t5xvodj30mp0iin6y.jpg)
+![image-20210602170705085](https://tva1.sinaimg.cn/large/008i3skNly1gr418z0813j30rw0in12s.jpg)
 
 含义：创世块的导入方法：通过一个文件传给它，及文件目录，这里的目录是容器内的目录（已被挂载）
 
