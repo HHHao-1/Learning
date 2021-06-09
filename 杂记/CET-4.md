@@ -95,9 +95,7 @@ resulting in the great change of nearly everything.(导致了几乎一切的巨�
 
 Indeed, the world goes forward every day , pushed by those who take actions.
 
-Indeed, what has been presented
-previously is of great assistance to people
-in more ways than one.（正面）
+Indeed, what has been presented previously is of great assistance to people in more ways than one.（正面）
 的确，前面所介绍的在很多方面都对人们有很大的帮助。
 As it happens, this sort of progress can have both pros and cons in more ways than one.（中立）
 事实上，这种进步在很多方面都有利有弊。
@@ -419,4 +417,5 @@ Compared to before, there are a lot of changes in ...
 - instead of：代替；而不是
 - make money
 - wide eyes
+- The gap between rich and poor is widening
 
