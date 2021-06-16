@@ -62,6 +62,8 @@ Fabric目前可以支持的世界状态数据库有两种：
 
 ## 链码
 
+*注：channel内同一个chaincode可以安装到多个peer上，但只能实例化一次。多次实例化将出错。*
+
 > - chaincode在区块链外部应用程序要和账本发生交易的时候被外部应用程序调用
 > - 大多数情况下，链码只和账本的数据库组件（**世界状态**）交互，而不和交易日志交互
 
@@ -616,7 +618,7 @@ https://hyperledger-fabric.readthedocs.io/zh_CN/release-2.2/deployment_guide_ove
          5. ![image-20210520175434770](https://tva1.sinaimg.cn/large/008i3skNly1gr3wvigj7nj30v905gq6v.jpg)
       
    3. 启动： -d表示后台执行
-      
+     
       1. ```
          docker-compose -f docker-compose-military.yaml up -d
          ```
@@ -673,35 +675,41 @@ https://hyperledger-fabric.readthedocs.io/zh_CN/release-2.2/deployment_guide_ove
 
   1.  ![image-20210520181225992](https://tva1.sinaimg.cn/large/008i3skNly1gqp22yh5qvj30lb02g0vs.jpg)
 
-  2.  生成了mychannel.block 通道文件![image-20210520181354776](https://tva1.sinaimg.cn/large/008i3skNly1gqp24hojshj30g401pjs1.jpg)
+  2. ```
+     peer channel create -o orderer1.military.com:1050 -c navy-channel -f ./channel-artifacts/navy-channel.tx --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/military.com/msp/tlscacerts/tlsca.military.com-cert.pem
+     ```
 
-  3. 将mychannel.block复制到本地，因为cli1和cli2要加入同样的一个通道的话，需要同样的这一个通道文件![image-20210520181725258](https://tva1.sinaimg.cn/large/008i3skNly1gqp284p6fzj30ny06zgrr.jpg)
+     
 
-  4.  ![image-20210520181815572](https://tva1.sinaimg.cn/large/008i3skNly1gqp290lm97j30ec01pwfh.jpg)
+  3. 生成了mychannel.block 通道文件![image-20210520181354776](https://tva1.sinaimg.cn/large/008i3skNly1gqp24hojshj30g401pjs1.jpg)
 
-  5.  cli2加入![image-20210520181842005](https://tva1.sinaimg.cn/large/008i3skNly1gqp29gz0iuj30ka03q41c.jpg)
+  4. 将mychannel.block复制到本地，因为cli1和cli2要加入同样的一个通道的话，需要同样的这一个通道文件![image-20210520181725258](https://tva1.sinaimg.cn/large/008i3skNly1gqp284p6fzj30ny06zgrr.jpg)
 
-  6. cli1加入![image-20210520182016963](https://tva1.sinaimg.cn/large/008i3skNly1gqp2b417hdj30mr03ltc8.jpg)
+  5. ![image-20210520181815572](https://tva1.sinaimg.cn/large/008i3skNly1gqp290lm97j30ec01pwfh.jpg)
 
-  7. 现在两个组织都已经加入同一个通道内
+  6. cli2加入![image-20210520181842005](https://tva1.sinaimg.cn/large/008i3skNly1gqp29gz0iuj30ka03q41c.jpg)
 
-  8. 下来更新组织1、组织2的锚节点
-
+  7. cli1加入![image-20210520182016963](https://tva1.sinaimg.cn/large/008i3skNly1gqp2b417hdj30mr03ltc8.jpg)
+  
+  8. 现在两个组织都已经加入同一个通道内
+  
+  9. 下来更新组织1、组织2的锚节点
+  
      1.  ![image-20210520182824259](https://tva1.sinaimg.cn/large/008i3skNly1gqp2jkelavj30nm054n2v.jpg)
      2.  ![image-20210520182845185](https://tva1.sinaimg.cn/large/008i3skNly1gqp2jxeg2lj30mo065q8i.jpg)
 
-  9. 通道操作完成，两个节点已加入到同一通道内
+  10. 通道操作完成，两个节点已加入到同一通道内
 
-  10. 链码操作
+  11. 链码操作
 
       1. 链码部署：https://hyperledger-fabric.readthedocs.io/zh_CN/latest/deploy_chaincode.html#install-the-chaincode-package
-
+  
       2. ![image-20210520183033093](https://tva1.sinaimg.cn/large/008i3skNly1gqp2lsz5inj30uq0jbtfy.jpg)
-
+  
       3. 链码有生命周期期 ![image-20210520183103777](https://tva1.sinaimg.cn/large/008i3skNly1gqp2mc57qoj311d0jwqcg.jpg)
-
+  
           ![image-20210521113458835](https://tva1.sinaimg.cn/large/008i3skNly1gqpw7pvivrj30o309ywi6.jpg)
-      
+  
       4. 挂载链码，创建链码依赖![image-20210521113811769](https://tva1.sinaimg.cn/large/008i3skNly1gqpwb23gndj30k508on4i.jpg)
       5. 回到工作目录，对链码打包![image-20210521114217720](https://tva1.sinaimg.cn/large/008i3skNly1gqpwfbpkfdj30jx03lq5n.jpg)
       6. 复制打包文件到cli2 ![image-20210521114509291](https://tva1.sinaimg.cn/large/008i3skNly1gqpwiajvz2j30mb082tfy.jpg)
@@ -743,3 +751,28 @@ https://hyperledger-fabric.readthedocs.io/zh_CN/release-2.2/deployment_guide_ove
     - ![image-20210521121608608](https://tva1.sinaimg.cn/large/008i3skNly1gqpxejp6yxj30dn012aal.jpg)
     -  ![image-20210521121649475](https://tva1.sinaimg.cn/large/008i3skNly1gqpxf8xn7tj30n208waeu.jpg)
     - 不配置的话，各节点直接无法通信
+
+## 3. Etcdraft 共识模式
+
+Raft 是 v1.4.1 中引入的，它是一种基于 etcd 的崩溃容错（CFT）排序服务。Raft 遵循 “领导者和追随者” 模型，其中领导者在通道中的orderer节点之间动态选出（这个节点集合称为“consenter set”），该领导者将消息复制到跟随者节点。由于系统可以承受节点（包括领导节点）的丢失，只要剩下大多数排序节点（即所谓的“仲裁”），Raft就被称为“崩溃容错”（CFT）。换句话说，如果一个通道中有三个节点，它可以承受一个节点的丢失（剩下两个节点）。
+
+### 3.1 raft相关概念
+
+- 日志条目：Raft排序服务中的主要工作单元是“日志条目”，这些条目的完整序列称为“日志”。如果成员的多数（法定人数，换言之）成员到条目及其顺序达成一致，我们认为日志是一致的。
+- Consenter设置：排序节点主动参与给定信道的共识机制并接收信道的复制日志。这可以是所有可用节点（在单个群集中或在对系统通道有贡献的多个群集中），或者是这些节点的子集。
+- 有限状态机（FSM）：Raft中的每个排序节点都有一个FSM，它们共同用于确保各个排序节点中的日志序列是确定性的（以相同的顺序编写）。
+- 法定人数：描述需要确认提案的最少数量的同意者，以便可以提交交易。对于每个consenter集，这是 大多数节点。在具有五个节点的群集中，必须有三个节点才能存在仲裁。如果由于任何原因导致法定数量的节点不可用，则orderer将无法用于通道上的读取和写入操作，并且不能提交新日志。
+- Leader：Leader负责提取新的日志条目，将它们复制到跟随者订购节点，以及管理何时认为条目已提交。这不是特殊类型orderer人。在情况决定的情况下，这只是orderer在某些时候可能拥有的角色，而不是其他角色。
+- Follower：Follower从Leader那里接收日志并确定性地复制它们，确保日志保持一致。Follower也会收到来自Leader的“心跳”信息。如果Leader停止在可配置的时间内发送这些消息，则追将发起选举，其中一个Follower将被选为新Leader。
+
+### 3.2 raft在交易中的流程
+
+每个通道都在Raft协议的单独实例上运行，这允许每个实例选择不同的leader。还允许集群由不同组织控制的排序节点组成的用例中进一步分散服务。虽然所有Raft节点必须是系统通道的一部分，但它们不一定必须是所有应用程序通道的一部分。通道创建者（和通道管理员）可以选择可用orderer的子集，并根据需要添加或删除orderer（一次只能添加或删除一个节点）。
+
+在Raft中，交易（提案或配置更新的形式）由接收交易的orderer节点自动路由到该信道的当前leader。这意味着peer和应用程序不需要知道leader是谁。只有orderer节点需要知道。
+
+### 3.3 raft节点选举日志传输
+
+raft节点始终处于以下三种状态之一：follower，candidate或leader。所有节点最初都是follower。在这种状态下，他们可以接受来自leader的日志条目（如果已经当选），或者为leader投票。如果在设定的时间内没有收到日志条目或心跳（例如，五秒），则节点会自我提升到candidate状态。在候选状态中，节点请求来自其他节点的投票。如果候选人获得法定数量的选票，则将其提升为leader。leader接受新的日志条目并将其复制给follower。
+
+虽然可以无限期地保留所有日志，但为了节省磁盘空间，Raft使用一个名为“snapshotting”的进程，用户可以在其中定义将在日志中保留多少字节的数据。每个快照将包含一定数量的块）。

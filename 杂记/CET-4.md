@@ -93,14 +93,14 @@ people can reap the rewards in abundance，（正面）
 
 resulting in the great change of nearly everything.(导致了几乎一切的巨大变化。)
 
-Indeed, the world goes forward every day , pushed by those who take actions.
-
 Indeed, what has been presented previously is of great assistance to people in more ways than one.（正面）
 的确，前面所介绍的在很多方面都对人们有很大的帮助。
 As it happens, this sort of progress can have both pros and cons in more ways than one.（中立）
 事实上，这种进步在很多方面都有利有弊。
-Be that as it may, this kind of situation may well cause potential harm to people in more ways than one.（负面）
+Be that as it may, this kind of situation may well cause potential harm to people in more ways than one.（负面）【for all that】
 尽管如此，这种情况可能会在多个方面对人们造成潜在的伤害。
+
+Indeed, the world goes forward every day, pushed by those who take actions.
 ```
 
 ```
@@ -141,7 +141,7 @@ There is a time-honored saying that goes, " ... ."
    With ... keeping a peaceful mind, ...
    
    
-   ... pay more attention to ...
+   ... pay more attentions to ...
    
    A group of student volunteers, recruited by the student union, went to visit a Hope Elementary School *in a neighboring county *on June 5th *with the intention of celebrating the upcoming Dragon Boat Festival with the children there.
    
@@ -162,7 +162,7 @@ There is a time-honored saying that goes, " ... ."
    some people say that ...
    Everyone says that the society is becoming better and better, more and more convenient, and more and more intelligent.
    
-   subways and high-speed trains are also a good way to solve the heavy traffic.
+   Taking the subway or the high-speed train is also a good way to solve the problem of the heavy traffic.
    
    It is said that ...
    There is a legend that ...
@@ -226,7 +226,7 @@ From ... above (examples，reasons，the example，the reason)
 we can see clearly that ... .
 we can directly conclude that ... .
 
-In the end（Therefore）, we call on everyone to pay more attention to ... .
+In the end（Therefore）, we call on everyone to pay more attentions to ... .
 ```
 
 ```
