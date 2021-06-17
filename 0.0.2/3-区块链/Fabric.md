@@ -522,7 +522,7 @@ Profles（通道创世块配置）
    1. 第一条生成创世块（注：创世块要与其他通道创世块通道名称不同）
    
       1. ```
-         configtxgen -profile FourOrgsApplicationGenesis -outputBlock ./channel-artifacts/genesis.block -channelID order-channel
+         configtxgen -profile FourOrgsOrdererGenesis -outputBlock ./channel-artifacts/genesis.block -channelID order-channel
          ```
    
    2. 第二条生成通道文件（应用程序通道）
@@ -676,32 +676,63 @@ https://hyperledger-fabric.readthedocs.io/zh_CN/release-2.2/deployment_guide_ove
   1.  ![image-20210520181225992](https://tva1.sinaimg.cn/large/008i3skNly1gqp22yh5qvj30lb02g0vs.jpg)
 
   2. ```
-     peer channel create -o orderer1.military.com:1050 -c navy-channel -f ./channel-artifacts/navy-channel.tx --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/military.com/msp/tlscacerts/tlsca.military.com-cert.pem
-     ```
-
+     peer channel create -o orderer.military.com:1050 -c navy-channel -f ./channel-artifacts/navy-channel.tx --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/military.com/msp/tlscacerts/tlsca.military.com-cert.pem
      
+     peer channel create -o orderer.military.com:1050 -c army-channel -f ./channel-artifacts/army-channel.tx --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/military.com/msp/tlscacerts/tlsca.military.com-cert.pem
+     
+     peer channel create -o orderer.military.com:1050 -c air-force-channel -f ./channel-artifacts/air-force-channel.tx --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/military.com/msp/tlscacerts/tlsca.military.com-cert.pem
+     ```
 
   3. 生成了mychannel.block 通道文件![image-20210520181354776](https://tva1.sinaimg.cn/large/008i3skNly1gqp24hojshj30g401pjs1.jpg)
 
   4. 将mychannel.block复制到本地，因为cli1和cli2要加入同样的一个通道的话，需要同样的这一个通道文件![image-20210520181725258](https://tva1.sinaimg.cn/large/008i3skNly1gqp284p6fzj30ny06zgrr.jpg)
 
-  5. ![image-20210520181815572](https://tva1.sinaimg.cn/large/008i3skNly1gqp290lm97j30ec01pwfh.jpg)
-
-  6. cli2加入![image-20210520181842005](https://tva1.sinaimg.cn/large/008i3skNly1gqp29gz0iuj30ka03q41c.jpg)
-
-  7. cli1加入![image-20210520182016963](https://tva1.sinaimg.cn/large/008i3skNly1gqp2b417hdj30mr03ltc8.jpg)
+  5. ```
+     docker cp cli4_1:/opt/gopath/src/github.com/hyperledger/fabric/peer ./
+     ```
   
-  8. 现在两个组织都已经加入同一个通道内
+     
   
-  9. 下来更新组织1、组织2的锚节点
+  6. ![image-20210520181815572](https://tva1.sinaimg.cn/large/008i3skNly1gqp290lm97j30ec01pwfh.jpg)
   
-     1.  ![image-20210520182824259](https://tva1.sinaimg.cn/large/008i3skNly1gqp2jkelavj30nm054n2v.jpg)
-     2.  ![image-20210520182845185](https://tva1.sinaimg.cn/large/008i3skNly1gqp2jxeg2lj30mo065q8i.jpg)
-
-  10. 通道操作完成，两个节点已加入到同一通道内
-
-  11. 链码操作
-
+  7. cli2加入![image-20210520181842005](https://tva1.sinaimg.cn/large/008i3skNly1gqp29gz0iuj30ka03q41c.jpg)
+  
+  8. ```
+     peer channel join -b navy-channel.block
+     peer channel join -b army-channel.block
+     peer channel join -b air-force-channel.block
+     ```
+  
+  9. cli1加入![image-20210520182016963](https://tva1.sinaimg.cn/large/008i3skNly1gqp2b417hdj30mr03ltc8.jpg)
+  
+  10. 现在两个组织都已经加入同一个通道内
+  
+  11. 下来更新组织1、组织2的锚节点
+  
+      1. ![image-20210520182824259](https://tva1.sinaimg.cn/large/008i3skNly1gqp2jkelavj30nm054n2v.jpg)
+  
+      2. ![image-20210520182845185](https://tva1.sinaimg.cn/large/008i3skNly1gqp2jxeg2lj30mo065q8i.jpg)
+  
+      3. ```
+         peer channel update -o orderer.military.com:1050 -c navy-channel -f ./channel-artifacts/Org1MSPanchors.tx --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/military.com/msp/tlscacerts/tlsca.military.com-cert.pem
+         
+         peer channel update -o orderer.military.com:1050 -c army-channel -f ./channel-artifacts/Org2MSPanchors.tx --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/military.com/msp/tlscacerts/tlsca.military.com-cert.pem
+         
+         peer channel update -o orderer.military.com:1050 -c air-force-channel -f ./channel-artifacts/Org3MSPanchors.tx --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/military.com/msp/tlscacerts/tlsca.military.com-cert.pem
+         
+         peer channel update -o orderer.military.com:1050 -c navy-channel -f ./channel-artifacts/Org4MSPanchors1.tx --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/military.com/msp/tlscacerts/tlsca.military.com-cert.pem
+         
+         peer channel update -o orderer.military.com:1050 -c army-channel -f ./channel-artifacts/Org4MSPanchors2.tx --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/military.com/msp/tlscacerts/tlsca.military.com-cert.pem
+         
+         peer channel update -o orderer.military.com:1050 -c air-force-channel -f ./channel-artifacts/Org4MSPanchors3.tx --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/military.com/msp/tlscacerts/tlsca.military.com-cert.pem
+         ```
+  
+         
+  
+  12. 通道操作完成，两个节点已加入到同一通道内
+  
+  13. 链码操作
+  
       1. 链码部署：https://hyperledger-fabric.readthedocs.io/zh_CN/latest/deploy_chaincode.html#install-the-chaincode-package
   
       2. ![image-20210520183033093](https://tva1.sinaimg.cn/large/008i3skNly1gqp2lsz5inj30uq0jbtfy.jpg)
@@ -711,36 +742,136 @@ https://hyperledger-fabric.readthedocs.io/zh_CN/release-2.2/deployment_guide_ove
           ![image-20210521113458835](https://tva1.sinaimg.cn/large/008i3skNly1gqpw7pvivrj30o309ywi6.jpg)
   
       4. 挂载链码，创建链码依赖![image-20210521113811769](https://tva1.sinaimg.cn/large/008i3skNly1gqpwb23gndj30k508on4i.jpg)
+  
       5. 回到工作目录，对链码打包![image-20210521114217720](https://tva1.sinaimg.cn/large/008i3skNly1gqpwfbpkfdj30jx03lq5n.jpg)
+  
       6. 复制打包文件到cli2 ![image-20210521114509291](https://tva1.sinaimg.cn/large/008i3skNly1gqpwiajvz2j30mb082tfy.jpg)
-      7. 这里label是链码标签，_1指第一版，以后还可以改![image-20210521114124981](https://tva1.sinaimg.cn/large/008i3skNly1gqpweenvvbj30h802a3yz.jpg)
-      8. cli1、cli2安装链码![image-20210521115029740](https://tva1.sinaimg.cn/large/008i3skNly1gqpwnuswb8j30n104743n.jpg)
-      9. 每个组织批准链码
-         1. init-required : 链码是否需要初始化
-         2. -sequence序列号是1 
-         3. package-id在这里
-            1.  ![image-20210521115526649](https://tva1.sinaimg.cn/large/008i3skNly1gqpwt0dayrj30l303pjw1.jpg)
-            2. 也可以查到
-               1.  ![image-20210521115628880](https://tva1.sinaimg.cn/large/008i3skNly1gqpwu38t0vj30o705h3zn.jpg)
-         4.  ![image-20210521115213096](https://tva1.sinaimg.cn/large/008i3skNly1gqpwpn5adyj30ti03cmy7.jpg)
-         5. 操作：![image-20210521115710644](https://tva1.sinaimg.cn/large/008i3skNly1gqpwuth8i2j30kz06810c.jpg)
-         6. 查询是否approve成功
-            1. ![image-20210521115822536](https://tva1.sinaimg.cn/large/008i3skNly1gqpww1wklxj30l406ztd9.jpg)
-      10. 生命周期期最后一步，commit，之前的操作需要每个节点都操作一下，commit只需要一个节点提交就好了
+  
+      7. 这里label是链码标签，_1指第一版，以后还可以改
+  
+      8. ![image-20210521114124981](https://tva1.sinaimg.cn/large/008i3skNly1gqpweenvvbj30h802a3yz.jpg)
+  
+      9. ```
+         peer lifecycle chaincode package commoncc.tar.gz --path /opt/gopath/src/github.com/hyperledger/fabric-cluster/chaincode/java/build/install/commoncc --lang java --label commoncc_1
+         ```
+  
+         
+  
+      10. cli1、cli2安装链码![image-20210521115029740](https://tva1.sinaimg.cn/large/008i3skNly1gqpwnuswb8j30n104743n.jpg)
+  
+      11. ```
+          cp channel-artifacts/commoncc.tar.gz .
+          peer lifecycle chaincode install commoncc.tar.gz
+          peer lifecycle chaincode queryinstalled
+          ```
+  
+          
+  
+      12. 每个组织批准链码
+          1. init-required : 链码是否需要初始化
+  
+          2. sequence序列号是1 
+  
+          3. package-id在这里
+             1.  ![image-20210521115526649](https://tva1.sinaimg.cn/large/008i3skNly1gqpwt0dayrj30l303pjw1.jpg)
+             2. 也可以查到
+                1. ![image-20210521115628880](https://tva1.sinaimg.cn/large/008i3skNly1gqpwu38t0vj30o705h3zn.jpg)
+                
+                2. ```
+                   peer lifecycle chaincode approveformyorg --channelID navy-channel --name sacc --version 1.0 --init-required --package-id sacc_1:ec82e1f6579624520a0c3c77a13ad2ac671454f9b984b907b0c8197b51d1736b --sequence 1 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/military.com/orderers/orderer.military.com/msp/tlscacerts/tlsca.military.com-cert.pem
+                   
+                   peer lifecycle chaincode checkcommitreadiness --channelID navy-channel --name sacc --version 1.0 --init-required --sequence 1 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/military.com/orderers/orderer.military.com/msp/tlscacerts/tlsca.military.com-cert.pem --output json
+                   ```
+                
+                   
+             
+          4. ![image-20210521115213096](https://tva1.sinaimg.cn/large/008i3skNly1gqpwpn5adyj30ti03cmy7.jpg)
+  
+          5. ```
+             peer lifecycle chaincode approveformyorg --channelID navy-channel --name commoncc --version 1.0 --init-required --package-id commoncc_1:cb4034b26465c515cf71c71b4ceb061592cdfb564b3bf606f3ba980b5611800a --sequence 1 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/military.com/msp/tlscacerts/tlsca.military.com-cert.pem
+             
+             peer lifecycle chaincode approveformyorg --channelID army-channel --name commoncc --version 1.0 --init-required --package-id commoncc_1:cb4034b26465c515cf71c71b4ceb061592cdfb564b3bf606f3ba980b5611800a --sequence 1 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/military.com/msp/tlscacerts/tlsca.military.com-cert.pem
+             
+             peer lifecycle chaincode approveformyorg --channelID air-force-channel --name commoncc --version 1.0 --init-required --package-id commoncc_1:cb4034b26465c515cf71c71b4ceb061592cdfb564b3bf606f3ba980b5611800a --sequence 1 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/military.com/msp/tlscacerts/tlsca.military.com-cert.pem
+             
+             peer lifecycle chaincode checkcommitreadiness --channelID navy-channel --name commoncc --version 1.0 --init-required --sequence 1 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/military.com/msp/tlscacerts/tlsca.military.com-cert.pem --output json
+             
+             peer lifecycle chaincode checkcommitreadiness --channelID army-channel --name commoncc --version 1.0 --init-required --sequence 1 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/military.com/msp/tlscacerts/tlsca.military.com-cert.pem --output json
+             
+             peer lifecycle chaincode checkcommitreadiness --channelID air-force-channel --name commoncc --version 1.0 --init-required --sequence 1 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/military.com/msp/tlscacerts/tlsca.military.com-cert.pem --output json
+             ```
+  
+          6. 操作：![image-20210521115710644](https://tva1.sinaimg.cn/large/008i3skNly1gqpwuth8i2j30kz06810c.jpg)
+  
+          7. 查询是否approve成功
+             1. ![image-20210521115822536](https://tva1.sinaimg.cn/large/008i3skNly1gqpww1wklxj30l406ztd9.jpg)
+  
+      13. 生命周期期最后一步，commit，之前的操作需要每个节点都操作一下，commit只需要一个节点提交就好了
+  
+      14. ```
+         peer lifecycle chaincode commit -o orderer.military.com:1050 --channelID navy-channel --name sacc --version 1.0 --init-required --sequence 1 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/military.com/orderers/orderer.military.com/msp/tlscacerts/tlsca.military.com-cert.pem --peerAddresses peer0.org4.military.com:2050 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org4.military.com/peers/peer0.org4.military.com/tls/ca.crt --peerAddresses peer0.org1.military.com:2050 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.military.com/peers/peer0.org1.military.com/tls/ca.crt
+         ```
+  
+         
+  
          1. 需要指出节点地址及端口；以及组织1和组织2的根证书地址
-            1.  ![image-20210521120002150](https://tva1.sinaimg.cn/large/008i3skNly1gqpwxs2u9tj30rf062go9.jpg)
+            1. ![image-20210521120002150](https://tva1.sinaimg.cn/large/008i3skNly1gqpwxs2u9tj30rf062go9.jpg)
+            
+            2. ```
+               peer lifecycle chaincode commit -o orderer.military.com:1050 --channelID navy-channel --name commoncc --version 1.0 --init-required --sequence 1 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/military.com/msp/tlscacerts/tlsca.military.com-cert.pem --peerAddresses peer0.org4.military.com:2050 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org4.military.com/peers/peer0.org4.military.com/tls/ca.crt --peerAddresses peer0.org1.military.com:2050 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.military.com/peers/peer0.org1.military.com/tls/ca.crt
+               
+               peer lifecycle chaincode commit -o orderer.military.com:1050 --channelID army-channel --name commoncc --version 1.0 --init-required --sequence 1 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/military.com/msp/tlscacerts/tlsca.military.com-cert.pem --peerAddresses peer0.org4.military.com:2050 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org4.military.com/peers/peer0.org4.military.com/tls/ca.crt --peerAddresses peer0.org2.military.com:2050 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.military.com/peers/peer0.org2.military.com/tls/ca.crt
+               
+               peer lifecycle chaincode commit -o orderer.military.com:1050 --channelID air-force-channel --name commoncc --version 1.0 --init-required --sequence 1 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/military.com/msp/tlscacerts/tlsca.military.com-cert.pem --peerAddresses peer0.org4.military.com:2050 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org4.military.com/peers/peer0.org4.military.com/tls/ca.crt --peerAddresses peer0.org3.military.com:2050 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org3.military.com/peers/peer0.org3.military.com/tls/ca.crt
+               ```
+            
+               
          2. 操作![image-20210521120144465](https://tva1.sinaimg.cn/large/008i3skNly1gqpwzk7ttej30n00917g8.jpg)
-      11. 链码调用
-          1.  ![image-20210521120345818](https://tva1.sinaimg.cn/large/008i3skNly1gqpx1ns1i4j30wk0kjdme.jpg)
+  
+      15. 链码调用
+          1. ![image-20210521120345818](https://tva1.sinaimg.cn/large/008i3skNly1gqpx1ns1i4j30wk0kjdme.jpg)
+  
           2.  调用，在组织1上操作，传入一个键值对参数
              1. ![image-20210521120638792](https://tva1.sinaimg.cn/large/008i3skNly1gqpx4npu41j30s406kq5i.jpg)
+             
           3. 查询， 在组织2上进行查询
              1. ![image-20210521120928880](https://tva1.sinaimg.cn/large/008i3skNly1gqpx8ug3o6j30hd01k0t8.jpg)
-             2. ![image-20210521120946970](https://tva1.sinaimg.cn/large/008i3skNly1gqpx8tz6fqj30s1039abw.jpg)
+             
+             2. ```
+                peer chaincode query -C navy-channel -n sacc -c '{"Args":["query","a"]}'
+                ```
+             
+                
+             
+             3. ![image-20210521120946970](https://tva1.sinaimg.cn/large/008i3skNly1gqpx8tz6fqj30s1039abw.jpg)
+             
           4. 调用，在组织2上修改数据
+             
+             
+             
+          5. ```
+             peer chaincode invoke -o orderer.military.com:1050 --isInit --ordererTLSHostnameOverride orderer.military.com --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/military.com/msp/tlscacerts/tlsca.military.com-cert.pem -C navy-channel -n sacc --peerAddresses peer0.org4.military.com:2050 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org4.military.com/peers/peer0.org4.military.com/tls/ca.crt --peerAddresses peer0.org1.military.com:2050 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.military.com/peers/peer0.org1.military.com/tls/ca.crt -c '{"Args":["a","bb"]}'
+             ```
+  
+             
+  
              1. ![image-20210521121118727](https://tva1.sinaimg.cn/large/008i3skNly1gqpx9ieqd1j30qy05pgo0.jpg)
-             2. ![image-20210521121142175](https://tva1.sinaimg.cn/large/008i3skNly1gqpx9x5c0zj30ml079qc1.jpg)
-          5. 查询，在组织1上查询
+  
+             2. ```
+                peer chaincode invoke -o orderer.military.com:1050 --isInit --ordererTLSHostnameOverride orderer.military.com --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/military.com/msp/tlscacerts/tlsca.military.com-cert.pem -C navy-channel -n commoncc --peerAddresses peer0.org4.military.com:2050 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org4.military.com/peers/peer0.org4.military.com/tls/ca.crt --peerAddresses peer0.org1.military.com:2050 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.military.com/peers/peer0.org1.military.com/tls/ca.crt -c '{"Args":[]}'
+                
+                peer chaincode invoke -o orderer.military.com:1050 --isInit --ordererTLSHostnameOverride orderer.military.com --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/military.com/msp/tlscacerts/tlsca.military.com-cert.pem -C navy-channel -n commoncc -c '{"Args":[]}'
+                
+                peer chaincode invoke -o orderer.military.com:1050 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/military.com/msp/tlscacerts/tlsca.military.com-cert.pem -C navy-channel -n commoncc -c '{"Args":["create","1","2","3","4"]}'
+                
+                peer chaincode query -C navy-channel -n commoncc -c '{"Args":["history","1","2","3"]}'
+                ```
+  
+                
+  
+             3. ![image-20210521121142175](https://tva1.sinaimg.cn/large/008i3skNly1gqpx9x5c0zj30ml079qc1.jpg)
+  
+          6. 查询，在组织1上查询
              1. ![image-20210521121304226](https://tva1.sinaimg.cn/large/008i3skNly1gqpxbcf8bqj30gh025glt.jpg)
              2. ![image-20210521121317747](https://tva1.sinaimg.cn/large/008i3skNly1gqpxbkreeij30ky03i75z.jpg)
 
@@ -776,3 +907,8 @@ Raft 是 v1.4.1 中引入的，它是一种基于 etcd 的崩溃容错（CFT）�
 raft节点始终处于以下三种状态之一：follower，candidate或leader。所有节点最初都是follower。在这种状态下，他们可以接受来自leader的日志条目（如果已经当选），或者为leader投票。如果在设定的时间内没有收到日志条目或心跳（例如，五秒），则节点会自我提升到candidate状态。在候选状态中，节点请求来自其他节点的投票。如果候选人获得法定数量的选票，则将其提升为leader。leader接受新的日志条目并将其复制给follower。
 
 虽然可以无限期地保留所有日志，但为了节省磁盘空间，Raft使用一个名为“snapshotting”的进程，用户可以在其中定义将在日志中保留多少字节的数据。每个快照将包含一定数量的块）。
+
+```
+peer chaincode query -C navy-channel -n sacc  --peerAddresses peer0.org1.military.com:2050 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.military.com/peers/peer0.org1.military.com/tls/ca.crt -c '{"Args":["query","a"]}'
+```
+
