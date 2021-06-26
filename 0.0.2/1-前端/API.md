@@ -1,3 +1,5 @@
+
+
 # Promise
 
 - Promise 
@@ -200,7 +202,7 @@ async function doIt() {
 doIt();
 ```
 
-# JSON和qs
+# JSON.和qs.
 
 - JSON.parse()：是将json字符串解析成对象的形式
 
@@ -215,3 +217,74 @@ doIt();
 **truthy**（真值）：指的是在布尔值上下文中，转换后的值为真的值，既除假值之外的值
 
 **falsy**（假值）： `false`、`0`、`-0`、`0n`、`-0n`、`""`, `''`、``` `、`null`、` undefined `、`NaN`
+
+# 严格模式
+
+> ES6 的模块自动开启严格模式
+>
+> 作用：进行更严格的错误检查
+
+- 变量必须声明
+- this指向：
+  - 全局作用域：Window对象
+    - vue组件中：VueComponent对象
+  - 全局函数：undefined
+  - 对象函数：调用函数的对象实例
+  - 构造函数：创建的对象的实例
+  - 事件函数：触发事件的对象（如触发click的button）
+
+# 对象创建
+
+- 字面量式
+
+  - ```js
+    a = 1
+    b = 2
+    test1 = {
+        a,
+        b 
+    }
+    test2 = {
+        a:1,
+        b:2
+    }
+    ```
+
+    
+
+- 函数声明式
+  - ```js
+    // 构造函数
+    function Foo(name,age,sex){
+        // 不可被继承，在对象属性中
+        this.name = name;
+        // 不可被继承，在对象属性中
+        this.age = age;
+        // 不可被继承，在对象属性中
+        this.sex = sex;
+        // 不可被继承，在对象属性中
+        this.a = function(){
+            console.log(123)
+        }
+    }
+    // 可被继承，在原型链中
+    Foo.prototype.belief = function(){
+        console.log('hello，world');
+    }
+    let f = new Foo ('zh',18,'男');
+    
+    // 继承 --- 使用原型链
+    function Coo(){
+        this.name='child'
+    }
+    Coo.prototype=new Foo()
+    let c = new Coo()
+    c.belief()
+    typeof c  //"object"
+    // 检测有没有继承成功
+    c instanceof Foo  //true
+    ```
+
+  - 每个对象都有一个原型对象，包含构造器对象
+
+    - ![image-20210625173354568](https://tva1.sinaimg.cn/large/008i3skNly1gruna03158j30a70im76e.jpg)
