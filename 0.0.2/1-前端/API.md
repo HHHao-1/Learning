@@ -1,5 +1,3 @@
-
-
 # Promise
 
 - Promise 
@@ -288,3 +286,34 @@ doIt();
   - 每个对象都有一个原型对象，包含构造器对象
 
     - ![image-20210625173354568](https://tva1.sinaimg.cn/large/008i3skNly1gruna03158j30a70im76e.jpg)
+
+# call()、apply()、bind()
+
+> 作用：改变this指向
+
+```js
+var name ='小王',age=17;
+var obj={
+    name:'小张',
+    objAge: this.age,
+    myFun: function(fm,t){
+        console. log( this.name +"年龄"+this.age ,"来自"+fm+"去往"+t)
+    }
+}
+var db={
+    name: '德玛',
+    age:99
+}
+obj.myFun.call(db,'成都','上海')；　　　　 // 德玛 年龄 99  来自 成都去往上海
+obj.myFun.apply(db,['成都','上海']);      // 德玛 年龄 99  来自 成都去往上海  
+obj.myFun.bind(db,'成都','上海')();       // 德玛 年龄 99  来自 成都去往上海
+obj.myFun.bind(db,['成都','上海'])();　　 // 德玛 年龄 99  来自 成都, 上海去往 undefined
+```
+
+# for循环
+
+- for (var i=0;i<10;i++)
+- for(var property in obj)
+  - iterable：遍历出为index；可由iterable[property]取得
+- for(var element of iterable)
+
