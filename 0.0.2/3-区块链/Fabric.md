@@ -825,12 +825,11 @@ https://hyperledger-fabric.readthedocs.io/zh_CN/release-2.2/deployment_guide_ove
                peer lifecycle chaincode commit -o orderer.military.com:1050 --channelID air-force-channel --name commoncc --version 1.0 --init-required --sequence 1 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/military.com/msp/tlscacerts/tlsca.military.com-cert.pem --peerAddresses peer0.org4.military.com:2050 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org4.military.com/peers/peer0.org4.military.com/tls/ca.crt --peerAddresses peer0.org3.military.com:2050 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org3.military.com/peers/peer0.org3.military.com/tls/ca.crt
                ```
             
-               
          2. 操作![image-20210521120144465](https://tva1.sinaimg.cn/large/008i3skNly1gqpwzk7ttej30n00917g8.jpg)
-  
+         
       15. 链码调用
           1. ![image-20210521120345818](https://tva1.sinaimg.cn/large/008i3skNly1gqpx1ns1i4j30wk0kjdme.jpg)
-  
+      
           2.  调用，在组织1上操作，传入一个键值对参数
              1. ![image-20210521120638792](https://tva1.sinaimg.cn/large/008i3skNly1gqpx4npu41j30s406kq5i.jpg)
              
@@ -846,17 +845,17 @@ https://hyperledger-fabric.readthedocs.io/zh_CN/release-2.2/deployment_guide_ove
              3. ![image-20210521120946970](https://tva1.sinaimg.cn/large/008i3skNly1gqpx8tz6fqj30s1039abw.jpg)
              
           4. 调用，在组织2上修改数据
+            
              
-             
-             
+            
           5. ```
              peer chaincode invoke -o orderer.military.com:1050 --isInit --ordererTLSHostnameOverride orderer.military.com --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/military.com/msp/tlscacerts/tlsca.military.com-cert.pem -C navy-channel -n sacc --peerAddresses peer0.org4.military.com:2050 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org4.military.com/peers/peer0.org4.military.com/tls/ca.crt --peerAddresses peer0.org1.military.com:2050 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.military.com/peers/peer0.org1.military.com/tls/ca.crt -c '{"Args":["a","bb"]}'
              ```
-  
+      
              
-  
+      
              1. ![image-20210521121118727](https://tva1.sinaimg.cn/large/008i3skNly1gqpx9ieqd1j30qy05pgo0.jpg)
-  
+      
              2. ```
                 peer chaincode invoke -o orderer.military.com:1050 --isInit --ordererTLSHostnameOverride orderer.military.com --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/military.com/msp/tlscacerts/tlsca.military.com-cert.pem -C navy-channel -n commoncc --peerAddresses peer0.org4.military.com:2050 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org4.military.com/peers/peer0.org4.military.com/tls/ca.crt --peerAddresses peer0.org1.military.com:2050 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.military.com/peers/peer0.org1.military.com/tls/ca.crt -c '{"Args":[]}'
                 
@@ -866,11 +865,11 @@ https://hyperledger-fabric.readthedocs.io/zh_CN/release-2.2/deployment_guide_ove
                 
                 peer chaincode query -C navy-channel -n commoncc -c '{"Args":["history","1","2","3"]}'
                 ```
-  
+      
                 
-  
+      
              3. ![image-20210521121142175](https://tva1.sinaimg.cn/large/008i3skNly1gqpx9x5c0zj30ml079qc1.jpg)
-  
+      
           6. 查询，在组织1上查询
              1. ![image-20210521121304226](https://tva1.sinaimg.cn/large/008i3skNly1gqpxbcf8bqj30gh025glt.jpg)
              2. ![image-20210521121317747](https://tva1.sinaimg.cn/large/008i3skNly1gqpxbkreeij30ky03i75z.jpg)
@@ -912,3 +911,29 @@ raft节点始终处于以下三种状态之一：follower，candidate或leader�
 peer chaincode query -C navy-channel -n sacc  --peerAddresses peer0.org1.military.com:2050 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.military.com/peers/peer0.org1.military.com/tls/ca.crt -c '{"Args":["query","a"]}'
 ```
 
+# IPFS
+
+![image-20210628112517663](https://tva1.sinaimg.cn/large/008i3skNly1grxthclgi1j30f304yn04.jpg)
+
+```
+docker ps -a --format "table {{.ID}}\t{{.Names}}\t{{.Status}}"
+```
+
+![image-20210628112649163](https://tva1.sinaimg.cn/large/008i3skNly1grxtiz506aj30xp0nbk2q.jpg)
+
+```
+docker exec -it cluster0 /bin/sh
+ipfs-cluster-ctl id
+ipfs-cluster-ctl peers ls
+
+http://192.168.3.238:9094/id
+http://192.168.3.238:8080/ipfs/QmeDiwDEr1J6e741ZZ8JrJGYyiLFp9Sx4dYX5Winv8vg4h
+```
+
+![image-20210628114124265](https://tva1.sinaimg.cn/large/008i3skNly1grxty3mxhcj30so073adf.jpg)
+
+![image-20210628114104984](https://tva1.sinaimg.cn/large/008i3skNly1grxtxrxl7xj30t00j3wnt.jpg)
+
+# 备忘
+
+![image-20210628183411653](https://tva1.sinaimg.cn/large/008i3skNly1gry5vnf0s4j30m301xabo.jpg)

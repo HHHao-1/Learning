@@ -636,18 +636,18 @@ public class ThreadTest4 {
 >   // ExecutorService extends Executor
 >   ExecutorService threadPool = Executors.newFixedThreadPool(10);
 >   threadPool.execute(**)/threadPool.submit(**)
->       
+>         
 >   // Executor 向线程池添加任务
 >   void execute(Runnable command);
->       
+>         
 >   // ExecutorService
 >   Future<T> submit(Callable<T> task);
 >   Future<?> submit(Runnable task);
 >   Future<T> submit(Runnable task, T result);
->       
+>         
 >   List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks);
 >   T invokeAny(Collection<? extends Callable<T>> tasks);
->       
+>         
 >   void shutdown();
 >   List<Runnable> shutdownNow();
 >   boolean isShutdown();
@@ -1870,4 +1870,26 @@ public class CTest {
     }  
 }
 ```
+
+## 默认修饰符
+
+- 类：default
+- 注解：public
+- 接口：
+  - 方法：public abstract
+  - 变量：public static final
+
+## range()
+
+- range(int start, int end)：前包后不包
+
+  - ```
+    IntStream.range(0, 10).forEach(System.out::print);
+    ```
+
+- rangeClosed(int startInclusive, int endInclusive)：前后全包
+
+  - ```
+    IntStream.rangeClosed(0, 10).forEach(System.out::print);
+    ```
 

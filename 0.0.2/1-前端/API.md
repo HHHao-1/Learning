@@ -223,13 +223,21 @@ doIt();
 > 作用：进行更严格的错误检查
 
 - 变量必须声明
-- this指向：
-  - 全局作用域：Window对象
-    - vue组件中：VueComponent对象
-  - 全局函数：undefined
-  - 对象函数：调用函数的对象实例
-  - 构造函数：创建的对象的实例
-  - 事件函数：触发事件的对象（如触发click的button）
+- this指向变化
+
+# this指向
+
+*严格模式下*
+
+- 全局作用域：Window对象
+  - vue组件中：VueComponent对象
+- 全局函数：undefined
+- 对象函数：调用函数的对象实例
+- 构造函数：创建的对象的实例
+- 事件函数：触发事件的对象（如触发click的button）
+- ==箭头函数==
+  - 箭头函数不绑定this， 它会捕获this被定义位置的上下文的this值， 作为自己的this值
+  - call() / apply() / bind() 方法对箭头函数的this值无影响
 
 # 对象创建
 
@@ -308,12 +316,51 @@ obj.myFun.call(db,'成都','上海')；　　　　 // 德玛 年龄 99  来自 
 obj.myFun.apply(db,['成都','上海']);      // 德玛 年龄 99  来自 成都去往上海  
 obj.myFun.bind(db,'成都','上海')();       // 德玛 年龄 99  来自 成都去往上海
 obj.myFun.bind(db,['成都','上海'])();　　 // 德玛 年龄 99  来自 成都, 上海去往 undefined
+// bind() 返回值是个函数
 ```
 
 # for循环
 
-- for (var i=0;i<10;i++)
-- for(var property in obj)
+> iterable：Array，Map，Set
+
+- for  (var i=0;i<10;i++)
+
+- for  (var property in obj)
+
   - iterable：遍历出为index；可由iterable[property]取得
-- for(var element of iterable)
+
+- for  (var element of iterable)
+
+- iterable.forEach(function(v，k，arr){ console.log(k，v，arr) }，thisValue)
+
+  - 第二个参数thisValue在箭头函数中不适用
+
+  - ```js
+    [1, 2, 3, 4, 5].forEach(function(v){console.log(v,this)},[0,0,0])
+    // 1 [0, 0, 0]
+    // 2 [0, 0, 0]
+    ```
+
+```js
+Array.prototype.forEach.call([1, 2, 3, 4, 5], function(a) {
+    console.log(a, this)
+}, [6, 7, 8, 9])
+Array.prototype.forEach.apply([1, 2, 3, 4, 5], [
+    function(a) {
+        console.log(a, this)
+    },[6, 7, 8, 9]
+])
+Array.prototype.forEach.bind([1, 2, 3, 4, 5],function(a) {
+    console.log(a, this)
+}, [6, 7, 8, 9])()
+```
+
+# undefined和null
+
+- undefined
+  - 未声明
+  - 未初始化
+- null
+  - dom元素获取失败
+  - 正则匹配失败
 
