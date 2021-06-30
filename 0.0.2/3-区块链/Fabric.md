@@ -937,3 +937,8 @@ http://192.168.3.238:8080/ipfs/QmeDiwDEr1J6e741ZZ8JrJGYyiLFp9Sx4dYX5Winv8vg4h
 # 备忘
 
 ![image-20210628183411653](https://tva1.sinaimg.cn/large/008i3skNly1gry5vnf0s4j30m301xabo.jpg)
+
+```
+export https_proxy=http://192.168.3.244:7890 http_proxy=http://192.168.3.244:7890 all_proxy=socks5://192.168.3.244:7890
+```
+
