@@ -1,4 +1,4 @@
-简介
+# 简介
 
 **概念**
 
@@ -155,7 +155,7 @@ $ ./src/redis-cli shutdown
 
 > 集合成员唯一，List成员不唯一
 >
-> Set集合是字符串的无序集合，集合成员是唯一的
+> Set集合是字符串的无序集合,集合成员是唯一的
 >
 > Zset集合是字符串的有序集合,集合成员是唯一的
 
@@ -180,7 +180,7 @@ $ ./src/redis-cli shutdown
 >
 > zadd  zset1 101 b -----创建集合并按分数设置成员
 >
-> zrange zset1 o-1
+> zrange zset1 0 1 (start--end)
 >
 > - a
 > - b
