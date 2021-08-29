@@ -418,4 +418,3 @@ Compared to before, there are a lot of changes in ...
 - make money
 - wide eyes
 - The gap between rich and poor is widening
-

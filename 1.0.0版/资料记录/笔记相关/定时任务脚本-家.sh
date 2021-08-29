@@ -9,6 +9,6 @@ git add .
 git commit -m  "$time"
 
 #git push origin master
-git push https://HHHao-1:chzaizg556677@github.com/HHHao-1/Learning.git master
+git push
 
 echo -e $time "提交笔记" >> /Users/hao/program/log/notes.log
