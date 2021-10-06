@@ -636,18 +636,18 @@ public class ThreadTest4 {
 >   // ExecutorService extends Executor
 >   ExecutorService threadPool = Executors.newFixedThreadPool(10);
 >   threadPool.execute(**)/threadPool.submit(**)
->         
+>           
 >   // Executor 向线程池添加任务
 >   void execute(Runnable command);
->         
+>           
 >   // ExecutorService
 >   Future<T> submit(Callable<T> task);
 >   Future<?> submit(Runnable task);
 >   Future<T> submit(Runnable task, T result);
->         
+>           
 >   List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks);
 >   T invokeAny(Collection<? extends Callable<T>> tasks);
->         
+>           
 >   void shutdown();
 >   List<Runnable> shutdownNow();
 >   boolean isShutdown();
@@ -762,7 +762,7 @@ public class ThreadTest7 {
   public static void main(String[] args) throws Exception {
     Integer[] a = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
     // parallelStream默认使用了fork-join框架，其默认线程数是CPU核心数
-    // 修改默认orkJoinPool线程数（全局修改）
+    // 修改默认forkJoinPool线程数（全局修改）
     System.setProperty("java.util.concurrent.ForkJoinPool.common.parallelism", "3");
     Arrays.stream(a).parallel().forEach(s -> {
       System.out.println(Thread.currentThread().getName() + "---" + s);
